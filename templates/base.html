@@ -19,41 +19,34 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">PasteMate</a>
+    <a class="navbar-brand" href="/">PasteMate</a>
     <button class="navbar-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
-
-    <!--
-        ToDo: Delete this comment block after all of this is implemented
-        Brand ('PasteMate'): Leads to index.
-
-        Account Dropdown options behavior:
-            If signed in:
-                Sign out, Settings
-            If signed out:
-                Sign in, Sign up, Forgot Password
-
-        Paste Dropdown behavior:
-            Hidden if not signed in.
-            Options: Submit, My Pastes
-    -->
-
 
     <div id="navbar">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <nav-dropdown-menu button_text="Account">
-                    <nav-option href="#">Option</nav-option>
+                    {% if session['signed_in'] %}
+                        <nav-option href="/sign_out">Sign out</nav-option>
+                        <nav-option href="/account_settings">Account Settings</nav-option>
+                    {% else %}
+                        <nav-option href="/sign_in">Sign in</nav-option>
+                        <nav-option href="/sign_up">Sign up</nav-option>
+                        <nav-option href="/reset_password">Reset Password</nav-option>
+                    {% endif %}
                 </nav-dropdown-menu>
             </li>
 
-            <li class="nav-item dropdown">
-                <nav-dropdown-menu button_text="Paste">
-                    <nav-option href="#">Option</nav-option>
-                </nav-dropdown-menu>
-            </li>
-
+            {% if session['signed_in'] %}
+                <li class="nav-item dropdown">
+                    <nav-dropdown-menu button_text="Paste">
+                        <nav-option href="/submit">Submit</nav-option>
+                        <nav-option href="/pastes">My Pastes</nav-option>
+                    </nav-dropdown-menu>
+                </li>
+            {% endif %}
         </ul>
     </div>
 
