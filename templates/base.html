@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <title>
         {% block title %}
             <!-- Title of page goes here -->
@@ -19,30 +19,76 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="#">PasteMate</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#activeNavButton">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <a class="navbar-brand" href="#">PasteMate</a>
+    <button class="navbar-toggler" type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="activeNavButton">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">1 <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">2</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">3</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">4</a>
-      </li>
-    </ul>
-  </div>
+    <!--
+        ToDo: Delete this comment block after all of this is implemented
+        Brand ('PasteMate'): Leads to index.
+
+        Account Dropdown options behavior:
+            If signed in:
+                Sign out, Settings
+            If signed out:
+                Sign in, Sign up, Forgot Password
+
+        Paste Dropdown behavior:
+            Hidden if not signed in.
+            Options: Submit, My Pastes
+    -->
+
+
+    <div id="navbar">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <nav-dropdown-menu button_text="Account">
+                    <nav-option href="#">Option</nav-option>
+                </nav-dropdown-menu>
+            </li>
+
+            <li class="nav-item dropdown">
+                <nav-dropdown-menu button_text="Paste">
+                    <nav-option href="#">Option</nav-option>
+                </nav-dropdown-menu>
+            </li>
+
+        </ul>
+    </div>
+
 </nav>
 {% block content %}
     <!-- Content goes here -->
 {% endblock %}
+
+<script>
+    Vue.mixin({ delimiters: ['[[',']]'] });
+
+    Vue.component('nav-dropdown-menu', {
+        props: {
+            button_text: String
+        },
+        template:
+            `
+            <div>
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">[[ button_text ]]</a>
+                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute;
+                will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 41px, 0px);">
+                    <slot></slot>
+                </div>
+            </div>
+            `
+    });
+
+    Vue.component('nav-option', {
+        template: '<a class="dropdown-item"><slot></slot></a>'
+    });
+
+    let navbar = new Vue({
+        el: '#navbar',
+        data: {},
+    })
+</script>
 </body>
 </html>
