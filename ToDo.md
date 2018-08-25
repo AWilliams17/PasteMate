@@ -1,3 +1,8 @@
+## General
+* [ ] Base template
+* [ ] Base template functionality
+* [ ] Unit Tests
+
 ## Accounts
 * [ ] Signup page
 * [ ] Signup functionality
@@ -19,3 +24,7 @@
 ## Misc
 * [ ] Index page
 * [ ] About page
+* [ ] Favicon.ico in static/images/
+* [ ] Font awesome
+* [ ] Fully implement aria controls
+* [ ] Navbar brand in base.html

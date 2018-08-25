@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico')}}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
+    <title>
+        {% block title %}
+            <!-- Title of page goes here -->
+        {% endblock %}
+    </title>
+    {% block head %}
+        <!-- Additional header information goes here -->
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="#">PasteMate</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#activeNavButton">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="activeNavButton">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">1 <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">2</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">4</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% block content %}
+    <!-- Content goes here -->
+{% endblock %}
+</body>
+</html>
