@@ -23,7 +23,6 @@
 
 ## Misc
 * [ ] Index page
-* [ ] About page
 * [ ] Favicon.ico in static/images/
 * [ ] Font awesome
 * [ ] Fully implement aria controls
