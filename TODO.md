@@ -20,7 +20,11 @@
 * [ ] Paste edit page
 * [ ] Paste edit functionality
 * [ ] Paste view page
-* [ ] Paste view functionality
+* [ ] Paste view functionality  
+
+Paste Open Editing: Have a special link you can send
+which allows someone else to edit the paste. Or something
+along those lines.
 
 ## Misc
 * [ ] Index page
