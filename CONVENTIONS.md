@@ -32,5 +32,4 @@ underscores or dashes, or start with numbers.
 * Don't use void
 * Avoid switch fall through
 * Avoid bitwise manipulation
-* Avoid new
 * Use function expressions (var a = function etc)
