@@ -28,12 +28,11 @@ along those lines.
 
 ## Misc
 * [ ] Index page
-* [ ] Favicon.ico in static/images/
 * [ ] Font awesome
 * [ ] Fully implement aria controls
-* [ ] Navbar brand in base.html
+* [ ] Setup.py
 
-## Security Checklist (http://flask.pocoo.org/docs/1.0/security/)
+## Security Checklist
 * [ ] Password Hashing
 * [ ] Token based password recovery
 * [ ] CSRF Tokens
@@ -45,7 +44,5 @@ along those lines.
 * [ ] X-Frame-Options
 * [ ] X-XSS-Protection
 * [ ] Set-Cookie options
-This might be good: https://pythonhosted.org/Flask-Security/  
-Also this: https://wtforms.readthedocs.io/en/stable/  
 SQLAlchemy should protect against SQLI for the most part, unless I try
 to actively ruin it (which I won't ^.^)
