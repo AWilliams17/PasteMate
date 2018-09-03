@@ -40,6 +40,10 @@ module.exports = {
         'e' // for e.returnvalue
       ]
     }],
+    'indent': 'off',
+    'vue/script-indent': ['warn', 2, {
+      'baseIndent': 1
+    }],
     // allow optionalDependencies
     'import/no-extraneous-dependencies': ['error', {
       optionalDependencies: ['test/unit/index.js']
