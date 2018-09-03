@@ -14,3 +14,18 @@ This is also my first time using Vue.JS, and making a Single Page Application.
 -Bootstrap 4 with the Slate theme from Bootswatch (https://bootswatch.com/slate/)
 -SQLAlchemy
 -Vue.JS
+
+# Client Setup
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+``` 

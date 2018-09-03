@@ -11,8 +11,7 @@ import router from './router';
 Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 
-/* eslint-disable no-new */
-new Vue({
+Vue({
   el: '#app',
   router,
   components: { App },
