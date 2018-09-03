@@ -1,25 +1,22 @@
 ## General
-* [x] Base template
-* [x] Base template functionality
-* [ ] Unit Tests
-* [ ] API
+* [ ] Navigation Bar
 
 ## Accounts
-* [ ] Signup page
+* [ ] Signup component
 * [ ] Signup functionality
-* [ ] Sign in page
+* [ ] Sign in component
 * [ ] Sign in functionary
-* [ ] Edit page
+* [ ] Edit component
 * [ ] Edit functionality
-* [ ] Summary page
+* [ ] Summary component
 * [ ] Summary functionality
 
 ## Pastes
-* [ ] Paste submission page
+* [ ] Paste submission component
 * [ ] Paste submission functionality
-* [ ] Paste edit page
+* [ ] Paste edit component
 * [ ] Paste edit functionality
-* [ ] Paste view page
+* [ ] Paste view component
 * [ ] Paste view functionality  
 
 Paste Open Editing: Have a special link you can send
@@ -27,10 +24,9 @@ which allows someone else to edit the paste. Or something
 along those lines.
 
 ## Misc
-* [ ] Index page
-* [ ] Font awesome
 * [ ] Fully implement aria controls
 * [ ] Setup.py
+* [ ] Unit Tests
 
 ## Security Checklist
 * [ ] Password Hashing
