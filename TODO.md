@@ -1,27 +1,20 @@
 ## General
 * [ ] Navigation Bar
+* [ ] Index
 
 ## Accounts
-* [ ] Signup component
-* [ ] Signup functionality
+* [ ] Sign up component
 * [ ] Sign in component
-* [ ] Sign in functionary
 * [ ] Edit component
-* [ ] Edit functionality
-* [ ] Summary component
-* [ ] Summary functionality
 
 ## Pastes
 * [ ] Paste submission component
-* [ ] Paste submission functionality
 * [ ] Paste edit component
-* [ ] Paste edit functionality
 * [ ] Paste view component
-* [ ] Paste view functionality  
 
-Paste Open Editing: Have a special link you can send
+**Paste Open Editing: Have a special link you can send
 which allows someone else to edit the paste. Or something
-along those lines.
+along those lines.**
 
 ## Misc
 * [ ] Fully implement aria controls
