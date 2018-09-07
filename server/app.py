@@ -2,12 +2,17 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models import db
 from flask_session import Session
+from os import path
 
 app = Flask(__name__, root_path="/server")
 # SESSION_TYPE = 'redis'
 app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-db.init_app(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+    "sqlite:///" + path.dirname(path.realpath(__file__)) + "\PM.db".replace('"\"', '\\')  # ugh
+
+with app.app_context():
+    db.init_app(app)
+
 # Session(app)
 app.debug = True
 
