@@ -10,6 +10,7 @@ class Account(db.Model):
     password = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref='account', lazy=True)
+    private = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         return '<Account %r>' % self.username
