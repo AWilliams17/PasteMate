@@ -1,5 +1,5 @@
 ## General
-* [ ] Navigation Bar
+* [x] Navigation Bar
 * [ ] Index
 
 ## Accounts
