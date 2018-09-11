@@ -4,6 +4,6 @@
 
 <script>
   export default {
-    name: 'paste-view',
+    name: 'PasteView',
   };
 </script>

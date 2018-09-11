@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'account-view',
+    name: 'AccountView',
   };
 </script>
 

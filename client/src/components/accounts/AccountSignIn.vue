@@ -4,6 +4,6 @@
 
 <script>
   export default {
-    name: 'account-sign-in',
+    name: 'AccountSignIn',
   };
 </script>
