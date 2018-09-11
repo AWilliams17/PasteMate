@@ -349,6 +349,22 @@ legend {
   color: $white;
 }
 
+input[type="text"], input[type=password], textarea {
+  background-color: #4b4c4e;
+  border: 1px solid #527190;
+}
+
+.form-control {
+  background-color: #4b4c4e;
+  border: 1px solid #527190;
+}
+
+.form-control:focus {
+  border: 1px solid #046cff;
+  background-color: #4b4c4e;
+  color: #B5DCE3;
+}
+
 // Navs ========================================================================
 
 .nav-tabs {

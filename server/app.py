@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models import db
+from models import db, Account, Paste
 from flask_session import Session
 from os import path
 
@@ -9,6 +9,7 @@ app = Flask(__name__, root_path="/server")
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     "sqlite:///" + path.dirname(path.realpath(__file__)) + "\PM.db".replace('"\"', '\\')  # ugh
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 with app.app_context():
     db.init_app(app)

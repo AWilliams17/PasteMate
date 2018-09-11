@@ -28,5 +28,10 @@
 <script>
   export default {
     name: 'nav-bar',
+    methods: {
+      showSignUpModal: function showSignUpModal() {
+        this.$emit('showSignUp');
+      },
+    },
   };
 </script>

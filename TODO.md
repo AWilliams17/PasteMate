@@ -1,6 +1,6 @@
 ## General
 * [x] Navigation Bar
-* [ ] Index
+* [x] Index
 
 ## Accounts
 * [ ] Sign up component
