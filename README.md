@@ -1,3 +1,4 @@
+I have no idea when/if this will ever be finished.
 # What is this
 This is a Pastebin clone implemented using the Flask library in Python.
 The version of Python used for this project is 3.7 (first time writing in 3.7
