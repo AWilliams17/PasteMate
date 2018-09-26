@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from models import db, Account, Paste
 from flask_session import Session
-from os import path
+from os import path, scandir
 
-app = Flask(__name__, root_path="/server")
+app = Flask(__name__, template_folder="../client/")
+
 # SESSION_TYPE = 'redis'
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = \
@@ -23,6 +24,12 @@ CORS(app)  # ToDo: Secure this. This allows CORS requests on all routes from any
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify('pong!')
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template("index.html")
 
 
 if __name__ == '__main__':
