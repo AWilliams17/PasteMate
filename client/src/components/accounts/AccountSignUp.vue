@@ -27,7 +27,7 @@
           <b-form-input id="passwordInput" type="password" size="sm"></b-form-input>
         </b-form-group>
         <b-form-checkbox id="accountPrivateCheckbox" size="sm">Private Account</b-form-checkbox>
-        <b-button href="#" variant="primary" size="sm" class="float-right">Sign up</b-button>
+        <b-button type="submit" variant="primary" size="sm" class="float-right">Sign up</b-button>
       </b-form>
     </b-card>
   </b-container>
