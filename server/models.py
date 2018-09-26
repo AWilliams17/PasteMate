@@ -18,7 +18,6 @@ class Account(db.Model):
 
 class Paste(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     title = db.Column(db.String(50), unique=False, nullable=False)
     language = db.Column(db.String(50), unique=False, nullable=False)
     password = db.Column(db.String(50), unique=False, nullable=True)
