@@ -35,6 +35,9 @@ def register():
     user = Account(**data)
     db.session.add(user)
     db.session.commit()
+    # Generate a confirmation token
+    # Send an email with the token
+    # Tell user to verify their account
     return jsonify(user.to_dict()), 201
 
 
