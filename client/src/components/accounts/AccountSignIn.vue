@@ -19,7 +19,7 @@
         <b-form-input id="passwordInput" type="password" size="sm"></b-form-input>
       </b-form-group>
       <b-form-checkbox id="accountRememberMeCheckbox" size="sm">Remember me</b-form-checkbox>
-      <b-button type="submit" variant="primary" size="sm" class="float-right">Sign up</b-button>
+      <b-button type="submit" variant="primary" size="sm" class="float-right">Sign in</b-button>
     </b-form>
   </b-card>
 </b-container>

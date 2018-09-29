@@ -15,7 +15,8 @@
                       :label-cols="4"
                       label="Email"
                       label-size="sm"
-                      label-for="emailInput">
+                      label-for="emailInput"
+                      description="If this is not a valid email address you will not be able to reset your password.">
           <b-form-input id="emailInput" type="email" size="sm"></b-form-input>
         </b-form-group>
         <b-form-group id="passwordFieldSet"

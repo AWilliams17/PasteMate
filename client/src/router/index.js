@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Index from '@/components/Index';
 import AccountSignUp from '@/components/accounts/AccountSignUp';
 import AccountSignIn from '@/components/accounts/AccountSignIn';
+import AccountPasswordReset from '@/components/accounts/AccountPasswordReset';
 
 Vue.use(Router);
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/sign_in',
       name: 'SignIn',
       component: AccountSignIn,
+    },
+    {
+      path: '/reset_password',
+      name: 'AccountPasswordReset',
+      component: AccountPasswordReset,
     },
   ],
   mode: 'history',
