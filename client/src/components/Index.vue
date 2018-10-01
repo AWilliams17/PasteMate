@@ -4,8 +4,7 @@
       <h6 slot="header" class="mb-0">What is this</h6>
       <p class="card-text">This is basically just a PasteBin clone. It has paste expiration from never up to
       a week, and it also has open editing support (anyone can edit the paste), support for
-      176 languages, password protected pastes, and private accounts (as in, nobody can view
-      the list of pastes you have submitted).</p>
+      176 languages, and password protected pastes.</p>
     </b-card>
     <b-card class="card-padding" header-tag="header">
       <h6 slot="header" class="mb-0">Languages supported</h6>
