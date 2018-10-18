@@ -7,11 +7,11 @@ from flask_jwt_extended import (create_access_token,
 from werkzeug.security import safe_str_cmp
 from models import db, Account, Paste
 from forms import RegistrationForm
-from os import path, scandir
+from os.path import dirname, realpath, exists
 app = Flask(__name__, template_folder="../client/")
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-    "sqlite:///" + path.dirname(path.realpath(__file__)) + "\PM.db".replace('"\"', '\\')  # ugh
+    "sqlite:///" + dirname(realpath(__file__)) + "\PM.db".replace('"\"', '\\')  # ugh
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECURITY_PASSWORD_SALT'] = "12345"  # ToDo: Bad.
 app.config['SECRET_KEY'] = "12345"  # ToDo: Bad.
@@ -22,7 +22,7 @@ jwt = JWTManager(app)
 with app.app_context():
     database_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
     db.init_app(app)
-    if not path.exists(database_path):
+    if not exists(database_path):
         db.create_all()
     wtforms_json.init()
 
