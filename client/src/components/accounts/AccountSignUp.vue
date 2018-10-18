@@ -65,8 +65,8 @@
               this.errors = response.data.errors;
             } else {
               localStorage.setItem('access_token', response.data.access_token);
-              localStorage.setItem('refresh_token', response.data.access_token);
-              this.$eventHub.$emit('user-event');
+              localStorage.setItem('refresh_token', response.data.refresh_token);
+              this.$eventHub.$emit('logged-in');
               this.$router.push('/');
             }
           })

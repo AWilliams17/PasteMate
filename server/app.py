@@ -5,9 +5,12 @@ from flask_jwt_extended import (create_access_token,
     create_refresh_token, jwt_required, jwt_refresh_token_required,
     get_jwt_identity, get_raw_jwt, JWTManager)
 from werkzeug.security import safe_str_cmp
-from models import db, Account, Paste
+from models import db, Account, Paste, RevokedToken
 from forms import RegistrationForm
 from os.path import dirname, realpath, exists
+from datetime import timedelta
+
+
 app = Flask(__name__, template_folder="../client/")
 app.config.from_object(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = \
@@ -16,6 +19,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECURITY_PASSWORD_SALT'] = "12345"  # ToDo: Bad.
 app.config['SECRET_KEY'] = "12345"  # ToDo: Bad.
 app.config['JWT_SECRET_KEY'] = '12345' # ToDo: Bad.
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(7)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(14)
 
 jwt = JWTManager(app)
 
@@ -31,6 +38,11 @@ app.debug = True
 
 CORS(app)  # ToDo: Secure this. This allows CORS requests on all routes from any domain.
 
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return RevokedToken.is_jti_blacklisted(jti)
+
 @app.route('/sign_up', methods=['POST'])
 def register():
     data = request.get_json()
@@ -45,6 +57,26 @@ def register():
     refresh_token = create_refresh_token(identity=data['username'])
     success_response = {'success': True, 'access_token': access_token, 'refresh_token': refresh_token}
     return jsonify(success_response), 201
+
+
+@app.route('/invalidate_access')
+@jwt_required
+def invalidate_access():
+    jti = get_raw_jwt()
+    if 'jti' in jti:
+        revoked_access_token = RevokedToken(jti=jti['jti'])
+        revoked_access_token.save_to_db()
+    return jsonify(True), 201
+
+
+@app.route('/invalidate_refresh')
+@jwt_refresh_token_required
+def invalidate_refresh():
+    jti = get_raw_jwt()
+    if 'jti' in jti:
+        revoked_refresh_token = RevokedToken(jti=jti['jti'])
+        revoked_refresh_token.save_to_db()
+    return jsonify(True), 201
 
 
 @app.route('/refresh_user', methods=['POST'])

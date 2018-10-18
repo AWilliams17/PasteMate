@@ -34,10 +34,17 @@
       };
     },
     created() {
-      this.$eventHub.$on('user-event', () => {
+      this.$eventHub.$on('logged-in', () => {
         this.$parent.getCurrentUser().then((response) => {
-          this.user = response.data;
+          if (response.data !== null) {
+            this.user = response.data;
+          } else {
+            this.user = null;
+          }
         });
+      });
+      this.$eventHub.$on('logged-out', () => {
+        this.user = null;
       });
     },
   };
