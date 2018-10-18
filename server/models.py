@@ -1,36 +1,36 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
 db = SQLAlchemy()
-
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     username = db.Column(db.String(24), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
+    password = db.Column(db.String(128), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    pastes = db.relationship('Paste', backref='account', order_by='paste.id', cascade="all, delete-orphan", lazy=True)
-    private = db.Column(db.Boolean, nullable=True)
-    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True)
 
     @classmethod
-    def authenticate(cls, **kwargs):
-        username = kwargs.get('username')
-        email = kwargs.get('email')
-        password = kwargs.get('password')
+    def find_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
 
-        if not username or not email or not password:
-            return None
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
-        user = cls.query.filter_by(username=username).first()
-        if not user or not check_password_hash(user.password, password):
-            return None
-
-        return user
+    def save_to_db(self):
+        if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
+            db.session.add(self)
+            db.session.commit()
 
     def to_dict(self):
-        return dict(id=self.id, username=self.username)
+        return dict(
+            id=self.id,
+            username=self.username,
+            email=self.email,
+            password=self.password,
+            pastes=self.pastes
+        )
 
     def __repr__(self):
         return '<Account %r>' % self.username
@@ -41,7 +41,6 @@ class Account(db.Model):
         self.password = generate_password_hash(password, method='sha256')
         self.private = private
         self.pastes = None
-        self.confirmed = False
 
 
 class Paste(db.Model):

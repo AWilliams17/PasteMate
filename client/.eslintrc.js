@@ -55,7 +55,9 @@ module.exports = {
     {
       files: ["*.vue"],
       rules: {
-        'max-len': 'off' // disables line length check
+        'max-len': 'off', // disables line length check
+        'prefer-template': 'off',
+        'object-curly-spacing': 'off',
       }
     }
   ]

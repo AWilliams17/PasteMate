@@ -1,10 +1,13 @@
 <template>
   <b-container>
     <b-container style="margin-top: 15px;">
-      <div class="alert alert-dismissible alert-danger" v-if="error_messages.error">
-        <p v-if="error_messages.username"><strong>Error: </strong>{{ error_messages.username }}</p>
-        <p v-if="error_messages.email"><strong>Error: </strong>{{ error_messages.email }}</p>
-        <p v-if="error_messages.password"><strong>Error: </strong>{{ error_messages.password }}</p>
+      <div class="alert alert-dismissible alert-danger" v-if="errors">
+        <strong v-if="misc_error">Unaccounted for error occurred: {{ misc_error }}</strong>
+        <div v-else>
+          <div v-for="(value, key) in errors" :key="key">
+            <strong>{{ key[0].toUpperCase() + key.slice(1) }}:</strong> {{ value[0] }}
+          </div>
+        </div>
       </div>
     </b-container>
     <b-card header="Sign up to PasteMate" class="text-white bg-primary mb-3 mx-auto card-padding" style="max-width: 25rem;">
@@ -13,8 +16,7 @@
             horizontal
             :label-cols="4"
             label="Username"
-            label-size="sm"
-            label-for="usernameInput" v-bind:class="{ 'label-error-color': error_messages.username }">
+            label-size="sm">
           <b-form-input id="usernameInput" size="sm" v-model="form.username" required></b-form-input>
         </b-form-group>
         <b-form-group id="emailFieldSet"
@@ -22,7 +24,6 @@
                       :label-cols="4"
                       label="Email"
                       label-size="sm"
-                      label-for="emailInput" v-bind:class="{ 'label-error-color': error_messages.email }"
                       description="If this is not a valid email address you will not be able to reset your password.">
           <b-form-input id="emailInput" type="email" size="sm" v-model="form.email" required></b-form-input>
         </b-form-group>
@@ -30,8 +31,7 @@
                       horizontal
                       :label-cols="4"
                       label="Password"
-                      label-size="sm"
-                      label-for="passwordInput" v-bind:class="{ 'label-error-color': error_messages.password }">
+                      label-size="sm">
           <b-form-input id="passwordInput" type="password" size="sm" v-model="form.password" required></b-form-input>
         </b-form-group>
         <b-button type="submit" variant="primary" size="sm" class="float-right">Sign up</b-button>
@@ -47,34 +47,37 @@
     name: 'AccountSignUp',
     data() {
       return {
-        error_messages: {
-          error: false,
-          username: '',
-          email: '',
-          password: '',
-        },
         form: {
           username: '',
           email: '',
           password: '',
         },
+        misc_error: null,
+        errors: null,
       };
     },
     methods: {
       signUp(payload) {
         const signUpPath = 'http://127.0.0.1:5000/sign_up';
         axios.post(signUpPath, payload)
-          .then(() => {
-            // On Success, go and redirect back to home
+          .then((response) => {
+            if (!response.data.success) {
+              this.errors = response.data.errors;
+            } else {
+              localStorage.setItem('access_token', response.data.access_token);
+              localStorage.setItem('refresh_token', response.data.access_token);
+              this.$eventHub.$emit('user-event');
+              this.$router.push('/');
+            }
           })
-          // eslint-disable-next-line
           .catch((error) => {
-          // On error, display an error flash
+            this.misc_error = error.message;
         });
       },
       onSubmit(evt) {
         evt.preventDefault();
-        // Create a payload using the values from the form, then call signUp()
+        const payload = this.form;
+        this.signUp(payload);
       },
     },
   };
