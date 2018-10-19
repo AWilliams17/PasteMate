@@ -47,6 +47,7 @@
       const AccessToken = localStorage.getItem('access_token');
       const RefreshToken = localStorage.getItem('refresh_token');
       const InvalidationResult = this.invalidateTokensAndClearStorage(AccessToken, RefreshToken);
+      this.$eventHub.$emit('logged-out');
       if (InvalidationResult) {
         this.message = 'You have been logged out.';
       } else {

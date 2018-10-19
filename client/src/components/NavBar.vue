@@ -36,8 +36,8 @@
     created() {
       this.$eventHub.$on('logged-in', () => {
         this.$parent.getCurrentUser().then((response) => {
-          if (response.data !== null) {
-            this.user = response.data;
+          if (response.data.current_user !== null) {
+            this.user = response.data.current_user;
           } else {
             this.user = null;
           }
