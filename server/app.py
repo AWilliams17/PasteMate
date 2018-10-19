@@ -1,3 +1,10 @@
+"""
+ToDo: Lots of refactoring here.
+ToDo: Rate limit SignUp, SignIn, Paste Submit
+ToDo: Test Refresh Tokens
+"""
+
+
 import wtforms_json
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
