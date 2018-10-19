@@ -11,10 +11,11 @@ This is also my first time using Vue.JS, and making a Single Page Application.
 * Paste Submission, Editing, Deletion, Collaboration (although collaboration will be a while), 
   Expiration, Protection (passwords, encryption)
 
-# What else is used here
--Bootstrap 4 with the Slate theme from Bootswatch (https://bootswatch.com/slate/)
--SQLAlchemy
--Vue.JS
+# What is used here
+-Bootstrap 4 with the Slate theme from Bootswatch (https://bootswatch.com/slate/)  
+-SQLAlchemy  
+-Vue.JS  
+-Flask w/ Flask-Restful + Flask-SqlAlchemy + Flask-Wtforms + Wtforms-Json
 
 # Client Setup
 ``` bash
