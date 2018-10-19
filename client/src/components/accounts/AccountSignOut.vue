@@ -21,37 +21,48 @@
     methods: {
       invalidateAccessToken(AccessToken) {
         if (AccessToken !== null) {
-          axios.get('http://127.0.0.1:5000/invalidate_access', {headers: { Authorization: 'Bearer ' + AccessToken}});
-          return true;
+          return axios.get('http://127.0.0.1:5000/invalidate_access', {headers: { Authorization: 'Bearer ' + AccessToken}});
         }
-        return false;
+        return null;
       },
       invalidateRefreshToken(RefreshToken) {
         if (RefreshToken !== null) {
-          axios.get('http://127.0.0.1:5000/invalidate_refresh', {headers: { Authorization: 'Bearer ' + RefreshToken}});
-          return true;
+          return axios.get('http://127.0.0.1:5000/invalidate_refresh', {headers: { Authorization: 'Bearer ' + RefreshToken}});
         }
-        return false;
+        return null;
       },
-      invalidateTokensAndClearStorage(AccessToken, RefreshToken) {
+      invalidateTokens(AccessToken, RefreshToken) {
         const accessRevoked = this.invalidateAccessToken(AccessToken);
         const refreshRevoked = this.invalidateRefreshToken(RefreshToken);
-        if (accessRevoked || refreshRevoked) {
-          localStorage.clear();
-          return true;
+        if (accessRevoked !== null || refreshRevoked !== null) {
+          const tokenPromises = [];
+          if (accessRevoked !== null) {
+            tokenPromises.append(accessRevoked);
+          }
+          if (refreshRevoked !== null) {
+            tokenPromises.append(refreshRevoked);
+          }
+          return tokenPromises;
         }
-        return false;
+        return null;
       },
     },
     created() {
       const AccessToken = localStorage.getItem('access_token');
       const RefreshToken = localStorage.getItem('refresh_token');
-      const InvalidationResult = this.invalidateTokensAndClearStorage(AccessToken, RefreshToken);
-      this.$eventHub.$emit('logged-out');
-      if (InvalidationResult) {
-        this.message = 'You have been logged out.';
+      if (AccessToken !== null || RefreshToken !== null) {
+        const invalidateTokensPromises = this.invalidateTokens(AccessToken, RefreshToken);
+        Promise.all(invalidateTokensPromises).then((values) => {
+          if (values.includes(false)) {
+            this.message = 'Failed to sign out.';
+          } else {
+            localStorage.clear();
+            this.$eventHub.$emit('signed-out');
+            this.message = 'You have been signed out.';
+          }
+        });
       } else {
-        this.message = 'You are not logged in!';
+        this.message = 'You are not signed in!';
       }
     },
   };
