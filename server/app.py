@@ -1,6 +1,7 @@
 """
 ToDo: Rate limit SignUp, SignIn, Paste Submit
 ToDo: Test Refresh Tokens
+ToDo: Encrypt the tokens
 """
 
 
@@ -27,8 +28,8 @@ app.config['SECRET_KEY'] = "12345"  # ToDo: Bad.
 app.config['JWT_SECRET_KEY'] = '12345' # ToDo: Bad.
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(7)
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(14)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(7)  # 7 days
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(14)  # 14 days
 
 with app.app_context():
     database_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
@@ -61,7 +62,7 @@ class RegisterUser(Resource):
         data = parser.parse_args()
         form = RegistrationForm.from_json(data)
         if not form.validate():
-            return {'success': False, 'errors': form.errors}
+            return {'success': False, 'errors': form.errors}, 500
         # user = Account(**data)
         # user.save_to_db()
         access_token = create_access_token(identity=data['username'], fresh=True)
@@ -110,6 +111,7 @@ class GetCurrentUser(Resource):
         if current_user is None:
             return {'current_user': None}
         return {'current_user': current_user}
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

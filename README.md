@@ -1,7 +1,6 @@
 I have no idea when/if this will ever be finished.
 # What is this
-This is a Pastebin clone implemented using the Flask library in Python.
-The version of Python used for this project is 3.7 (first time writing in 3.7
+This is a Pastebin clone implemented using the Flask library in Python. The version of Python used for this project is 3.7 (first time writing in 3.7
 as well, woo hoo! Happy new-version!)
 
 This is also my first time using Vue.JS, and making a Single Page Application.
@@ -15,7 +14,7 @@ This is also my first time using Vue.JS, and making a Single Page Application.
 -Bootstrap 4 with the Slate theme from Bootswatch (https://bootswatch.com/slate/)  
 -SQLAlchemy  
 -Vue.JS  
--Flask w/ Flask-Restful + Flask-SqlAlchemy + Flask-Wtforms + Wtforms-Json
+-Flask w/ Flask-Restful + Flask-SqlAlchemy + Flask-Wtforms + Wtforms-Json + Flask-JWT-Extended
 
 # Client Setup
 ``` bash
