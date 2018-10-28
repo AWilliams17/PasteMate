@@ -21,13 +21,13 @@
     methods: {
       invalidateAccessToken(AccessToken) {
         if (AccessToken !== null) {
-          return axios.get('http://127.0.0.1:5000/invalidate_access', {headers: { Authorization: 'Bearer ' + AccessToken}});
+          return axios.get('http://localhost:5000/invalidate_access', {headers: { Authorization: 'Bearer ' + AccessToken}});
         }
         return null;
       },
       invalidateRefreshToken(RefreshToken) {
         if (RefreshToken !== null) {
-          return axios.get('http://127.0.0.1:5000/invalidate_refresh', {headers: { Authorization: 'Bearer ' + RefreshToken}});
+          return axios.get('http://localhost:5000/invalidate_refresh', {headers: { Authorization: 'Bearer ' + RefreshToken}});
         }
         return null;
       },

@@ -58,7 +58,7 @@
     },
     methods: {
       signUp(payload) {
-        const signUpPath = 'http://127.0.0.1:5000/sign_up';
+        const signUpPath = 'http://localhost/sign_up';
         axios.post(signUpPath, payload)
           .then((response) => {
             if (!response.data.success) {
