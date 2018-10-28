@@ -48,15 +48,16 @@
       },
     },
     created() {
-      const AccessToken = localStorage.getItem('access_token');
-      const RefreshToken = localStorage.getItem('refresh_token');
+      const AccessToken = this.$cookie.get('access_token');
+      const RefreshToken = this.$cookie.get('refresh_token');
       if (AccessToken !== null || RefreshToken !== null) {
         const invalidateTokensPromises = this.invalidateTokens(AccessToken, RefreshToken);
         Promise.all(invalidateTokensPromises).then((values) => {
           if (values.includes(false)) {
             this.message = 'Failed to sign out.';
           } else {
-            localStorage.clear();
+            this.$cookie.remove('access_token');
+            this.$cookie.remove('refresh_token');
             this.$eventHub.$emit('signed-out');
             this.message = 'You have been signed out.';
           }

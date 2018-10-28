@@ -16,7 +16,7 @@
     },
     methods: {
       getCurrentUser() {
-        const bearer = localStorage.getItem('access_token');
+        const bearer = this.$cookie.get('access_token');
         if (bearer !== null) {
           return axios.get('http://127.0.0.1:5000/current_user', {headers: { Authorization: 'Bearer ' + bearer}});
         }

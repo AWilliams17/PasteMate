@@ -64,8 +64,8 @@
             if (!response.data.success) {
               this.errors = response.data.errors;
             } else {
-              localStorage.setItem('access_token', response.data.access_token);
-              localStorage.setItem('refresh_token', response.data.refresh_token);
+              this.$cookie.set('access_token', response.data.access_token);
+              this.$cookie.set('refresh_token', response.data.refresh_token);
               this.$eventHub.$emit('logged-in');
               this.$router.push('/');
             }

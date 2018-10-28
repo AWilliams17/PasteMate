@@ -116,8 +116,8 @@ class GetCurrentUser(Resource):
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    return render_template("index.html")
+    return app.send_static_file('index.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='localhost')
