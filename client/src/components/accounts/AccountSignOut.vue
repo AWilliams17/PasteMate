@@ -18,52 +18,16 @@
         message: 'Logging out...',
       };
     },
-    methods: {
-      invalidateAccessToken(AccessToken) {
-        if (AccessToken !== null) {
-          return axios.get('http://localhost:5000/invalidate_access', {headers: { Authorization: 'Bearer ' + AccessToken}});
-        }
-        return null;
-      },
-      invalidateRefreshToken(RefreshToken) {
-        if (RefreshToken !== null) {
-          return axios.get('http://localhost:5000/invalidate_refresh', {headers: { Authorization: 'Bearer ' + RefreshToken}});
-        }
-        return null;
-      },
-      invalidateTokens(AccessToken, RefreshToken) {
-        const accessRevoked = this.invalidateAccessToken(AccessToken);
-        const refreshRevoked = this.invalidateRefreshToken(RefreshToken);
-        if (accessRevoked !== null || refreshRevoked !== null) {
-          const tokenPromises = [];
-          if (accessRevoked !== null) {
-            tokenPromises.append(accessRevoked);
-          }
-          if (refreshRevoked !== null) {
-            tokenPromises.append(refreshRevoked);
-          }
-          return tokenPromises;
-        }
-        return null;
-      },
-    },
     created() {
-      const AccessToken = this.$cookie.get('access_token');
-      const RefreshToken = this.$cookie.get('refresh_token');
-      if (AccessToken !== null || RefreshToken !== null) {
-        const invalidateTokensPromises = this.invalidateTokens(AccessToken, RefreshToken);
-        Promise.all(invalidateTokensPromises).then((values) => {
-          if (values.includes(false)) {
-            this.message = 'Failed to sign out.';
-          } else {
-            this.$cookie.remove('access_token');
-            this.$cookie.remove('refresh_token');
-            this.$eventHub.$emit('signed-out');
-            this.message = 'You have been signed out.';
-          }
+      if (this.$parent.logged_in) {
+        const revokeAccessPath = this.$parent.getApiUrlFor('/auth/revoke/');
+        axios.get(revokeAccessPath, {withCredentials: true}).then((response) => {
+          this.logged_in = response;
+          this.$eventHub.$emit('status-update');
+          this.message = 'You have been logged out.';
         });
       } else {
-        this.message = 'You are not signed in!';
+        this.message = 'You are not logged in!';
       }
     },
   };

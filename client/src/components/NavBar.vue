@@ -4,7 +4,7 @@
       <b-navbar-brand><b-link to="/">PasteMate</b-link></b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="Account" x-placement="bottom-start">
-          <template v-if="user"> <!-- ToDo: If user is signed in -->
+          <template v-if="this.$parent.logged_in">
             <b-dropdown-item><b-link to="/sign_out">Sign out</b-link></b-dropdown-item>
             <b-dropdown-item><b-link to="/account_settings">Account Settings</b-link></b-dropdown-item>
           </template>
@@ -14,7 +14,7 @@
             <b-dropdown-item><b-link to="/reset_password">Reset Password</b-link></b-dropdown-item>
           </template>
         </b-nav-item-dropdown>
-        <template v-if="user"> <!-- ToDo: If user is signed in -->
+        <template v-if="this.$parent.logged_in">
           <b-nav-item-dropdown text="Paste" x-placement="bottom-start">
             <b-dropdown-item><b-link to="/submit">Submit Paste</b-link></b-dropdown-item>
             <b-dropdown-item><b-link to="/pastes">My Pastes</b-link></b-dropdown-item>
@@ -28,25 +28,6 @@
 <script>
   export default {
     name: 'nav-bar',
-    data() {
-      return {
-        user: null,
-      };
-    },
-    created() {
-      this.$eventHub.$on('logged-in', () => {
-        this.$parent.getCurrentUser().then((response) => {
-          if (response.data.current_user !== null) {
-            this.user = response.data.current_user;
-          } else {
-            this.user = null;
-          }
-        });
-      });
-      this.$eventHub.$on('logged-out', () => {
-        this.user = null;
-      });
-    },
   };
 </script>
 

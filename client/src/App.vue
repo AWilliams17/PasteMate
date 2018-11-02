@@ -11,17 +11,48 @@
 
   export default {
     name: 'App',
+    data() {
+      return {
+        logged_in: false,
+      };
+    },
     components: {
       NavBar,
     },
     methods: {
-      getCurrentUser() {
-        const bearer = this.$cookie.get('access_token');
-        if (bearer !== null) {
-          return axios.get('http://localhost:5000/current_user', {headers: { Authorization: 'Bearer ' + bearer}});
+      getApiUrlFor(TargetRoute) {
+        const apiLink = this.$parent.$apiRoot;
+        const apiLinkIsInvalid = apiLink.endsWith('/');
+        const targetRoute = TargetRoute;
+        const targetRouteIsInvalid = !targetRoute.startsWith('/');
+
+        if (apiLinkIsInvalid) {
+          throw new Error('API Url must not end with a forward slash.');
+        } else if (targetRouteIsInvalid) {
+          throw new Error('Target route must start with a forward slash.');
+        } else {
+          return apiLink.concat(targetRoute);
         }
-        return null;
       },
+      getStatus() {
+        const statusPath = this.getApiUrlFor('/auth/status/');
+        return axios.get(statusPath, {withCredentials: true});
+      },
+    },
+    created() {
+      this.$eventHub.$emit('status-update'); // When first created, get a status update.
+      this.$eventHub.$on('status-update', () => { // This way I don't have to call getStatus twice.
+        this.getStatus().then((response) => {
+          if (response.status === 401) {
+            // Now, try to re-authenticate the user with a refresh function
+            // If that fails, ask them to re-authenticate.
+          } else if (response.status === 200) {
+            this.logged_in = response.logged_in;
+          } else {
+            // Tell them it failed to get their status
+          }
+        });
+      });
     },
   };
 </script>

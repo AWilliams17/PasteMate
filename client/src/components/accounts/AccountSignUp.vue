@@ -58,15 +58,13 @@
     },
     methods: {
       signUp(payload) {
-        const signUpPath = 'http://localhost/sign_up';
-        axios.post(signUpPath, payload)
+        const signUpPath = this.$parent.getApiUrlFor('/api/sign_up/');
+        axios.post(signUpPath, payload, {withCredentials: true})
           .then((response) => {
             if (!response.data.success) {
               this.errors = response.data.errors;
             } else {
-              this.$cookie.set('access_token', response.data.access_token);
-              this.$cookie.set('refresh_token', response.data.refresh_token);
-              this.$eventHub.$emit('logged-in');
+              this.$eventHub.$emit('status-update');
               this.$router.push('/');
             }
           })
