@@ -83,17 +83,12 @@ class RegisterUser(Resource):
 class RevokeAccess(Resource):
     @jwt_required
     def get(self):
-        current_user = get_jwt_identity()
-        if current_user is not None:
-            return {'token_revoked': False}, 200
-
         @after_this_request
         def revoke_access(response):
             jti = get_raw_jwt()
             revoked_token = RevokedToken(jti=jti['jti'])
             revoked_token.save_to_db()
             unset_jwt_cookies(response)
-            print("revoked")
             return response, 200
 
         return {'token_revoked': True}, 200
@@ -101,7 +96,7 @@ class RevokeAccess(Resource):
 
 @api.resource('/auth/refresh/')
 class RefreshUser(Resource):
-    @jwt_required
+    @jwt_refresh_token_required
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)
@@ -114,11 +109,7 @@ class RefreshUser(Resource):
 class GetLoginStatus(Resource):
     @jwt_required
     def get(self):
-        current_user = get_jwt_identity()
-        print(current_user)
-        if current_user is None:
-            return {'logged_in': False}
-        return {'logged_in': True}
+        return {'logged_in': True}  # If they aren't authenticated, @jwt_required automatically returned 401
 
 
 @app.route('/', defaults={'path': ''})
