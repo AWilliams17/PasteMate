@@ -36,13 +36,7 @@
       },
       getStatus() {
         const statusPath = this.getApiUrlFor('/auth/status/');
-        return axios.get(statusPath, {withCredentials: true});
-      },
-    },
-    created() {
-      this.$eventHub.$emit('status-update'); // When first created, get a status update.
-      this.$eventHub.$on('status-update', () => { // This way I don't have to call getStatus twice.
-        this.getStatus().then((response) => {
+        axios.get(statusPath, {withCredentials: true}).then((response) => {
           if (response.status === 401) {
             // Now, try to re-authenticate the user with a refresh function
             // If that fails, ask them to re-authenticate.
@@ -52,6 +46,12 @@
             // Tell them it failed to get their status
           }
         });
+      },
+    },
+    created() {
+      this.getStatus();
+      this.$eventHub.$on('status-update', () => { // This way I don't have to call getStatus twice.
+        this.getStatus();
       });
     },
   };

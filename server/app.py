@@ -1,7 +1,5 @@
 """
 ToDo: Rate limit SignUp, SignIn, Paste Submit
-ToDo: Test Refresh Tokens
-ToDo: Encrypt the tokens
 """
 
 
@@ -30,10 +28,11 @@ app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 app.config['JWT_SECRET_KEY'] = '12345' # ToDo: Bad.
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(7)  # 7 days
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(14)  # 14 days
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)  # 7 days
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)  # 14 days
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_TOKEN_LOCATION'] = 'cookies'
+app.config['JWT_COOKIE_SECURE'] = True
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/auth/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/auth/refresh/'
 
@@ -89,8 +88,9 @@ class RevokeAccess(Resource):
             revoked_token = RevokedToken(jti=jti['jti'])
             revoked_token.save_to_db()
             unset_jwt_cookies(response)
+            print("Sent unset response")
             return response, 200
-
+        print("Sent normal response")
         return {'token_revoked': True}, 200
 
 
