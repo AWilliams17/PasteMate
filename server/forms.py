@@ -2,6 +2,7 @@ from wtforms import Form, validators
 from wtforms.fields import StringField
 from models import Account, Paste
 
+
 class RegistrationForm(Form):
     username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=25)])
     email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
