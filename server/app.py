@@ -5,10 +5,9 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 import wtforms_json
 from flask import Flask, after_this_request, jsonify
-from flask_jwt_extended import (create_access_token,
-    create_refresh_token, jwt_required, jwt_refresh_token_required,
-    get_jwt_identity, get_raw_jwt, JWTManager, set_access_cookies,
-    set_refresh_cookies, unset_jwt_cookies)
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
+                                jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
+                                JWTManager, set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from flask_restful import Resource, Api, reqparse
 from forms import RegistrationForm
 from models import RevokedToken
