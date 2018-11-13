@@ -19,8 +19,7 @@ from datetime import timedelta
 
 app = Flask(__name__, template_folder="../client/")
 app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    "sqlite:///" + dirname(realpath(__file__)) + "\PM.db".replace('"\"', '\\')  # ugh
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///PM.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECURITY_PASSWORD_SALT'] = "12345"  # ToDo: Bad.
 app.config['SECRET_KEY'] = "12345"  # ToDo: Bad.
@@ -37,9 +36,8 @@ app.config['JWT_ACCESS_COOKIE_PATH'] = '/auth/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/auth/refresh/'
 
 with app.app_context():
-    database_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
     db.init_app(app)
-    if not exists(database_path):
+    if not exists(app.config['SQLALCHEMY_DATABASE_URI']):
         db.create_all()
     wtforms_json.init()
 
@@ -50,6 +48,7 @@ CORS(app)  # ToDo: Secure this. This allows CORS requests on all routes from any
 jwt_manager = JWTManager(app)
 parser = reqparse.RequestParser()
 api = Api(app)
+
 
 @jwt_manager.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
@@ -71,12 +70,14 @@ class RegisterUser(Resource):
         # user.save_to_db()
         access_token = create_access_token(identity=data['username'], fresh=True)
         refresh_token = create_refresh_token(identity=data['username'])
+
         @after_this_request
         def set_jwt_cookies(response):
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
             return response
         return {'success': True, 'errors': None}, 200
+
 
 @api.resource('/auth/revoke/')
 class RevokeAccess(Resource):
