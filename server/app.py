@@ -4,16 +4,14 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 
 import wtforms_json
-from flask import Flask, after_this_request, jsonify
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
-                                jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
-                                JWTManager, set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from flask_restful import Resource, Api, reqparse
-from forms import RegistrationForm, LoginForm
-from models import RevokedToken, Account
+from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, UserAuthStatus
+from flask import Flask, jsonify
+from flask_jwt_extended import JWTManager
+from flask_restful import Api
+from models import RevokedToken
 from flask_cors import CORS
 from models import db
-from os.path import dirname, realpath, exists
+from os.path import exists
 from datetime import timedelta
 
 app = Flask(__name__, template_folder="../client/")
@@ -45,7 +43,6 @@ app.debug = True
 CORS(app)  # ToDo: Secure this. This allows CORS requests on all routes from any domain.
 
 jwt_manager = JWTManager(app)
-parser = reqparse.RequestParser()
 api = Api(app)
 
 
@@ -55,91 +52,29 @@ def check_if_token_in_blacklist(decrypted_token):
     return RevokedToken.is_jti_blacklisted(jti)
 
 
-def create_tokens(user):
-    access_token = create_access_token(identity=user, fresh=True)
-    refresh_token = create_refresh_token(identity=user)
-    return [access_token, refresh_token]
+@jwt_manager.expired_token_loader
+def expired_token_callback():
+    return jsonify({'error': 'token_expired'}), 401
 
 
-def set_tokens(tokens, response):
-    set_access_cookies(response, tokens[0])
-    set_refresh_cookies(response, tokens[1])
+@jwt_manager.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({'error': 'invalid_token'}), 401
 
 
-@api.resource('/api/sign_up/')
-class RegisterUser(Resource):
-    def post(self):
-        parser.add_argument('username')
-        parser.add_argument('password')
-        parser.add_argument('email')
-        data = parser.parse_args()
-        form = RegistrationForm.from_json(data)
-        if not form.validate():
-            return {'success': False, 'errors': form.errors}, 500
-        user = Account(**data)
-        user.save_to_db()
-
-        @after_this_request
-        def set_jwt_cookies(response):
-            user_tokens = create_tokens(user)
-            set_tokens(user_tokens, response)
-            return response
-
-        return {'success': True, 'errors': None}, 200
+@jwt_manager.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({'error': 'authorization_required'}), 401
 
 
-@api.resource('/api/sign_in')
-class LoginUser(Resource):
-    def post(self):
-        parser.add_argument('username')
-        parser.add_argument('password')
-        data = parser.parse_args()
-        form = LoginForm.from_json(data)
-        if not form.validate():
-            return {'success': False, 'errors': form.errors}, 500
-        user = Account.find_by_email(data.get('email'))
-
-        @after_this_request
-        def set_jwt_cookies(response):
-            user_tokens = create_tokens(user)
-            set_tokens(user_tokens, response)
-            return response
-
-        return {'success': True, 'errors': None}, 200
+@jwt_manager.needs_fresh_token_loader
+def token_not_fresh_callback():
+    return jsonify({'error': 'fresh_token_required'}), 401
 
 
-@api.resource('/auth/revoke/')
-class RevokeAccess(Resource):
-    @jwt_required
-    def get(self):
-        @after_this_request
-        def revoke_access(response):
-            jti = get_raw_jwt()
-            revoked_token = RevokedToken(jti=jti['jti'])
-            revoked_token.save_to_db()
-            unset_jwt_cookies(response)
-            print("Sent unset response")
-            return response, 200
-        print("Sent normal response")
-        return {'token_revoked': True}, 200
-
-
-@api.resource('/auth/refresh/')
-class RefreshUser(Resource):
-    @jwt_refresh_token_required
-    def post(self):
-        current_user = get_jwt_identity()
-        access_token = create_access_token(identity=current_user)
-        response = {'refreshed': True}
-        set_access_cookies(response, access_token)
-        return response
-
-
-@api.resource('/auth/status/')
-class GetLoginStatus(Resource):
-    @jwt_required
-    def get(self):
-        return {'logged_in': True}  # If they aren't authenticated, @jwt_required automatically returned 401
+@jwt_manager.revoked_token_loader
+def revoked_token_callback():
+    return jsonify({'error': 'token_revoked'}), 401
 
 
 @app.route('/', defaults={'path': ''})
@@ -147,6 +82,12 @@ class GetLoginStatus(Resource):
 def catch_all(path):
     return app.send_static_file('index.html')
 
+
+api.add_resource(RegisterUser, '/api/user/register')
+api.add_resource(LoginUser, '/api/user/login')
+api.add_resource(RefreshUser, '/api/auth/refresh')
+api.add_resource(UserAuthStatus, '/api/auth/status')
+api.add_resource(RevokeAccess, '/api/auth/revoke')
 
 if __name__ == '__main__':
     app.run(host='localhost')
