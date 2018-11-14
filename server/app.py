@@ -9,8 +9,8 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 JWTManager, set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from flask_restful import Resource, Api, reqparse
-from forms import RegistrationForm
-from models import RevokedToken
+from forms import RegistrationForm, LoginForm
+from models import RevokedToken, Account
 from flask_cors import CORS
 from models import db
 from os.path import dirname, realpath, exists
@@ -55,6 +55,17 @@ def check_if_token_in_blacklist(decrypted_token):
     return RevokedToken.is_jti_blacklisted(jti)
 
 
+def create_tokens(user):
+    access_token = create_access_token(identity=user, fresh=True)
+    refresh_token = create_refresh_token(identity=user)
+    return [access_token, refresh_token]
+
+
+def set_tokens(tokens, response):
+    set_access_cookies(response, tokens[0])
+    set_refresh_cookies(response, tokens[1])
+
+
 @api.resource('/api/sign_up/')
 class RegisterUser(Resource):
     def post(self):
@@ -65,16 +76,35 @@ class RegisterUser(Resource):
         form = RegistrationForm.from_json(data)
         if not form.validate():
             return {'success': False, 'errors': form.errors}, 500
-        # user = Account(**data)
-        # user.save_to_db()
-        access_token = create_access_token(identity=data['username'], fresh=True)
-        refresh_token = create_refresh_token(identity=data['username'])
+        user = Account(**data)
+        user.save_to_db()
 
         @after_this_request
         def set_jwt_cookies(response):
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, refresh_token)
+            user_tokens = create_tokens(user)
+            set_tokens(user_tokens, response)
             return response
+
+        return {'success': True, 'errors': None}, 200
+
+
+@api.resource('/api/sign_in')
+class LoginUser(Resource):
+    def post(self):
+        parser.add_argument('username')
+        parser.add_argument('password')
+        data = parser.parse_args()
+        form = LoginForm.from_json(data)
+        if not form.validate():
+            return {'success': False, 'errors': form.errors}, 500
+        user = Account.find_by_email(data.get('email'))
+
+        @after_this_request
+        def set_jwt_cookies(response):
+            user_tokens = create_tokens(user)
+            set_tokens(user_tokens, response)
+            return response
+
         return {'success': True, 'errors': None}, 200
 
 

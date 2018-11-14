@@ -19,6 +19,9 @@ class Account(db.Model):
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
+    def password_correct(self, password):
+        return check_password_hash(self.password, password)
+
     def save_to_db(self):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
             db.session.add(self)

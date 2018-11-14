@@ -13,15 +13,32 @@ class RegistrationForm(Form):
         if not rv:
             return False
 
-        username_in_use = Account.query.filter_by(username=self.username.data).first() is not None
-        email_in_use = Account.query.filter_by(email=self.email.data).first() is not None
-
-        if username_in_use:
-            self.username.errors.append("Username is already in use.")
-            return False
+        email_in_use = Account.find_by_email(self.email.data) is not None
 
         if email_in_use:
             self.email.errors.append("Email is already in use.")
+            return False
+
+        return True
+
+
+class LoginForm(Form):
+    email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
+    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=25)])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = Account.find_by_email(self.email.data)
+
+        if not user:
+            self.email.errors.append("Email address is not registered.")
+            return False
+
+        if not user.password_correct(self.password.data):
+            self.password.errors.append("Password is incorrect.")
             return False
 
         return True
