@@ -6,18 +6,18 @@
 </template>
 
 <script>
-  import NavBar from '@/components/NavBar';
-  import axios from 'axios';
+  import NavBar from '@/components/NavBar'
+  import axios from 'axios'
 
   export default {
     name: 'App',
     data() {
       return {
-        logged_in: false,
-      };
+        logged_in: false
+      }
     },
     components: {
-      NavBar,
+      NavBar
     },
     methods: {
       getApiUrlFor(TargetRoute) {
@@ -27,38 +27,32 @@
         const targetRouteIsInvalid = !targetRoute.startsWith('/');
 
         if (apiLinkIsInvalid) {
-          throw new Error('API Url must not end with a forward slash.');
+          throw new Error('API Url must not end with a forward slash.')
         } else if (targetRouteIsInvalid) {
-          throw new Error('Target route must start with a forward slash.');
+          throw new Error('Target route must start with a forward slash.')
         } else {
-          return apiLink.concat(targetRoute);
+          return apiLink.concat(targetRoute)
         }
       },
-      getStatus() {
+      getAuthStatus() {
         const statusPath = this.getApiUrlFor('/auth/status/');
         axios.get(statusPath, {withCredentials: true}).then((response) => {
           if (response.status === 401) {
             // Now, try to re-authenticate the user with a refresh function
             // If that fails, ask them to re-authenticate.
           } else if (response.status === 200) {
-            this.logged_in = response.logged_in;
+            // Success
           } else {
             // Tell them it failed to get their status
           }
-        });
-      },
+        })
+      }
     },
     created() {
-      this.getStatus();
-      this.$eventHub.$on('status-update', () => { // This way I don't have to call getStatus twice.
-        this.getStatus();
-      });
-    },
-  };
+      this.getAuthStatus();
+      this.$eventHub.$on('status-update', () => {
+        this.getAuthStatus()
+      })
+    }
+  }
 </script>
-
-<style lang="scss">
-  @import './styles/_variables.scss';
-  @import '../node_modules/bootstrap/scss/bootstrap.scss';
-  @import './styles/_bootswatch.scss';
-</style>

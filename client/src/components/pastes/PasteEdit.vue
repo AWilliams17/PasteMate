@@ -4,6 +4,6 @@
 
 <script>
   export default {
-    name: 'PasteEdit',
+    name: 'PasteEdit'
   };
 </script>
