@@ -14,8 +14,8 @@ parser.add_argument('email')
 
 
 def create_tokens(user):
-    access_token = create_access_token(identity=user.id, fresh=True)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=user.username, fresh=True)
+    refresh_token = create_refresh_token(identity=user.username)
     return [access_token, refresh_token]
 
 
@@ -85,4 +85,6 @@ class RefreshUser(Resource):
 class UserAuthStatus(Resource):
     @jwt_required
     def get(self):
-        return {'authenticated': True}  # Don't need anything else since the loader will handle the rest
+        identity = get_jwt_identity()
+        return {'authenticated': True, 'current_user': identity}
+        # Nothing else needed since the loader should do the rest.

@@ -19,6 +19,10 @@ class Account(db.Model):
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
+    @classmethod
+    def find_by_id(cls, user_id):
+        return cls.query.filter_by(id=user_id).first()
+
     def password_correct(self, password):
         return check_password_hash(self.password, password)
 
