@@ -56,3 +56,9 @@
     }
   }
 </script>
+
+<style>
+  @import '../static/css/style.red.css';
+  @import '../static/css/font.css';
+  @import '../static/css/custom.css';
+</style>
