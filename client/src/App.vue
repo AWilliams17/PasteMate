@@ -1,12 +1,20 @@
 <template>
-  <div id="app">
-    <nav-bar/>
-    <router-view/>
+  <div id="app" class="wrapper">
+    <nav-side class="sidebar" data="dark"/>
+    <div class="main-panel" data="blue">
+      <nav-header/>
+      <div class="content">
+        <router-view/>
+      </div>
+      <site-footer class="footer"/>
+    </div>
   </div>
 </template>
 
 <script>
-  import NavBar from '@/components/NavBar'
+  import NavHeader from '@/components/navbar/Header'
+  import NavSide from '@/components/navbar/Side'
+  import SiteFooter from '@/components/Footer';
   import axios from 'axios'
 
   export default {
@@ -17,7 +25,9 @@
       }
     },
     components: {
-      NavBar
+      NavHeader,
+      NavSide,
+      SiteFooter
     },
     methods: {
       getApiUrlFor(TargetRoute) {
@@ -57,8 +67,7 @@
   }
 </script>
 
-<style>
-  @import '../static/css/style.red.css';
-  @import '../static/css/font.css';
-  @import '../static/css/custom.css';
+<style lang="scss">
+  @import "./assets/sass/black-dashboard.scss";
+  @import "./assets/sass/overrides.scss";
 </style>

@@ -1,0 +1,12 @@
+@import "black-dashboard/custom/variables";
+@import "black-dashboard/bootstrap/variables";
+@import "black-dashboard/custom/_sidebar-and-main-panel.scss";
+
+
+.sidebar,
+.off-canvas-sidebar {
+  &[data="dark"]{
+    @include linear-gradient($dark, $black);
+  }
+}
+
