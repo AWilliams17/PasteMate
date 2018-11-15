@@ -21,7 +21,8 @@
     name: 'App',
     data() {
       return {
-        logged_in: false
+        logged_in: false,
+        username: null
       }
     },
     components: {
@@ -70,4 +71,5 @@
 <style lang="scss">
   @import "./assets/sass/black-dashboard.scss";
   @import "./assets/sass/overrides.scss";
+  @import "./assets/css/nucleo_icons.css";
 </style>
