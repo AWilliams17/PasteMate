@@ -6,18 +6,20 @@
           Main Menu
         </a>
       </div>
-      <b-nav-item>
+      <b-link to="/paste/submit" class="nav-link" router-link="li">
         <i class="nc-icon nc-pencil"></i>
-        <b-link to="/paste/submit">New Paste</b-link>
-      </b-nav-item>
-      <b-nav-item>
+        <p>Submit Paste</p>
+      </b-link>
+      <b-link to="/paste/list" class="nav-link" router-link="li">
         <i class="nc-icon nc-notes"></i>
-        <b-link to="/paste/list">My Pastes</b-link>
-      </b-nav-item>
-      <b-nav-item>
+        <p>My Pastes</p>
+      </b-link>
+      <!--
+      <b-link to="/account/manage" class="nav-link" router-link="li">
         <i class="nc-icon nc-settings-gear-63"></i>
-        <b-link to="/account/manage">Account Settings</b-link>
-      </b-nav-item>
+        <p>Manage Account</p>
+      </b-link>
+      -->
     </b-nav>
   </div>
 </template>

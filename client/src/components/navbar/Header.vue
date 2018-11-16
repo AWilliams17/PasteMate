@@ -9,7 +9,7 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <b-navbar-brand href="#">PasteMate</b-navbar-brand>
+        <b-link to="/" class="navbar-brand">PasteMate</b-link>
       </div>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right id="dropdown-menu">
