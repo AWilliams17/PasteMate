@@ -11,7 +11,8 @@ This is also my first time using Vue.JS, and making a Single Page Application.
   Expiration, Protection (passwords, encryption)
 
 # What is used here
--Bootstrap 4 with the Slate theme from Bootswatch (https://bootswatch.com/slate/)  
+-Bootstrap 4 using Creative Tim's BlackDashboard (https://www.creative-tim.com/product/black-dashboard)  
+-Nucleo Icon Pack  
 -SQLAlchemy  
 -Vue.JS  
 -Flask w/ Flask-Restful + Flask-SqlAlchemy + Flask-Wtforms + Wtforms-Json + Flask-JWT-Extended
@@ -30,3 +31,6 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ``` 
+
+# Preview
+![alt text](https://i.imgur.com/0bDqDTi.png)
