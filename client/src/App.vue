@@ -35,7 +35,7 @@
         const statusPath = this.$parent.getApiUrlFor('/api/auth/status');
         axios.get(statusPath, {withCredentials: true})
           .then((response) => {
-            console.log('Got a response');
+            console.log(response.data);
         })
           .catch((error) => {
             console.log(error.message);

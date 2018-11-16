@@ -28,9 +28,7 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)  # 7 days
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)  # 14 days
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_TOKEN_LOCATION'] = 'cookies'
-app.config['JWT_COOKIE_SECURE'] = True
-app.config['JWT_ACCESS_COOKIE_PATH'] = '/auth/'
-app.config['JWT_REFRESH_COOKIE_PATH'] = '/auth/refresh/'
+app.config['JWT_COOKIE_SECURE'] = False  # TODO: This needs to be set to True after enabling HTTPS
 
 with app.app_context():
     db.init_app(app)
@@ -40,7 +38,7 @@ with app.app_context():
 
 app.debug = True
 
-CORS(app)  # ToDo: Secure this. This allows CORS requests on all routes from any domain.
+CORS(app)
 
 jwt_manager = JWTManager(app)
 api = Api(app)

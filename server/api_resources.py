@@ -30,6 +30,7 @@ class RegisterUser(Resource):
         form = RegistrationForm.from_json(data)
         if not form.validate():
             return {'success': False, 'errors': form.errors}, 400
+        print(data)
         user = Account(**data)
         user.save_to_db()
 

@@ -9,7 +9,7 @@ class Account(db.Model):
     username = db.Column(db.String(24), unique=True, nullable=False)
     password = db.Column(db.String(128), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True)
+    pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True, uselist=False)
 
     @classmethod
     def find_by_username(cls, username):
@@ -43,11 +43,10 @@ class Account(db.Model):
     def __repr__(self):
         return '<Account %r>' % self.username
 
-    def __init__(self, username, email, password, private):
+    def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
-        self.private = private
         self.pastes = None
 
 
