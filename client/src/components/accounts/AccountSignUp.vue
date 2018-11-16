@@ -1,15 +1,5 @@
 <template>
   <b-row>
-    <b-container>
-      <div class="alert alert-dismissible alert-dark" v-if="errors">
-        <strong v-if="misc_error">Unaccounted for error occurred: {{ misc_error }}</strong>
-        <div v-else>
-          <div v-for="(value, key) in errors" :key="key">
-            <strong>{{ key[0].toUpperCase() + key.slice(1) }}:</strong> {{ value[0] }}
-          </div>
-        </div>
-      </div>
-    </b-container>
     <b-col cols="12">
       <b-card header="Sign up to PasteMate" class="mb-3 mx-auto" style="max-width: 25rem;">
         <b-form @submit="onSubmit">
@@ -53,9 +43,7 @@
           username: '',
           email: '',
           password: ''
-        },
-        misc_error: null,
-        errors: null
+        }
       };
     },
     methods: {
@@ -64,7 +52,7 @@
         axios.post(signUpPath, payload, {withCredentials: true})
           .then((response) => {
             if (!response.data.success) {
-              this.errors = response.data.errors;
+              this.$notificationHub.emit('notification', response.data.errors);
             } else {
               console.log(response.data);
               console.log(response.headers);
@@ -73,7 +61,7 @@
             }
           })
           .catch((error) => {
-            this.misc_error = error.message;
+            this.$notificationHub.emit('notification', error.message);
           });
       },
       onSubmit(evt) {

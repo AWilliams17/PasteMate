@@ -1,9 +1,10 @@
 <template>
   <div id="app" class="wrapper">
     <nav-side class="sidebar" data="dark"/>
-    <div class="main-panel" data="blue">
+    <div class="main-panel">
       <nav-header/>
       <div class="content">
+        <notification-container/>
         <router-view/>
       </div>
       <site-footer class="footer"/>
@@ -15,6 +16,7 @@
   import NavHeader from '@/components/navbar/Header'
   import NavSide from '@/components/navbar/Side'
   import SiteFooter from '@/components/Footer';
+  import NotificationContainer from '@/components/NotificationContainer';
   import axios from 'axios'
 
   export default {
@@ -26,6 +28,7 @@
       }
     },
     components: {
+      NotificationContainer,
       NavHeader,
       NavSide,
       SiteFooter
@@ -46,7 +49,7 @@
       this.getAuthStatus();
       this.$eventHub.$on('status-update', () => {
         this.getAuthStatus()
-      })
+      });
     }
   }
 </script>
