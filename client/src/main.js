@@ -17,5 +17,21 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  methods: {
+    getApiUrlFor(TargetRoute) {
+      const apiLink = this.$apiRoot;
+      const apiLinkIsInvalid = apiLink.endsWith('/');
+      const targetRoute = TargetRoute;
+      const targetRouteIsInvalid = !targetRoute.startsWith('/');
+
+      if (apiLinkIsInvalid) {
+        throw new Error('API Url must not end with a forward slash.')
+      } else if (targetRouteIsInvalid) {
+        throw new Error('Target route must start with a forward slash.')
+      } else {
+        return apiLink.concat(targetRoute)
+      }
+    }
+  }
 });

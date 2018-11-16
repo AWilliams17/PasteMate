@@ -31,31 +31,14 @@
       SiteFooter
     },
     methods: {
-      getApiUrlFor(TargetRoute) {
-        const apiLink = this.$parent.$apiRoot;
-        const apiLinkIsInvalid = apiLink.endsWith('/');
-        const targetRoute = TargetRoute;
-        const targetRouteIsInvalid = !targetRoute.startsWith('/');
-
-        if (apiLinkIsInvalid) {
-          throw new Error('API Url must not end with a forward slash.')
-        } else if (targetRouteIsInvalid) {
-          throw new Error('Target route must start with a forward slash.')
-        } else {
-          return apiLink.concat(targetRoute)
-        }
-      },
       getAuthStatus() {
-        const statusPath = this.getApiUrlFor('/auth/status/');
-        axios.get(statusPath, {withCredentials: true}).then((response) => {
-          if (response.status === 401) {
-            // Now, try to re-authenticate the user with a refresh function
-            // If that fails, ask them to re-authenticate.
-          } else if (response.status === 200) {
-            // Success
-          } else {
-            // Tell them it failed to get their status
-          }
+        const statusPath = this.$parent.getApiUrlFor('/api/auth/status');
+        axios.get(statusPath, {withCredentials: true})
+          .then((response) => {
+            console.log('Got a response');
+        })
+          .catch((error) => {
+            console.log(error.message);
         })
       }
     },

@@ -14,11 +14,11 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right id="dropdown-menu">
           <template slot="button-content">
-            <strong>Profile</strong>
+            <strong>Account</strong>
           </template>
-          <b-dropdown-item href="#">Sign In</b-dropdown-item>
-          <b-dropdown-item href="#">Sign Up</b-dropdown-item>
-          <b-dropdown-item href="#">Forgot Password</b-dropdown-item>
+          <b-link to="/account/signin" class="dropdown-item">Sign In</b-link>
+          <b-link to="/account/signup" class="dropdown-item">Sign Up</b-link>
+          <b-link to="/account/passwordreset" class="dropdown-item">Forgot Password</b-link>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-container>

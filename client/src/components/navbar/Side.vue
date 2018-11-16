@@ -8,15 +8,15 @@
       </div>
       <b-nav-item>
         <i class="nc-icon nc-pencil"></i>
-        <b-link href="/">New Paste</b-link>
+        <b-link to="/paste/submit">New Paste</b-link>
       </b-nav-item>
       <b-nav-item>
         <i class="nc-icon nc-notes"></i>
-        <b-link href="/">My Pastes</b-link>
+        <b-link to="/paste/list">My Pastes</b-link>
       </b-nav-item>
       <b-nav-item>
         <i class="nc-icon nc-settings-gear-63"></i>
-        <b-link href="/">Account Settings</b-link>
+        <b-link to="/account/manage">Account Settings</b-link>
       </b-nav-item>
     </b-nav>
   </div>

@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: 'AccountPasswordReset'
+    name: 'account-password-reset'
   };
 </script>
 

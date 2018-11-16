@@ -4,9 +4,13 @@
 @import "black-dashboard/bootstrap/_dropdown.scss";
 
 .dropdown-menu {background-color: #191d32;}
+.dropdown-item.active {background-color: #191d32; color:#9A9A9A!important;}
+.dropdown-item.active:hover {color:white!important;;}
+.dropdown-item.active:focus {color:white!important;;}
 .dropdown-item {color: white;}
 .dropdown-item:focus {color: white;}
 .dropdown-item:hover {color: white;}
+.main-panel {background-image: none; background-color: #1a1a27 !important;}
 
 .sidebar,
 .off-canvas-sidebar {

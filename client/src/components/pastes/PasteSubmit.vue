@@ -4,6 +4,6 @@
 
 <script>
   export default {
-    name: 'PasteSubmit'
+    name: 'paste-submit'
   };
 </script>

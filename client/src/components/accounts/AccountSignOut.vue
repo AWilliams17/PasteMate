@@ -6,7 +6,7 @@
   // import axios from 'axios';
 
   export default {
-    name: 'AccountSignOut',
+    name: 'account-sign-out',
     data() {
       return {
         message: ''
