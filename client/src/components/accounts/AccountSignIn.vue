@@ -26,7 +26,15 @@
 
 <script>
   export default {
-    name: 'account-sign-in'
+    name: 'account-sign-in',
+    data() {
+      return {
+        form: {
+          username: '',
+          password: ''
+        }
+      };
+    }
   };
 </script>
 

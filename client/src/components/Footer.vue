@@ -2,12 +2,9 @@
   <footer>
     <b-container fluid>
       <b-nav>
-        <b-nav-item>
-          <b-link href="https://github.com/AWilliams17/PasteMate">Github</b-link>
-        </b-nav-item>
-        <b-nav-item>
-          <b-link href="https://www.creative-tim.com/product/black-dashboard">Theme</b-link>
-        </b-nav-item>
+        <b-link href="https://github.com/AWilliams17/PasteMate" router-link="li" class="nav-item">GITHUB</b-link>
+        <b-link href="https://www.creative-tim.com/product/black-dashboard"
+                router-link="li" class="nav-item" style="margin-left: 20px">THEME</b-link>
       </b-nav>
     </b-container>
   </footer>
