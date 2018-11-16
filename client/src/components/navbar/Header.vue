@@ -43,8 +43,8 @@
       }
     },
     methods: {
-      openSideBar() {
-        const root = document.getElementsByTagName('html')[0];
+      openSideBar() { // From what I gather, directly manipulating the DOM like this is bad,
+        const root = document.getElementsByTagName('html')[0]; // But it's unavoidable because of the theme needing this
         this.sideOpen = !this.sideOpen;
         if (this.sideOpen) {
           root.setAttribute('class', 'nav-open');
