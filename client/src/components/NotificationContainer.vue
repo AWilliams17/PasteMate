@@ -6,7 +6,7 @@
       </div>
     </b-alert>
     <b-alert show dismissible variant="dark" v-if="sign_out_notice" @dismissed="clearSignOutNotice()">
-      <strong>You have been signed out due to inactivity.</strong>
+      <strong>{{sign_out_reason}}</strong>
       <b-link @click="openSignInPage()" style="font-weight: bold;">
         Press here to open the sign in page (in a new tab).
       </b-link>
@@ -20,15 +20,17 @@
     data() {
       return {
         notifications: [],
-        sign_out_notice: false
+        sign_out_notice: false,
+        sign_out_reason: ''
       };
     },
     created() {
       this.$notificationHub.$on('notification', (notification) => {
         this.notifications.push(notification);
       });
-      this.$notificationHub.$on('signout_notice', () => {
+      this.$notificationHub.$on('signout_notice', (reason) => {
         this.sign_out_notice = true;
+        this.sign_out_reason = reason;
       });
     },
     methods: {
@@ -37,6 +39,7 @@
       },
       clearSignOutNotice() {
         this.sign_out_notice = false;
+        this.sign_out_reason = '';
       },
       openSignInPage() {
         const route = this.$router.resolve({path: '/account/signin'});
