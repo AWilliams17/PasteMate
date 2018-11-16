@@ -4,10 +4,12 @@ import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Vue from 'vue';
+import VueCookies from 'vue-cookies';
 import App from './App';
 import router from './router';
 
 Vue.use(BootstrapVue);
+Vue.use(VueCookies);
 Vue.config.productionTip = false;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 Vue.prototype.$notificationHub = new Vue(); // Global error bus

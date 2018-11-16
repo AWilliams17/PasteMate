@@ -5,6 +5,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from forms import RegistrationForm, LoginForm
 from models import Account, Paste, RevokedToken
+from datetime import timedelta
 
 
 parser = reqparse.RequestParser()
@@ -14,8 +15,10 @@ parser.add_argument('email')
 
 
 def create_tokens(user):
-    access_token = create_access_token(identity=user.username, fresh=True)
-    refresh_token = create_refresh_token(identity=user.username)
+    access_expiration = timedelta(days=7)
+    refresh_expiration = timedelta(days=14)
+    access_token = create_access_token(identity=user.username, fresh=True, expires_delta=access_expiration)
+    refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_expiration)
     return [access_token, refresh_token]
 
 
@@ -87,5 +90,5 @@ class UserAuthStatus(Resource):
     @jwt_required
     def get(self):
         identity = get_jwt_identity()
-        return {'authenticated': True, 'current_user': identity}
+        return {'authenticated': True, 'current_username': identity}
         # Nothing else needed since the loader should do the rest.

@@ -12,7 +12,6 @@ from models import RevokedToken
 from flask_cors import CORS
 from models import db
 from os.path import exists
-from datetime import timedelta
 
 app = Flask(__name__, template_folder="../client/")
 app.config.from_object(__name__)
@@ -24,8 +23,6 @@ app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 app.config['JWT_SECRET_KEY'] = '12345' # ToDo: Bad.
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)  # 7 days
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=14)  # 14 days
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_TOKEN_LOCATION'] = 'cookies'
 app.config['JWT_COOKIE_SECURE'] = False  # TODO: This needs to be set to True after enabling HTTPS

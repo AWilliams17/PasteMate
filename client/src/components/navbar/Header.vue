@@ -13,12 +13,21 @@
       </div>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right id="dropdown-menu">
-          <template slot="button-content">
-            <strong>Account</strong>
+          <template v-if="this.$parent.authenticated">
+            <template slot="button-content">
+              <strong>{{this.$parent.username}}</strong>
+            </template>
+            <b-link to="/account/manage" class="dropdown-item">Manage Account</b-link>
+            <b-link to="/account/signout" class="dropdown-item">Sign Out</b-link>
           </template>
-          <b-link to="/account/signin" class="dropdown-item">Sign In</b-link>
-          <b-link to="/account/signup" class="dropdown-item">Sign Up</b-link>
-          <b-link to="/account/passwordreset" class="dropdown-item">Forgot Password</b-link>
+          <template v-else>
+            <template slot="button-content">
+              <strong>Account</strong>
+            </template>
+            <b-link to="/account/signin" class="dropdown-item">Sign In</b-link>
+            <b-link to="/account/signup" class="dropdown-item">Sign Up</b-link>
+            <b-link to="/account/passwordreset" class="dropdown-item">Forgot Password</b-link>
+          </template>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-container>

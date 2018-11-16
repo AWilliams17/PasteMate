@@ -23,7 +23,7 @@
         sign_out_notice: false,
         sign_out_reason: ''
       };
-    },
+    }, // TODO: This is all kind of iffy. Could make this way better.
     created() {
       this.$notificationHub.$on('notification', (notification) => {
         this.notifications.push(notification);
