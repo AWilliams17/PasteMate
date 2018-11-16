@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="wrapper">
     <nav-side class="sidebar" data="dark"/>
-    <div class="main-panel">
+    <div class="main-panel" data="blue">
       <nav-header/>
       <div class="content">
         <notification-container/>
