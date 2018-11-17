@@ -17,6 +17,11 @@ This is also my first time using Vue.JS, and making a Single Page Application.
 -Vue.JS  
 -Flask w/ Flask-Restful + Flask-SqlAlchemy + Flask-Wtforms + Wtforms-Json + Flask-JWT-Extended
 
+# State of the code
+The server part of this project is okay as far as I can see, but the client is a bit messy right now due to state issues.  
+I'm going to be doing some revisions to implement VueX (https://github.com/vuejs/vuex) which is probably going to be the  
+very next thing I do before moving onto the actual functionality of the pastes.
+
 # Client Setup
 ``` bash
 # install dependencies

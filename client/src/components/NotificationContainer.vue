@@ -5,8 +5,8 @@
         <strong>{{value}}</strong>
       </div>
     </b-alert>
-    <b-alert show dismissible variant="dark" v-if="sign_out_notice" @dismissed="clearSignOutNotice()">
-      <strong>{{sign_out_reason}}</strong>
+    <b-alert show dismissible variant="danger" v-if="signed_out_message !== ''" @dismissed="clearSignOutNotice()">
+      <strong>{{signed_out_message}}</strong>
       <b-link @click="openSignInPage()" style="font-weight: bold;">
         Press here to open the sign in page (in a new tab).
       </b-link>
@@ -20,17 +20,15 @@
     data() {
       return {
         notifications: [],
-        sign_out_notice: false,
-        sign_out_reason: ''
+        signed_out_message: ''
       };
     }, // TODO: This is all kind of iffy. Could make this way better.
     created() {
       this.$notificationHub.$on('notification', (notification) => {
         this.notifications.push(notification);
       });
-      this.$notificationHub.$on('signout_notice', (reason) => {
-        this.sign_out_notice = true;
-        this.sign_out_reason = reason;
+      this.$notificationHub.$on('signout_notice', (message) => {
+        this.signed_out_message = message;
       });
     },
     methods: {
@@ -38,8 +36,7 @@
         this.notifications = [];
       },
       clearSignOutNotice() {
-        this.sign_out_notice = false;
-        this.sign_out_reason = '';
+        this.signed_out_message = '';
       },
       openSignInPage() {
         const route = this.$router.resolve({path: '/account/signin'});
