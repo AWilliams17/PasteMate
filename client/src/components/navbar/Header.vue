@@ -13,9 +13,9 @@
       </div>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right id="dropdown-menu">
-          <template v-if="this.$parent.authenticated">
+          <template v-if="this.$store.getters['user/username']">
             <template slot="button-content">
-              <strong>{{this.$parent.username}}</strong>
+              <strong>{{this.$store.getters['user/username']}}</strong>
             </template>
             <b-link to="/account/manage" class="dropdown-item">Manage Account</b-link>
             <b-link to="/account/signout" class="dropdown-item">Sign Out</b-link>
@@ -40,6 +40,7 @@
     data() {
       return {
         sideOpen: false
+
       }
     },
     methods: {

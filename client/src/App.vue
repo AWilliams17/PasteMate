@@ -20,12 +20,6 @@
 
   export default {
     name: 'App',
-    data() {
-      return {
-        username: null,
-        authenticated: false
-      }
-    },
     components: {
       NotificationContainer,
       NavHeader,

@@ -32,7 +32,7 @@ class RegisterUser(Resource):
         data = parser.parse_args()
         form = RegistrationForm.from_json(data)
         if not form.validate():
-            return {'success': False, 'errors': form.errors}, 400
+            return {'errors': form.errors}, 400
         print(data)
         user = Account(**data)
         user.save_to_db()
@@ -43,7 +43,7 @@ class RegisterUser(Resource):
             set_cookies(user_tokens, response)
             return response
 
-        return {'success': True, 'errors': None}, 201
+        return {'username': user.username, 'userID': user.id}, 201
 
 
 class LoginUser(Resource):
@@ -90,5 +90,6 @@ class UserAuthStatus(Resource):
     @jwt_required
     def get(self):
         identity = get_jwt_identity()
-        return {'authenticated': True, 'current_username': identity}
+        user_id = Account.find_by_username(identity).id
+        return {'authenticated': True, 'username': identity, 'userID': user_id}
         # Nothing else needed since the loader should do the rest.

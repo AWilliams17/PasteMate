@@ -48,7 +48,11 @@
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
-        this.$store.dispatch('user/signUp', payload);
+        this.$store.dispatch('user/signUp', payload).then(() => {
+          this.$router.push('/');
+        }).catch(error => {
+          console.log(error);
+        })
       }
     }
   };
