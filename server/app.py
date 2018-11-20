@@ -4,7 +4,7 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 
 import wtforms_json
-from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, UserAuthStatus
+from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
@@ -81,7 +81,7 @@ def catch_all(path):
 api.add_resource(RegisterUser, '/api/user/register')
 api.add_resource(LoginUser, '/api/user/login')
 api.add_resource(RefreshUser, '/api/auth/refresh')
-api.add_resource(UserAuthStatus, '/api/auth/status')
+api.add_resource(CurrentUser, '/api/auth/status')
 api.add_resource(RevokeAccess, '/api/auth/revoke')
 
 if __name__ == '__main__':

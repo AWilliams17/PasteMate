@@ -86,7 +86,7 @@ class RefreshUser(Resource):
         return response, 201
 
 
-class UserAuthStatus(Resource):
+class CurrentUser(Resource):
     @jwt_required
     def get(self):
         identity = get_jwt_identity()

@@ -28,10 +28,6 @@
     },
     created() {
       // this.getAuthStatus();
-      // this.interval = setInterval(() => this.getAuthStatus(), 10000); // Check auth status every 10 seconds
-      // this.$eventHub.$on('status-update', () => {
-      //   this.getAuthStatus()
-      // });
     }
   }
 </script>

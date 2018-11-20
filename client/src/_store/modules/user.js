@@ -18,6 +18,7 @@ export default {
             resolve(response);
           })
           .catch((error) => {
+            context.commit('UPDATE_USER', [null, null]);
             reject(error);
           });
       })
@@ -31,34 +32,18 @@ export default {
 
     },
 
-    updateUser(context) {
-      const csrfAccessTokenExists = this.$cookies.get('csrf_access_token');
-      if (csrfAccessTokenExists) {
-        axios.get('/api/auth/status', {withCredentials: true})
+    authenticateUser(context) {
+      return new Promise((resolve, reject) => {
+        axios.get('/api/auth/refresh', {withCredentials: true})
           .then((response) => {
-            context.commit('UPDATE_USER', response.data.username);
+            context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
+            resolve(response);
           })
           .catch((error) => {
-            if (error.status) { // Make sure it isn't a network error before trying to re-authenticate
-              context.dispatch('attemptReAuthentication');
-            }
-          })
-      } else {
-        context.commit('UPDATE_USER', null);
-      }
-    },
-
-    attemptReAuthentication(context) {
-      axios.get('/api/auth/refresh', {withCredentials: true})
-        .then((response) => {
-          context.commit('UPDATE_USER', response.data.username);
-        })
-        .catch((error) => {
-          if (error.status) {
-            // this.$notificationHub.$emit('signout_notice', 'You are no longer authenticated.');
-            // TODO: Dispatch an error notification
-          }
-        })
+            context.commit('UPDATE_USER', [null, null]);
+            reject(error);
+          });
+      })
     }
   },
 
@@ -71,6 +56,10 @@ export default {
   getters: {
     username: state => {
       return state.username;
+    },
+
+    userID: state => {
+      return state.userID;
     }
   }
 }

@@ -13,7 +13,7 @@
       </div>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right id="dropdown-menu">
-          <template v-if="this.$store.getters['user/username']">
+          <template v-if="this.$store.getters['user/userID']">
             <template slot="button-content">
               <strong>{{this.$store.getters['user/username']}}</strong>
             </template>
@@ -40,7 +40,6 @@
     data() {
       return {
         sideOpen: false
-
       }
     },
     methods: {
