@@ -33,8 +33,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
   export default {
     name: 'account-sign-up',
     data() {
@@ -47,27 +45,10 @@
       };
     },
     methods: {
-      signUp(payload) {
-        const signUpPath = this.$root.getApiUrlFor('/api/user/register');
-        axios.post(signUpPath, payload, {withCredentials: true})
-          .then((response) => {
-            if (!response.data.success) {
-              this.$notificationHub.emit('notification', response.data.errors);
-            } else {
-              console.log(response.data);
-              console.log(response.headers);
-              this.$eventHub.$emit('status-update');
-              this.$router.push('/');
-            }
-          })
-          .catch((error) => {
-            this.$notificationHub.emit('notification', error.message);
-          });
-      },
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
-        this.signUp(payload);
+        this.$store.dispatch('user/signUp', payload);
       }
     }
   };
