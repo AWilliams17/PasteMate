@@ -38,3 +38,8 @@ new Vue({
     }
   }
 });
+
+router.beforeEach((to, from, next) => {
+  // TODO: Make this redirect them to an access denied if authorization is required
+  // TODO: Also, redirect them from the login/register page if they are already logged in.
+});
