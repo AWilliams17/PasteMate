@@ -18,8 +18,7 @@ This is also my first time using Vue.JS, and making a Single Page Application.
 
 # State of the code
 The server part of this project is okay as far as I can see, but the client is a bit messy due to me moving away from event busses  
-and to Vuex. Right now, account sign ups + sign outs work as intended. The sign in page needs to be implemented, as does the paste  
-templates and account management template.
+and to Vuex. Right now, account sign ups + sign outs work as intended. Some templates still need to be made.
 
 # Client Setup
 ``` bash
