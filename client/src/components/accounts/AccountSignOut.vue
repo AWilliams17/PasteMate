@@ -9,8 +9,6 @@
 </template>
 
 <script>
-  import axios from 'axios';
-
   export default {
     name: 'account-sign-out',
     data() {
@@ -20,30 +18,16 @@
       };
     },
     created() {
-      if (this.$parent.username !== null) {
-        this.revokeTokens();
-      } else {
-        this.header = 'Not signed in';
-        this.body = 'You are not signed in!';
-      }
-    },
-    methods: {
-      revokeTokens() {
-        const revokeTokenPath = this.$root.getApiUrlFor('/api/auth/revoke');
-        axios.get(revokeTokenPath, {withCredentials: true})
+      if (this.$store.getters['user/userID'] !== null) {
+        this.$store.dispatch('user/signOut')
           .then(() => {
-            this.header = 'Signed out';
-            this.body = 'You have been signed out.';
-            this.$eventHub.$emit('status-update');
+            [this.header, this.body] = ['Signed out', 'You have been signed out.'];
           })
           .catch((error) => {
-            this.header = 'Failed to sign out';
-            if (error.status) {
-              this.body = 'Failed to sign out: ' + error.message
-            } else {
-              this.body = 'Network error occurred.';
-            }
+            [this.header, this.body] = ['Failed to sign out', 'Error occurred while signing out: ' + error.message];
           })
+      } else {
+        [this.header, this.body] = ['Not signed in', 'You are not signed in!'];
       }
     }
   };

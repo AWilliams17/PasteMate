@@ -83,7 +83,7 @@ class RefreshUser(Resource):
         access_token = create_access_token(identity=current_user)
         response = {'token_refreshed': True}
         set_access_cookies(response, access_token)
-        return response, 201
+        return response, 200
 
 
 class CurrentUser(Resource):
@@ -91,5 +91,5 @@ class CurrentUser(Resource):
     def get(self):
         identity = get_jwt_identity()
         user_id = Account.find_by_username(identity).id
-        return {'authenticated': True, 'username': identity, 'userID': user_id}
+        return {'username': identity, 'userID': user_id}
         # Nothing else needed since the loader should do the rest.

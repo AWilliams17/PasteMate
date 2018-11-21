@@ -28,13 +28,37 @@ export default {
 
     },
 
-    signOut(context, payload) {
-
+    signOut(context) {
+      return new Promise((resolve, reject) => {
+        axios.get('/api/auth/revoke', {withCredentials: true})
+          .then((response) => {
+            context.commit('UPDATE_USER', [null, null]);
+            resolve(response);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      })
     },
 
-    authenticateUser(context) {
+    // Get a new access token using their refresh token
+    refreshUser(context) {
       return new Promise((resolve, reject) => {
         axios.get('/api/auth/refresh', {withCredentials: true})
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((error) => {
+            context.commit('UPDATE_USER', [null, null]);
+            reject(error);
+          });
+      })
+    },
+
+    // Get their current user details using their access token.
+    retrieveCurrentUser(context) {
+      return new Promise((resolve, reject) => {
+        axios.get('api/auth/current_user', {withCredentials: true})
           .then((response) => {
             context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
             resolve(response);
