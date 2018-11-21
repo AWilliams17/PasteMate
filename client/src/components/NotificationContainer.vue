@@ -5,8 +5,8 @@
         <strong>{{value}}</strong>
       </div>
     </b-alert>
-    <b-alert show dismissible variant="danger" v-if="signed_out_message !== ''" @dismissed="clearSignOutNotice()">
-      <strong>{{signed_out_message}}</strong>
+    <b-alert show dismissible variant="danger" v-if="sign_out_notification" @dismissed="clearSignOutNotification()">
+      <strong>{{sign_out_notification}}</strong>
       <b-link @click="openSignInPage()" style="font-weight: bold;">
         Press here to open the sign in page (in a new tab).
       </b-link>
@@ -17,31 +17,29 @@
 <script>
   export default {
     name: 'notification-container',
-    data() {
-      return {
-        notifications: [],
-        signed_out_message: ''
-      };
-    }, // TODO: This is all kind of iffy. Could make this way better.
-    created() {
-      this.$notificationHub.$on('notification', (notification) => {
-        this.notifications.push(notification);
-      });
-      this.$notificationHub.$on('signout_notice', (message) => {
-        this.signed_out_message = message;
-      });
+    computed: {
+      notifications() {
+        return this.$store.getters['notification/notifications'];
+      },
+
+      sign_out_notification() {
+        return this.$store.getters['notification/sign_out_notification'];
+      }
     },
+
     methods: {
-      clearNotifications() {
-        this.notifications = [];
-      },
-      clearSignOutNotice() {
-        this.signed_out_message = '';
-      },
       openSignInPage() {
         const route = this.$router.resolve({path: '/account/signin'});
         window.open(route.href, '_blank');
-        this.clearSignOutNotice();
+        this.clearSignOutNotification();
+      },
+
+      clearNotifications() {
+        this.$store.dispatch('notification/clearNotifications')
+      },
+
+      clearSignOutNotification() {
+        this.$store.dispatch('notification/clearSignOutNotification')
       }
     }
   };

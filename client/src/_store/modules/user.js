@@ -3,7 +3,6 @@ import axios from 'axios'
 export default {
   namespaced: true,
 
-  // TODO: UserID
   state: {
     userID: null,
     username: null

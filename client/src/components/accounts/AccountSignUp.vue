@@ -50,8 +50,11 @@
         const payload = this.form;
         this.$store.dispatch('user/signUp', payload).then(() => {
           this.$router.push('/');
-        }).catch(error => {
-          console.log(error);
+        }).catch((error) => {
+          const errorList = Object.values(error.response.data.errors);
+          errorList.forEach((error) => {
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+          });
         })
       }
     }

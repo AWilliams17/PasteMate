@@ -18,7 +18,7 @@
       };
     },
     created() {
-      if (this.$store.getters['user/userID'] !== null) {
+      if (this.$store.getters['user/userID']) {
         this.$store.dispatch('user/signOut')
           .then(() => {
             [this.header, this.body] = ['Signed out', 'You have been signed out.'];

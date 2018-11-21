@@ -12,8 +12,6 @@ import store from './_store/store';
 Vue.use(BootstrapVue);
 Vue.use(VueCookies);
 Vue.config.productionTip = false;
-Vue.prototype.$eventHub = new Vue(); // Global event bus
-Vue.prototype.$notificationHub = new Vue(); // Global error bus
 
 /* eslint-disable no-new */
 new Vue({
