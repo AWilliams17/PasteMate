@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
-    username = db.Column(db.String(24), unique=True, nullable=False)
+    username = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(128), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True, uselist=False)
@@ -53,9 +53,9 @@ class Account(db.Model):
 class Paste(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
-    title = db.Column(db.String(50), unique=False, nullable=False)
+    title = db.Column(db.String(64), unique=False, nullable=False)
     language = db.Column(db.String(50), unique=False, nullable=False)
-    password = db.Column(db.String(50), unique=False, nullable=True)
+    password = db.Column(db.String(128), unique=False, nullable=True)
     content = db.Column(db.Text, unique=False, nullable=False)
     submission_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     edit_date = db.Column(db.DateTime, nullable=True)

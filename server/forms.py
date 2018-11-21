@@ -4,9 +4,9 @@ from models import Account, Paste
 
 
 class RegistrationForm(Form):
-    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=25)])
+    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=64)])
     email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
-    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=25)])
+    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=128)])
 
     def validate(self):
         rv = Form.validate(self)
@@ -14,27 +14,31 @@ class RegistrationForm(Form):
             return False
 
         email_in_use = Account.find_by_email(self.email.data) is not None
+        username_in_use = Account.find_by_email(self.username.data) is not None
 
         if email_in_use:
             self.email.errors.append("Email is already in use.")
+            return False
+        elif username_in_use:
+            self.username.errors.append("Username is already in use.")
             return False
 
         return True
 
 
 class LoginForm(Form):
-    email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
-    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=25)])
+    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=64)])
+    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=128)])
 
     def validate(self):
         rv = Form.validate(self)
         if not rv:
             return False
 
-        user = Account.find_by_email(self.email.data)
+        user = Account.find_by_username(self.username.data)
 
         if not user:
-            self.email.errors.append("Email address is not registered.")
+            self.username.errors.append("Username not found.")
             return False
 
         if not user.password_correct(self.password.data):

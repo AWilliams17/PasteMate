@@ -24,7 +24,17 @@ export default {
     },
 
     signIn(context, payload) {
-
+      return new Promise((resolve, reject) => {
+        axios.post('/api/user/login', payload, {withCredentials: true})
+          .then((response) => {
+            context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
+            resolve(response);
+          })
+          .catch((error) => {
+            context.commit('UPDATE_USER', [null, null]);
+            reject(error);
+          });
+      })
     },
 
     signOut(context) {

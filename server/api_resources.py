@@ -33,7 +33,6 @@ class RegisterUser(Resource):
         form = RegistrationForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 400
-        print(data)
         user = Account(**data)
         user.save_to_db()
 
@@ -51,8 +50,8 @@ class LoginUser(Resource):
         data = parser.parse_args()
         form = LoginForm.from_json(data)
         if not form.validate():
-            return {'success': False, 'errors': form.errors}, 401
-        user = Account.find_by_email(data.get('email'))
+            return {'errors': form.errors}, 401
+        user = Account.find_by_username(data.get('username'))
 
         @after_this_request
         def set_jwt_cookies(response):
@@ -60,7 +59,7 @@ class LoginUser(Resource):
             set_cookies(user_tokens, response)
             return response
 
-        return {'success': True, 'errors': None}, 200
+        return {'username': user.username, 'userID': user.id}, 200
 
 
 class RevokeAccess(Resource):
