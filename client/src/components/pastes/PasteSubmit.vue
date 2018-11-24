@@ -41,6 +41,14 @@
                           placeholder="Password">
             </b-form-input>
           </b-form-group>
+          <b-form-group>
+            <b-form-checkbox id="openEditCheckbox"
+                             v-model="form.openEdit"
+                             value=true
+                             unchecked-value=false>
+              Open Edit
+            </b-form-checkbox>
+          </b-form-group>
           <b-button type="submit" variant="primary" size="sm" class="float-right">Submit</b-button>
         </b-form>
       </b-card>
@@ -49,6 +57,7 @@
 </template>
 
 <script>
+  // import axios from 'axios';
   import LanguageList from '../../_misc/highlightjs_languages';
 
   export default {
@@ -73,12 +82,15 @@
           title: '',
           content: '',
           password: '',
+          openEdit: false,
           expiration: 0,
           language: null
         },
         methods: {
-          onSubmit() {
-            console.log('Submission request');
+          onSubmit(evt) {
+            evt.preventDefault();
+            // const payload = this.form;
+            // axios.post('/')
           }
         }
       };

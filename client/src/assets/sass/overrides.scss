@@ -11,6 +11,7 @@
 .dropdown-item:focus {color: white;}
 .dropdown-item:hover {color: white;}
 .main-panel {background-image: none; background-color: #1a1a27 !important;}
+.custom-control-label { &::before {background-color: #424f6e !important;} }
 
 .sidebar,
 .off-canvas-sidebar {

@@ -53,12 +53,12 @@ def expired_token_callback():
 
 
 @jwt_manager.invalid_token_loader
-def invalid_token_callback(error):
+def invalid_token_callback():
     return jsonify({'error': 'invalid_token'}), 401
 
 
 @jwt_manager.unauthorized_loader
-def missing_token_callback(error):
+def missing_token_callback():
     return jsonify({'error': 'authorization_required'}), 401
 
 
