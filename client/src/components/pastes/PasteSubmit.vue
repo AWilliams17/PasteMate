@@ -42,7 +42,7 @@
           </b-form-group>
           <b-form-group>
             <b-form-checkbox id="openEditCheckbox"
-                             v-model="form.openEdit"
+                             v-model="form.open_edit"
                              value=true
                              unchecked-value=false>
               Open Edit
@@ -81,7 +81,7 @@
           title: '',
           content: '',
           password: null,
-          openEdit: false,
+          open_edit: false,
           expiration: 0,
           language: 'None'
         }

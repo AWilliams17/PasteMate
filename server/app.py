@@ -85,6 +85,7 @@ api.add_resource(RefreshUser, '/api/auth/refresh')
 api.add_resource(CurrentUser, '/api/auth/current_user')
 api.add_resource(RevokeAccess, '/api/auth/revoke')
 api.add_resource(SubmitPaste, '/api/paste/submit')
+api.add_resource(ViewPaste, '/api/paste/view')
 
 if __name__ == '__main__':
     app.run(host='localhost')

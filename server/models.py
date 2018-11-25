@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from uuid import uuid4
 db = SQLAlchemy()
@@ -63,11 +63,23 @@ class Paste(db.Model):
     expiration_date = db.Column(db.DateTime, nullable=True)
     paste_uuid = db.Column(db.Integer, unique=True, nullable=False)
 
+    # This can probably be done in a better way
+    expiration_options = {
+        0: None,
+        1: timedelta(minutes=10),
+        2: timedelta(hours=1),
+        3: timedelta(days=1),
+        4: timedelta(weeks=1),
+        5: timedelta(weeks=4),
+        6: timedelta(weeks=26),
+        7: timedelta(days=365)
+    }
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
-    def __init__(self, owner_id, title, language, password, content, open_edit, expiration_date):
+    def __init__(self, owner_id, title, language, password, content, open_edit, expiration):
         self.owner_id = owner_id
         self.title = title
         self.language = language
@@ -76,7 +88,7 @@ class Paste(db.Model):
             self.password = generate_password_hash(password, method='sha256')
         self.content = content
         self.open_edit = open_edit
-        self.expiration_date = expiration_date
+        self.expiration_date = self.expiration_options.get(expiration)
         self.paste_uuid = str(uuid4())[:8]
 
     def __repr__(self):

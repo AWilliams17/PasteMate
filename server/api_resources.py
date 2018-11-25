@@ -65,9 +65,14 @@ class SubmitPaste(Resource):
             return {'errors': form.errors}, 401
         identity = get_jwt_identity()
         data['owner_id'] = Account.find_by_username(identity).id
-        return {'t': 'a'}, 200
-        # this_paste = Paste(**data)
-        # this_paste.save_to_db()
+        print(data)
+        this_paste = Paste(**data)
+        this_paste.save_to_db()
+        return {'paste_id': this_paste.paste_uuid}
+
+
+class ViewPaste(Resource):
+    pass
 
 
 class RevokeAccess(Resource):

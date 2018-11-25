@@ -56,7 +56,7 @@ export default new Router({
       component: PasteEdit
     },
     {
-      path: '/paste/view',
+      path: '/paste/view/:slug',
       name: 'View Paste',
       component: PasteView
     },
