@@ -36,7 +36,6 @@
                         :label-cols="4">
             <b-form-input id="passwordInput"
                           v-model="form.password"
-                          required
                           type="password"
                           placeholder="Password">
             </b-form-input>
@@ -57,7 +56,7 @@
 </template>
 
 <script>
-  // import axios from 'axios';
+  import axios from 'axios';
   import LanguageList from '../../_misc/highlightjs_languages';
 
   export default {
@@ -65,7 +64,7 @@
     data() {
       return {
         languages: [
-          { 'text': 'No language', value: null },
+          { 'text': 'None', value: 'None' },
           ...LanguageList.language_list
         ],
         expiration: [
@@ -81,19 +80,22 @@
         form: {
           title: '',
           content: '',
-          password: '',
+          password: null,
           openEdit: false,
           expiration: 0,
-          language: null
-        },
-        methods: {
-          onSubmit(evt) {
-            evt.preventDefault();
-            // const payload = this.form;
-            // axios.post('/')
-          }
+          language: 'None'
         }
       };
+    },
+    methods: {
+      onSubmit(evt) {
+        evt.preventDefault();
+        const payload = this.form;
+        console.log('submitted');
+        axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
+        axios.defaults.xsrfCookieName = 'csrf_access_token';
+        axios.post('/api/paste/submit', payload, {withCredentials: true})
+      }
     }
   };
 </script>

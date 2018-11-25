@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from uuid import uuid4
 db = SQLAlchemy()
 
 
@@ -36,18 +37,17 @@ class Account(db.Model):
             id=self.id,
             username=self.username,
             email=self.email,
-            password=self.password,
             pastes=self.pastes
         )
-
-    def __repr__(self):
-        return '<Account %r>' % self.username
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
         self.pastes = None
+
+    def __repr__(self):
+        return '<Account %r>' % self.username
 
 
 class Paste(db.Model):
@@ -61,20 +61,23 @@ class Paste(db.Model):
     edit_date = db.Column(db.DateTime, nullable=True)
     open_edit = db.Column(db.Boolean, nullable=False)
     expiration_date = db.Column(db.DateTime, nullable=True)
+    paste_uuid = db.Column(db.Integer, unique=True, nullable=False)
 
-    def to_dict(self):
-        return dict(
-            id=self.id,
-            owner=self.owner_id,
-            title=self.title,
-            language=self.language,
-            password=self.password,
-            content=self.content,
-            submission_date=self.submission_date,
-            edit_date=self.edit_date,
-            open_edit=self.open_edit,
-            expiration_date=self.expiration_date
-        )
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def __init__(self, owner_id, title, language, password, content, open_edit, expiration_date):
+        self.owner_id = owner_id
+        self.title = title
+        self.language = language
+        self.password = None
+        if password is not None:
+            self.password = generate_password_hash(password, method='sha256')
+        self.content = content
+        self.open_edit = open_edit
+        self.expiration_date = expiration_date
+        self.paste_uuid = str(uuid4())[:8]
 
     def __repr__(self):
         return '<Paste %r>' % self.title

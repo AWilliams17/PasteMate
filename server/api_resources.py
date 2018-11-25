@@ -1,17 +1,11 @@
-from flask import after_this_request
+from flask import after_this_request, request, jsonify, json, Response
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, SubmitPasteForm
 from models import Account, Paste, RevokedToken
 from datetime import timedelta
-
-
-parser = reqparse.RequestParser()
-parser.add_argument('username')
-parser.add_argument('password')
-parser.add_argument('email')
 
 
 def create_tokens(user):
@@ -29,7 +23,7 @@ def set_cookies(tokens, response):
 
 class RegisterUser(Resource):
     def post(self):
-        data = parser.parse_args()
+        data = json.loads(request.data.decode('utf-8'))
         form = RegistrationForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 400
@@ -47,7 +41,7 @@ class RegisterUser(Resource):
 
 class LoginUser(Resource):
     def post(self):
-        data = parser.parse_args()
+        data = json.loads(request.data.decode('utf-8'))
         form = LoginForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 401
@@ -60,6 +54,20 @@ class LoginUser(Resource):
             return response
 
         return {'username': user.username, 'userID': user.id}, 200
+
+
+class SubmitPaste(Resource):
+    @jwt_required
+    def post(self):
+        data = json.loads(request.data.decode('utf-8'))
+        form = SubmitPasteForm.from_json(data)
+        if not form.validate():
+            return {'errors': form.errors}, 401
+        identity = get_jwt_identity()
+        data['owner_id'] = Account.find_by_username(identity).id
+        return {'t': 'a'}, 200
+        # this_paste = Paste(**data)
+        # this_paste.save_to_db()
 
 
 class RevokeAccess(Resource):

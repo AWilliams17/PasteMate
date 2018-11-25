@@ -4,8 +4,8 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 
 import wtforms_json
-from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser
-from flask import Flask, jsonify
+from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, SubmitPaste
+from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from models import RevokedToken
@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECURITY_PASSWORD_SALT'] = "12345"  # ToDo: Bad.
 app.config['SECRET_KEY'] = "12345"  # ToDo: Bad.
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
-app.config['JWT_SECRET_KEY'] = '12345' # ToDo: Bad.
+app.config['JWT_SECRET_KEY'] = '12345'  # ToDo: Bad.
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
@@ -53,12 +53,13 @@ def expired_token_callback():
 
 
 @jwt_manager.invalid_token_loader
-def invalid_token_callback():
+def invalid_token_callback(error):
     return jsonify({'error': 'invalid_token'}), 401
 
 
 @jwt_manager.unauthorized_loader
-def missing_token_callback():
+def missing_token_callback(error):
+    print(error)
     return jsonify({'error': 'authorization_required'}), 401
 
 
@@ -83,6 +84,7 @@ api.add_resource(LoginUser, '/api/user/login')
 api.add_resource(RefreshUser, '/api/auth/refresh')
 api.add_resource(CurrentUser, '/api/auth/current_user')
 api.add_resource(RevokeAccess, '/api/auth/revoke')
+api.add_resource(SubmitPaste, '/api/paste/submit')
 
 if __name__ == '__main__':
     app.run(host='localhost')

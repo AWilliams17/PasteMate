@@ -67,7 +67,7 @@ export default {
     // Get their current user details using their access token.
     retrieveCurrentUser(context) {
       return new Promise((resolve, reject) => {
-        axios.get('api/auth/current_user', {withCredentials: true})
+        axios.get('/api/auth/current_user', {withCredentials: true})
           .then((response) => {
             context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
             resolve(response);
