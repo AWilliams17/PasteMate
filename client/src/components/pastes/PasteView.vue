@@ -20,6 +20,7 @@
         <p>{{paste.language}}</p>
         <p>{{paste.expiration_date}}</p>
         <p>{{paste.submission_date}}</p>
+        <p>{{paste.edit_date}}</p>
       </template>
       <template v-else>
         <b-alert show variant="dark">

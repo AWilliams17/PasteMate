@@ -76,19 +76,14 @@ class Paste(db.Model):
     }
 
     def paste_dict(self):
-        expiration_date = 'Never Expires'
-        edit_date = 'Never Edited'
-        if self.edit_date is not None:
-            edit_date = self.edit_date.strftime("%Y-%m-%d %H:%M:%S")
-        if self.expiration_date is not None:
-            expiration_date = self.expiration_date.strftime("%Y-%m-%d %H:%M:%S")
+        def strf_date(date): return date.strftime("%Y-%m-%d %H:%M:%S") if date is not None else None
         return {
             'title': self.title,
             'language': self.language,
             'content': self.content,
-            'submission_date': self.submission_date.strftime("%Y-%m-%d %H:%M:%S"),
-            'edit_date': edit_date,
-            'expiration_date': expiration_date,
+            'submission_date': strf_date(self.submission_date),
+            'edit_date': strf_date(self.edit_date),
+            'expiration_date': strf_date(self.expiration_date),
             'owner_name': Account.find_by_id(self.owner_id).username
         }
 
