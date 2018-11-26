@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import BootstrapVue from 'bootstrap-vue';
+import VueHighlightJS from 'vue-highlightjs'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Vue from 'vue';
@@ -10,6 +11,7 @@ import router from './router';
 import store from './_store/store';
 
 Vue.use(BootstrapVue);
+Vue.use(VueHighlightJS);
 Vue.use(VueCookies);
 Vue.config.productionTip = false;
 

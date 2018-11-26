@@ -84,7 +84,8 @@ class Paste(db.Model):
             'submission_date': strf_date(self.submission_date),
             'edit_date': strf_date(self.edit_date),
             'expiration_date': strf_date(self.expiration_date),
-            'open_edit': self.open_edit
+            'open_edit': self.open_edit,
+            'owner_name': Account.find_by_id(self.owner_id).username
         }
 
     def save_to_db(self):
