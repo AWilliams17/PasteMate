@@ -23,7 +23,7 @@ def set_cookies(tokens, response):
 
 class RegisterUser(Resource):
     def post(self):
-        data = json.loads(request.data.decode('utf-8'))
+        data = request.get_json(force=True)
         form = RegistrationForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 400
@@ -41,7 +41,7 @@ class RegisterUser(Resource):
 
 class LoginUser(Resource):
     def post(self):
-        data = json.loads(request.data.decode('utf-8'))
+        data = request.get_json(force=True)
         form = LoginForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 401
@@ -59,7 +59,8 @@ class LoginUser(Resource):
 class SubmitPaste(Resource):
     @jwt_required
     def post(self):
-        data = json.loads(request.data.decode('utf-8'))
+        data = request.get_json(force=True)
+        print(data)
         form = SubmitPasteForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 401
@@ -68,11 +69,24 @@ class SubmitPaste(Resource):
         print(data)
         this_paste = Paste(**data)
         this_paste.save_to_db()
-        return {'paste_id': this_paste.paste_uuid}
+        return {'paste_uuid': this_paste.paste_uuid}, 200
 
 
 class ViewPaste(Resource):
-    pass
+    def get(self, paste_uuid):
+        paste = Paste.find_by_uuid(paste_uuid)
+        if paste.password is not None:
+            return {'error': 'password is required'}, 401
+        return {'paste': paste.paste_dict()}, 200
+
+    def post(self, paste_uuid):
+        data = request.get_json(force=True)
+        if 'password' in data:
+            paste = Paste.find_by_uuid(paste_uuid)
+            if paste.password_correct(data['password']):
+                return {'paste': paste.paste_dict()}, 200
+            return {'error': 'password is incorrect.'}, 401
+        return {'error': 'Password required.'}, 401
 
 
 class RevokeAccess(Resource):

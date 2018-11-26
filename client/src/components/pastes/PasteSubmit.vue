@@ -95,6 +95,12 @@
         axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
         axios.defaults.xsrfCookieName = 'csrf_access_token';
         axios.post('/api/paste/submit', payload, {withCredentials: true})
+          .then((response) => {
+            this.$router.push('/paste/view/' + response.data.paste_uuid);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     }
   };

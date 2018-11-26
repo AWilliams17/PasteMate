@@ -8,7 +8,7 @@ db = SQLAlchemy()
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
-    password = db.Column(db.String(128), unique=False, nullable=False)
+    password = db.Column(db.String(256), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True, uselist=False)
 
@@ -55,7 +55,7 @@ class Paste(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     title = db.Column(db.String(64), unique=False, nullable=False)
     language = db.Column(db.String(50), unique=False, nullable=False)
-    password = db.Column(db.String(128), unique=False, nullable=True)
+    password = db.Column(db.String(256), unique=False, nullable=True)
     content = db.Column(db.Text, unique=False, nullable=False)
     submission_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     edit_date = db.Column(db.DateTime, nullable=True)
@@ -66,18 +66,42 @@ class Paste(db.Model):
     # This can probably be done in a better way
     expiration_options = {
         0: None,
-        1: timedelta(minutes=10),
-        2: timedelta(hours=1),
-        3: timedelta(days=1),
-        4: timedelta(weeks=1),
-        5: timedelta(weeks=4),
-        6: timedelta(weeks=26),
-        7: timedelta(days=365)
+        1: datetime.utcnow() + timedelta(minutes=10),
+        2: datetime.utcnow() + timedelta(hours=1),
+        3: datetime.utcnow() + timedelta(days=1),
+        4: datetime.utcnow() + timedelta(weeks=1),
+        5: datetime.utcnow() + timedelta(weeks=4),
+        6: datetime.utcnow() + timedelta(weeks=26),
+        7: datetime.utcnow() + timedelta(days=365)
     }
+
+    def paste_dict(self):
+        expiration_date = 'Never Expires'
+        edit_date = 'Never Edited'
+        if self.edit_date is not None:
+            edit_date = self.edit_date.strftime("%Y-%m-%d %H:%M:%S")
+        if self.expiration_date is not None:
+            expiration_date = self.expiration_date.strftime("%Y-%m-%d %H:%M:%S")
+        return {
+            'title': self.title,
+            'language': self.language,
+            'content': self.content,
+            'submission_date': self.submission_date.strftime("%Y-%m-%d %H:%M:%S"),
+            'edit_date': edit_date,
+            'expiration_date': expiration_date,
+            'owner_name': Account.find_by_id(self.owner_id).username
+        }
 
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    @classmethod
+    def find_by_uuid(cls, paste_uuid):
+        return cls.query.filter_by(paste_uuid=paste_uuid).first()
+
+    def password_correct(self, password):
+        return check_password_hash(self.password, password)
 
     def __init__(self, owner_id, title, language, password, content, open_edit, expiration):
         self.owner_id = owner_id
