@@ -15,19 +15,24 @@
           </b-form>
         </b-card>
       </template>
-      <template v-else-if="paste !== null">
-        <p>{{paste.title}}</p>
-        <p>{{paste.language}}</p>
-        <p>{{paste.expiration_date}}</p>
-        <p>{{paste.submission_date}}</p>
-        <p>{{paste.edit_date}}</p>
-      </template>
       <template v-else>
-        <b-alert show variant="dark">
-          <div>
-            <strong>{{information_alert_msg}}</strong>
+        <div class="card mb-3 mx-auto" style="max-width: 250rem;">
+          <div class="card-header">
+            <div>
+              <b-badge variant="primary">Title: {{paste.title}}</b-badge>
+              <b-badge variant="info">Submitted: {{paste.submission_date}}</b-badge>
+              <b-badge v-if="paste.expiration_date !== null" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
+              <b-badge v-if="paste.edit_date !== null" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
+              <b-badge variant="warning">Open Edit: {{paste.open_edit ? 'Yes' : 'No'}}</b-badge>
+            </div>
           </div>
-        </b-alert>
+          <div class="card-body">
+            {{paste.language}}
+          </div>
+          <div class="card-footer">
+            Footer here
+          </div>
+        </div>
       </template>
     </b-col>
   </b-row>
@@ -81,3 +86,6 @@
     }
   };
 </script>
+
+<style scoped>
+</style>
