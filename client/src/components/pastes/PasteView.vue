@@ -21,8 +21,8 @@
             <div>
               <b-badge variant="primary">Title: {{paste.title}}</b-badge>
               <b-badge variant="info">Submitted: {{paste.submission_date}}</b-badge>
-              <b-badge v-if="paste.expiration_date !== null" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
-              <b-badge v-if="paste.edit_date !== null" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
+              <b-badge v-if="paste.expiration_date !== ''" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
+              <b-badge v-if="paste.edit_date !== ''" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
               <b-badge variant="warning">Open Edit: {{paste.open_edit ? 'Yes' : 'No'}}</b-badge>
               <b-badge variant="dark">Language: {{paste.language}}</b-badge>
             </div>
@@ -75,8 +75,7 @@
           owner_name: ''
         },
         show_password_form: false,
-        password: '',
-        information_alert_msg: 'Getting paste, please wait...'
+        password: ''
       }
     },
     methods: {
@@ -89,7 +88,7 @@
             if (error.response.status === 401) {
               this.show_password_form = true;
             } else {
-              this.information_alert_msg = 'Error: ' + error.response.data.error_message;
+              this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
             }
           })
       },
@@ -102,8 +101,7 @@
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            console.log(error.response);
-            this.information_alert_msg = 'Error: ' + error.response;
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
           })
       }
     },

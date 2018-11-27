@@ -92,7 +92,6 @@
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
-        console.log('submitted');
         axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
         axios.defaults.xsrfCookieName = 'csrf_access_token';
         axios.post('/api/paste/submit', payload, {withCredentials: true})
@@ -100,7 +99,7 @@
             this.$router.push('/paste/view/' + response.data.paste_uuid);
           })
           .catch((error) => {
-            console.log(error);
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
           });
       },
       onTab(evt) { // Four space tab indention
