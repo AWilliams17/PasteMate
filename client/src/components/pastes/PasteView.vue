@@ -116,6 +116,8 @@
 <style>
   #code-container {
     counter-reset: line;
+    max-height: 500px;
+    overflow-y: scroll;
   }
   pre {
     margin: 0;
@@ -126,13 +128,14 @@
     counter-increment: line;
     padding-top: 0!important;
     padding-bottom: 0!important;
+    background-color: #2b305a!important;
   }
   code::before {
     content: counter(line);
     display: inline-block;
-    width: 1.5em;
+    width: 3.5em;
     border-right: 1px solid #28283b;
-    padding: 0 .5em;
+    padding: 0 .10em;
     margin-right: .5em;
     color: #888;
     -webkit-user-select: none;
