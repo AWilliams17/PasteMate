@@ -13,7 +13,8 @@
                              v-model="form.content"
                              required
                              placeholder="Paste Content..."
-                             class="paste-box">
+                             class="paste-box"
+                             @keydown.native.tab="onTab">
             </b-form-textarea>
           </b-form-group>
           <b-form-group id="languageInputGroup">
@@ -101,6 +102,13 @@
           .catch((error) => {
             console.log(error);
           });
+      },
+      onTab(evt) { // Four space tab indention
+        evt.preventDefault();
+        let startValue = evt.target.selectionStart;
+        let currentValue = evt.target.value;
+        evt.target.value = currentValue.substr(0, startValue) + '    ' + currentValue.substr(evt.target.selectionEnd);
+        evt.target.selectionStart = evt.target.selectionEnd = startValue + 4;
       }
     }
   };
