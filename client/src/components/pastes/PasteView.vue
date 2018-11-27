@@ -21,8 +21,8 @@
             <div>
               <b-badge variant="primary">Title: {{paste.title}}</b-badge>
               <b-badge variant="info">Submitted: {{paste.submission_date}}</b-badge>
-              <b-badge v-if="paste.expiration_date !== ''" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
-              <b-badge v-if="paste.edit_date !== ''" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
+              <b-badge v-if="paste.expiration_date" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
+              <b-badge v-if="paste.edit_date" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
               <b-badge variant="warning">Open Edit: {{paste.open_edit ? 'Yes' : 'No'}}</b-badge>
               <b-badge variant="dark">Language: {{paste.language}}</b-badge>
             </div>
@@ -83,6 +83,7 @@
         axios.get(this.path)
           .then((response) => {
             this.paste = response.data.paste;
+            console.log(this.paste.expiration_date);
           })
           .catch((error) => {
             if (error.response.status === 401) {

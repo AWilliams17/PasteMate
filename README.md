@@ -29,4 +29,4 @@ npm run build --report
 ``` 
 
 # Preview
-![alt text](https://i.imgur.com/8fOXPV6.png)
+![alt text](https://i.imgur.com/GklVl2M.png)
