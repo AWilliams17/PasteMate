@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, BaseQuery
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from uuid import uuid4
@@ -10,7 +10,8 @@ class Account(db.Model):
     username = db.Column(db.String(64), unique=True, nullable=False)
     password = db.Column(db.String(256), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    pastes = db.relationship('Paste', backref='submitter', order_by='Paste.id', lazy=True, uselist=False)
+    pastes = db.relationship('Paste', backref=db.backref('submitter', lazy='dynamic', uselist=True),
+                             order_by='Paste.submission_date', lazy='dynamic')
 
     @classmethod
     def find_by_username(cls, username):
@@ -31,14 +32,6 @@ class Account(db.Model):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
             db.session.add(self)
             db.session.commit()
-
-    def to_dict(self):
-        return dict(
-            id=self.id,
-            username=self.username,
-            email=self.email,
-            pastes=self.pastes
-        )
 
     def __init__(self, username, email, password):
         self.username = username

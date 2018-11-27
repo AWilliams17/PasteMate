@@ -74,7 +74,7 @@ export default new Router({
       component: PasteView
     },
     {
-      path: '/paste/list',
+      path: '/paste/list/:slug',
       name: 'Submitted Pastes',
       component: PasteList,
       meta: {

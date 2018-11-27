@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Vue from 'vue';
 import VueCookies from 'vue-cookies';
+import VueResource from 'vue-resource';
 import App from './App';
 import router from './router';
 import store from './_store/store';
@@ -13,6 +14,7 @@ import store from './_store/store';
 Vue.use(BootstrapVue);
 Vue.use(VueHighlightJS);
 Vue.use(VueCookies);
+Vue.use(VueResource);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

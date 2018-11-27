@@ -89,6 +89,34 @@ class ViewPaste(Resource):
         return {'error': 'Password required.'}, 401
 
 
+class PasteList(Resource):
+    @jwt_required
+    def get(self, page):
+        def strf_date(date): return date.strftime("%Y-%m-%d %H:%M:%S") if date is not None else None
+        identity = get_jwt_identity()
+        current_user = Account.find_by_username(identity)
+        paste_pagination = current_user.pastes.paginate(int(page), 10, False)
+        pastes = []
+        for paste in paste_pagination.items:
+            pastes.append({
+                'uuid': paste.paste_uuid,
+                'title': paste.title,
+                'language': paste.language,
+                'submission_date': strf_date(paste.submission_date),
+                'expiration_date': strf_date(paste.expiration_date),
+                'edit_date': strf_date(paste.edit_date),
+                'open_edit': paste.open_edit,
+                'password_protected': paste.password is not None
+            })
+        return {'pastes': {
+            'current_page': paste_pagination.page,
+            'last_page': paste_pagination.pages,
+            'next_page_url': ('/api/paste/list/%i' % paste_pagination.next_num) if paste_pagination.has_next else None,
+            'prev_page_url': ('/api/paste/list/%i' % paste_pagination.prev_num) if paste_pagination.has_prev else None,
+            'data': pastes
+        }}
+
+
 class RevokeAccess(Resource):
     @jwt_required
     def get(self):
