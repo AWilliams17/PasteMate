@@ -77,6 +77,7 @@ class Paste(db.Model):
 
     def paste_dict(self):
         def strf_date(date): return date.strftime("%Y-%m-%d %H:%M:%S") if date is not None else None
+        print(datetime.utcnow() == self.expiration_date)
         return {
             'title': self.title,
             'language': self.language,
@@ -85,7 +86,9 @@ class Paste(db.Model):
             'edit_date': strf_date(self.edit_date),
             'expiration_date': strf_date(self.expiration_date),
             'open_edit': self.open_edit,
-            'owner_name': Account.find_by_id(self.owner_id).username
+            'owner_name': Account.find_by_id(self.owner_id).username,
+            # If this paste has hit its expiration date, but the deletion job for it hasn't run yet, tell the client
+            'deletion_inbound': datetime.utcnow() == self.expiration_date
         }
 
     def save_to_db(self):

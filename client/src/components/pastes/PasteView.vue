@@ -50,6 +50,11 @@
           </div>
         </div>
       </template>
+      <template v-if="paste.deletion_inbound">
+        <b-alert show>
+          This paste has reached its expiration date and will be deleted shortly.
+        </b-alert>
+      </template>
     </b-col>
   </b-row>
 </template>
@@ -72,7 +77,8 @@
           edit_date: '',
           expiration_date: '',
           open_edit: '',
-          owner_name: ''
+          owner_name: '',
+          deletion_inbound: false
         },
         show_password_form: false,
         password: ''
