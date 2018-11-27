@@ -80,7 +80,7 @@ class Paste(db.Model):
         return {
             'title': self.title,
             'language': self.language,
-            'content': self.content,
+            'content': self.content.splitlines(),
             'submission_date': strf_date(self.submission_date),
             'edit_date': strf_date(self.edit_date),
             'expiration_date': strf_date(self.expiration_date),

@@ -64,7 +64,7 @@
     data() {
       return {
         languages: [
-          { 'text': 'None', value: 'None' },
+          { 'text': 'None', value: 'Plaintext' },
           ...LanguageList.language_list
         ],
         expiration: [
@@ -83,7 +83,7 @@
           password: null,
           open_edit: false,
           expiration: 0,
-          language: 'None'
+          language: 'Plaintext'
         }
       };
     },

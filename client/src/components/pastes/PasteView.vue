@@ -28,9 +28,11 @@
             </div>
           </div>
           <div class="card-body">
-            <pre v-highlightjs="paste.content">
-              <code id="code_container"></code>
-            </pre>
+            <div id="code-container">
+              <pre v-highlightjs v-for="line in paste.content" :key="line.id">
+                <code v-bind:class="paste.language.toLowerCase()">{{line}}</code>
+              </pre>
+            </div>
           </div>
           <div class="card-footer">
             <div class="float-right">
@@ -62,6 +64,7 @@
       return {
         path: '/api/paste/view/' + this.$route.params.slug,
         paste: {
+          has_paste: false,
           title: '',
           language: '',
           content: '',
@@ -81,7 +84,6 @@
         axios.get(this.path)
           .then((response) => {
             this.paste = response.data.paste;
-            this.initHighlighting();
           })
           .catch((error) => {
             if (error.response.status === 401) {
@@ -98,26 +100,11 @@
             this.show_password_form = false;
             this.password = null;
             this.paste = response.data.paste;
-            this.initHighlighting();
           })
           .catch((error) => {
             console.log(error.response);
             this.information_alert_msg = 'Error: ' + error.response;
           })
-      },
-      initHighlighting() {
-        let CodeContainer = document.getElementById('code_container');
-        let CodeLines = CodeContainer.getElementsByTagName('span');
-        console.log(CodeLines);
-        let language = this.paste.language.toLowerCase();
-        if (language === 'none') {
-          language = 'nohighlight'
-        }
-        CodeContainer.className += ' ' + this.paste.language.toLowerCase();
-        for (let i = 0; i < CodeLines.length; i++) {
-          CodeLines[i].className += 'code-line';
-        }
-        console.log(this.$parent.hljs);
       }
     },
     created() {
@@ -127,18 +114,23 @@
 </script>
 
 <style>
-  pre {
+  #code-container {
     counter-reset: line;
   }
-
-  code span {
-    counter-increment: line;
+  pre {
+    margin: 0;
+    padding: 0;
+    display: grid;
   }
-
-  code span::before {
+  code {
+    counter-increment: line;
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+  }
+  code::before {
     content: counter(line);
     display: inline-block;
-    width: 1.5em; /* Fixed width */
+    width: 1.5em;
     border-right: 1px solid #28283b;
     padding: 0 .5em;
     margin-right: .5em;

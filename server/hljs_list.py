@@ -2,7 +2,7 @@
 Yep.
 """
 language_list = [
-    'None',
+    'Plaintext',
     '1C',
     'ABNF',
     'Access',
