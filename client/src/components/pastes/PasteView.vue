@@ -51,7 +51,7 @@
         </div>
       </template>
       <template v-if="paste.deletion_inbound">
-        <b-alert show>
+        <b-alert variant="warning" show>
           This paste has reached its expiration date and will be deleted shortly.
         </b-alert>
       </template>
