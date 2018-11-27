@@ -118,7 +118,7 @@
   #code-container {
     counter-reset: line;
     max-height: 500px;
-    overflow-y: scroll;
+    overflow: auto;
   }
   pre {
     margin: 0;
