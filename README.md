@@ -1,8 +1,5 @@
-I have no idea when/if this will ever be finished.
 # What is this
-This is a Pastebin clone implemented using the Flask library with Python 3.7.
-
-This is also my first time using Vue.JS, and making a Single Page Application.
+This is a Pastebin clone implemented using the Flask library with Python 3.7, and Vue.JS on the backend.
 
 # Features
 * Account Creation, Editing, Deletion

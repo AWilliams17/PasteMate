@@ -60,13 +60,11 @@ class SubmitPaste(Resource):
     @jwt_required
     def post(self):
         data = request.get_json(force=True)
-        print(data)
         form = SubmitPasteForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 401
         identity = get_jwt_identity()
         data['owner_id'] = Account.find_by_username(identity).id
-        print(data)
         this_paste = Paste(**data)
         this_paste.save_to_db()
         return {'paste_uuid': this_paste.paste_uuid}, 200
@@ -75,6 +73,8 @@ class SubmitPaste(Resource):
 class ViewPaste(Resource):
     def get(self, paste_uuid):
         paste = Paste.find_by_uuid(paste_uuid)
+        if paste is None:
+            return {'error': 'Paste with requested UUID was not found.'}, 404
         if paste.password is not None:
             return {'error': 'password is required'}, 401
         return {'paste': paste.paste_dict()}, 200

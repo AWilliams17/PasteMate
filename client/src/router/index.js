@@ -10,6 +10,7 @@ import PasteEdit from '@/components/pastes/PasteEdit';
 import PasteSubmit from '@/components/pastes/PasteSubmit';
 import PasteView from '@/components/pastes/PasteView';
 import PasteList from '@/components/pastes/PasteList';
+import NotFound from '@/components/404';
 
 Vue.use(Router);
 
@@ -38,22 +39,34 @@ export default new Router({
     {
       path: '/account/manage',
       name: 'Manage Account',
-      component: AccountManage
+      component: AccountManage,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/account/passwordreset',
       name: 'Reset Password',
-      component: AccountPasswordReset
+      component: AccountPasswordReset,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/paste/submit',
       name: 'Submit Paste',
-      component: PasteSubmit
+      component: PasteSubmit,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/paste/edit',
       name: 'Edit Paste',
-      component: PasteEdit
+      component: PasteEdit,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/paste/view/:slug',
@@ -63,7 +76,16 @@ export default new Router({
     {
       path: '/paste/list',
       name: 'Submitted Pastes',
-      component: PasteList
+      component: PasteList,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    { path: '*', redirect: '/404' },
+    {
+      path: '/404',
+      name: '404 Not Found',
+      component: NotFound
     }
   ],
   mode: 'history'

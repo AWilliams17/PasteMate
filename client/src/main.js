@@ -24,7 +24,13 @@ new Vue({
   template: '<App/>'
 });
 
-// router.beforeEach((to, from, next) => {
-  // TODO: Make this redirect them to an access denied if authorization is required
-  // TODO: Also, redirect them from the login/register page if they are already logged in.
-// });
+router.beforeEach((to, from, next) => {
+  // Redirect user to sign in page if trying to access a protected route.
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const currentUser = store.getters['user/userID'];
+  if (requiresAuth && !currentUser) {
+    next('/account/signin');
+  } else {
+    next();
+  }
+});

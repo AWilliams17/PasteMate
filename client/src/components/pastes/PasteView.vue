@@ -87,6 +87,8 @@
           .catch((error) => {
             if (error.response.status === 401) {
               this.show_password_form = true;
+            } else if (error.response.status === 404) {
+              this.$router.push('/404');
             } else {
               this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
             }
