@@ -4,14 +4,14 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 
 import wtforms_json
-from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, SubmitPaste, \
+from api.resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, SubmitPaste, \
     ViewPaste, ListPastes, EditPaste, DeletePaste
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
-from models import RevokedToken
+from db.models import RevokedToken
 from flask_cors import CORS
-from models import db
+from db.models import db
 from os.path import exists
 
 app = Flask(__name__, template_folder="../client/")
@@ -27,6 +27,7 @@ app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config['JWT_TOKEN_LOCATION'] = 'cookies'
 app.config['JWT_COOKIE_SECURE'] = False  # TODO: This needs to be set to True after enabling HTTPS
+
 
 with app.app_context():
     db.init_app(app)

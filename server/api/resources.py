@@ -1,10 +1,10 @@
-from flask import after_this_request, request, jsonify, json, Response
-from flask_restful import Resource, reqparse
+from flask import after_this_request, request
+from flask_restful import Resource
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from forms import RegistrationForm, LoginForm, SubmitPasteForm
-from models import Account, Paste, RevokedToken
+from api.forms import RegistrationForm, LoginForm, SubmitPasteForm
+from db.models import Account, Paste, RevokedToken
 from datetime import timedelta
 
 
