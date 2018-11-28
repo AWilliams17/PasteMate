@@ -3,35 +3,36 @@
 * [x] Index
 
 ## Accounts
-* [ ] Sign up component
-* [ ] Sign in component
-* [ ] Edit component
+* [x] Sign up component
+* [x] Sign in component
+* [ ] Manage component
+* [ ] Reset password component
 
 ## Pastes
-* [ ] Paste submission component
-* [ ] Paste edit component
-* [ ] Paste view component
-
-**Paste Open Editing: Have a special link you can send
-which allows someone else to edit the paste. Or something
-along those lines.**
+* [x] Paste submission component
+* [x] Paste edit component
+* [x] Paste view component
+* [x] Paste list component
 
 ## Misc
 * [ ] Fully implement aria controls
 * [ ] Setup.py
 * [ ] Unit Tests
+* [ ] Rate Limiter
+* [ ] Upgrade WebPack to v4
+* [ ] Better axios error handling
 
 ## Security Checklist
-* [ ] Password Hashing
+* [x] Password Hashing
 * [ ] Token based password recovery
-* [ ] CSRF Tokens
-* [ ] XSS
+* [x] CSRF Tokens
+* [x] XSS
 * [ ] Security Headers (use https://github.com/GoogleCloudPlatform/flask-talisman)
 * [ ] HSTS
 * [ ] Content Security Policy
 * [ ] X-Content-Type-Options
 * [ ] X-Frame-Options
-* [ ] X-XSS-Protection
-* [ ] Set-Cookie options
+* [x] X-XSS-Protection
+* [x] Set-Cookie options
 SQLAlchemy should protect against SQLI for the most part, unless I try
 to actively ruin it (which I won't ^.^)

@@ -104,7 +104,7 @@ class EditPaste(Resource):
         for key in ['deletion_inbound', 'expiration_date']:
             paste_information.pop(key)
         paste_information['expiration'] = 0
-        return {'paste': paste_information}
+        return {'paste': paste_information}, 200
 
     @jwt_required
     def post(self, paste_uuid):  # Just in case someone tries to get dirty with post requests, verify things here too.
