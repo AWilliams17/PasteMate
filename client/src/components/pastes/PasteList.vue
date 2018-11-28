@@ -6,24 +6,27 @@
     </div>
     <div class="card-body">
       <b-container>
-        <b-list-group v-for="paste in pastes" :key="paste.id">
+        <template v-if="pastes.length > 0">
+          <b-list-group v-for="paste in pastes" :key="paste.id">
             <b-list-group-item v-bind:to="'/paste/view/' + paste.uuid" class="paste-details-container">
-              <b-container>
-                <div class="float-left" style="margin-top: 6px">
-                  <b-badge variant="primary">Title: {{paste.title}}</b-badge>
-                  <b-badge variant="dark">Language: {{paste.language}}</b-badge>
-                  <b-badge v-if="paste.expiration_date" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
-                  <b-badge v-if="paste.edit_date" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
-                  <b-badge variant="warning">Open Edit: {{paste.open_edit ? 'Yes' : 'No'}}</b-badge>
-                  <b-badge variant="info">Password: {{paste.password_protected ? 'Yes' : 'No'}}</b-badge>
-                </div>
-                <div class="float-right">
-                  <b-button v-bind:to="'/paste/edit/' + paste.uuid" variant="warning" size="sm">Edit</b-button>
-                  <b-button v-bind:to="'/paste/delete/' + paste.uuid" variant="danger" size="sm">Delete</b-button>
-                </div>
-              </b-container>
+              <div class="float-left" style="margin-top: 6px">
+                <b-badge variant="primary">Title: {{paste.title}}</b-badge>
+                <b-badge variant="dark">Language: {{paste.language}}</b-badge>
+                <b-badge v-if="paste.expiration_date" variant="danger">Expiration Date: {{paste.expiration_date}}</b-badge>
+                <b-badge v-if="paste.edit_date" variant="light">Last Edit: {{paste.edit_date}}</b-badge>
+                <b-badge variant="warning">Open Edit: {{paste.open_edit ? 'Yes' : 'No'}}</b-badge>
+                <b-badge variant="info">Password: {{paste.password_protected ? 'Yes' : 'No'}}</b-badge>
+              </div>
+              <div class="float-right">
+                <b-button v-bind:to="'/paste/edit/' + paste.uuid" variant="warning" size="sm">Edit</b-button>
+                <b-button v-bind:to="'/paste/delete/' + paste.uuid" variant="danger" size="sm">Delete</b-button>
+              </div>
             </b-list-group-item>
-        </b-list-group>
+          </b-list-group>
+        </template>
+        <template v-else>
+          <h4 style="text-align: center">You have not submitted any pastes.</h4>
+        </template>
       </b-container>
     </div>
   </div>

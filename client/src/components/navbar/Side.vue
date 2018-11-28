@@ -10,7 +10,7 @@
         <i class="nc-icon nc-pencil"></i>
         <p>Submit Paste</p>
       </b-link>
-      <b-link to="/paste/list" class="nav-link" router-link="li">
+      <b-link to="/paste/list/1" class="nav-link" router-link="li">
         <i class="nc-icon nc-notes"></i>
         <p>My Pastes</p>
       </b-link>

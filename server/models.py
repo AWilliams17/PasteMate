@@ -11,7 +11,7 @@ class Account(db.Model):
     password = db.Column(db.String(256), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref=db.backref('submitter', lazy='dynamic', uselist=True),
-                             order_by='Paste.submission_date', lazy='dynamic')
+                             order_by='Paste.submission_date.desc()', lazy='dynamic')
 
     @classmethod
     def find_by_username(cls, username):
@@ -37,7 +37,6 @@ class Account(db.Model):
         self.username = username
         self.email = email
         self.password = generate_password_hash(password, method='sha256')
-        self.pastes = None
 
     def __repr__(self):
         return '<Account %r>' % self.username
