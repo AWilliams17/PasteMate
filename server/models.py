@@ -82,6 +82,18 @@ class Paste(db.Model):
             'deletion_inbound': datetime.utcnow() >= self.expiration_date if self.expiration_date is not None else False
         }
 
+    def update_paste(self, title, language, content, password=None, open_edit=None, expiration=None):
+        self.title = title
+        self.language = language
+        self.content = content
+        self.edit_date = datetime.utcnow()
+        # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
+        # Otherwise, keep them all the same.
+        self.password = password if password is not None else self.password
+        self.open_edit = open_edit if open_edit is not None else open_edit
+        self.expiration_date = self.expiration_options.get(expiration) if expiration is not None else self.expiration_date
+        db.session.commit()
+    
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

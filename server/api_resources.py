@@ -89,6 +89,46 @@ class ViewPaste(Resource):
         return {'error': 'Password required.'}, 401
 
 
+class EditPaste(Resource):
+    @jwt_required
+    def get(self, paste_uuid):
+        paste = Paste.find_by_uuid(paste_uuid)
+        if paste is None:
+            return {'error': 'Paste not found'}, 404
+        identity = get_jwt_identity()
+        current_user_id = Account.find_by_username(identity).id
+        if paste.owner_id != current_user_id and not paste.open_edit:
+            return {'error': 'You are not the owner of this paste, and open edit is not enabled for it.'}, 401
+        paste_information = paste.paste_dict()
+        # Strip out unneeded information and set expiration to 0 for client
+        for key in ['owner_name', 'deletion_inbound', 'expiration_date']:
+            paste_information.pop(key)
+        paste_information['expiration'] = 0
+        return {'paste': paste_information}
+
+    @jwt_required
+    def post(self, paste_uuid):  # Just in case someone tries to get dirty with post requests, verify things here too.
+        paste = Paste.find_by_uuid(paste_uuid)
+        if paste is None:
+            return {'error': 'Paste not found'}, 404
+        data = request.get_json(force=True)
+        form = SubmitPasteForm.from_json(data)
+        if not form.validate():
+            return {'errors': form.errors}, 401
+        identity = get_jwt_identity()
+        current_user_id = Account.find_by_username(identity).id
+        if paste.owner_id != current_user_id and not paste.open_edit:
+            return {'error': 'You are not the owner of this paste, and open edit is not enabled for it.'}, 401
+        if paste.owner_id != current_user_id and paste.open_edit:
+            # Restrict changes to the password, expiration date, and open edit settings if they are not
+            # the paste owner.
+            data['password'] = None
+            data['open_edit'] = None
+            data['expiration'] = None
+        paste.update_paste(**data)
+        return {'paste_uuid': paste.paste_uuid}
+
+
 class PasteList(Resource):
     @jwt_required
     def get(self, page):

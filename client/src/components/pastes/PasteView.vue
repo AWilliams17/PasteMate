@@ -89,7 +89,7 @@
         axios.get(this.path)
           .then((response) => {
             this.paste = response.data.paste;
-            console.log(this.paste.expiration_date);
+            console.log(this.paste.edit_date);
           })
           .catch((error) => {
             if (error.response.status === 401) {

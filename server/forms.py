@@ -1,6 +1,6 @@
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField
-from models import Account, Paste
+from models import Account
 from hljs_list import language_list
 
 

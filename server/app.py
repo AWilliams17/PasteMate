@@ -4,7 +4,8 @@ ToDo: Rate limit SignUp, SignIn, Paste Submit
 
 
 import wtforms_json
-from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, SubmitPaste, ViewPaste, PasteList
+from api_resources import RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, SubmitPaste, \
+    ViewPaste, PasteList, EditPaste
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
@@ -85,6 +86,7 @@ api.add_resource(CurrentUser, '/api/auth/current_user')
 api.add_resource(RevokeAccess, '/api/auth/revoke')
 api.add_resource(SubmitPaste, '/api/paste/submit')
 api.add_resource(ViewPaste, '/api/paste/view/<string:paste_uuid>')
+api.add_resource(EditPaste, '/api/paste/edit/<string:paste_uuid>')
 api.add_resource(PasteList, '/api/paste/list/<string:page>')
 
 if __name__ == '__main__':

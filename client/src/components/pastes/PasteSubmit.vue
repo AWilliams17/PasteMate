@@ -1,7 +1,7 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <b-card header="Submit a Paste" class="mx-auto" style="max-width: 30rem;">
+      <b-card v-bind:header="this.editing_paste ? 'Edit Paste' : 'Submit Paste'" class="mx-auto" style="max-width: 30rem;">
         <b-form @submit="onSubmit">
           <b-form-group id="titleFieldSet">
             <b-form-input id="titleInput" v-model="form.title" maxlength="24" required placeholder="Title..."></b-form-input>
@@ -26,30 +26,32 @@
                            style="background-color: #27293d;">
             </b-form-select>
           </b-form-group>
-          <b-form-group id="expirationInputGroup">
-            <b-form-select id="expirationInput"
-                           :options="expiration"
-                           required
-                           v-model="form.expiration"
-                           style="background-color: #27293d;">
-            </b-form-select>
-          </b-form-group>
-          <b-form-group id="passwordFieldSet"
-                        :label-cols="4">
-            <b-form-input id="passwordInput"
-                          v-model="form.password"
-                          type="password"
-                          placeholder="Password">
-            </b-form-input>
-          </b-form-group>
-          <b-form-group>
-            <b-form-checkbox id="openEditCheckbox"
-                             v-model="form.open_edit"
-                             value=true
-                             unchecked-value=false>
-              Open Edit
-            </b-form-checkbox>
-          </b-form-group>
+          <template v-if="this.$store.getters['user/username'] !== owner_name">
+            <b-form-group id="expirationInputGroup">
+              <b-form-select id="expirationInput"
+                             :options="expiration"
+                             required
+                             v-model="form.expiration"
+                             style="background-color: #27293d;">
+              </b-form-select>
+            </b-form-group>
+            <b-form-group id="passwordFieldSet"
+                          :label-cols="4">
+              <b-form-input id="passwordInput"
+                            v-model="form.password"
+                            type="password"
+                            placeholder="Password">
+              </b-form-input>
+            </b-form-group>
+            <b-form-group>
+              <b-form-checkbox id="openEditCheckbox"
+                               v-model="form.open_edit"
+                               value=true
+                               unchecked-value=false>
+                Open Edit
+              </b-form-checkbox>
+            </b-form-group>
+          </template>
           <b-button type="submit" variant="primary" size="sm" class="float-right">Submit</b-button>
         </b-form>
       </b-card>
@@ -65,6 +67,8 @@
     name: 'paste-submit',
     data() {
       return {
+        editing_paste: false,
+        owner_name: this.$store.getters['user/username'],
         languages: [
           { 'text': 'None', value: 'Plaintext' },
           ...LanguageList.language_list
@@ -89,19 +93,36 @@
         }
       };
     },
+    created() {
+      const PasteUUID = this.$route.params.slug;
+      if (PasteUUID) {
+        this.getPasteInformation(PasteUUID);
+      }
+    },
     methods: {
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
         axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
         axios.defaults.xsrfCookieName = 'csrf_access_token';
-        axios.post('/api/paste/submit', payload, {withCredentials: true})
-          .then((response) => {
-            this.$router.push('/paste/view/' + response.data.paste_uuid);
-          })
-          .catch((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
-          });
+        if (this.editing_paste) {
+          const PasteUUID = this.$route.params.slug;
+          axios.post('/api/paste/edit/' + PasteUUID, payload, {withCredentials: true})
+            .then((response) => {
+              this.$router.push('/paste/view/' + response.data.paste_uuid);
+            })
+            .catch((error) => {
+              this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            });
+        } else {
+          axios.post('/api/paste/submit', payload, {withCredentials: true})
+            .then((response) => {
+              this.$router.push('/paste/view/' + response.data.paste_uuid);
+            })
+            .catch((error) => {
+              this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            });
+        }
       },
       onTab(evt) { // Four space tab indention
         evt.preventDefault();
@@ -109,6 +130,18 @@
         let currentValue = evt.target.value;
         evt.target.value = currentValue.substr(0, startValue) + '    ' + currentValue.substr(evt.target.selectionEnd);
         evt.target.selectionStart = evt.target.selectionEnd = startValue + 4;
+      },
+      getPasteInformation(PasteUUID) {
+        axios.get('/api/paste/edit/' + PasteUUID, {withCredentials: true})
+          .then((response) => {
+            this.editing_paste = true;
+            this.form.title = response.data.paste.title;
+            this.form.language = response.data.paste.language;
+            this.form.content += response.data.paste.content;
+          })
+          .catch((error) => {
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+          });
       }
     }
   };
