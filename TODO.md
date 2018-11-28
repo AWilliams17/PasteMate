@@ -29,9 +29,6 @@
 * [x] XSS
 * [ ] Security Headers (use https://github.com/GoogleCloudPlatform/flask-talisman)
 * [ ] HSTS
-* [ ] Content Security Policy
-* [ ] X-Content-Type-Options
-* [ ] X-Frame-Options
 * [x] X-XSS-Protection
 * [x] Set-Cookie options
 SQLAlchemy should protect against SQLI for the most part, unless I try
