@@ -59,7 +59,6 @@
     methods: {
       updateResource(data) {
         this.pastes = data;
-        console.log(this.pastes)
       },
       deletePaste(PasteUUID) {
         axios.get('/api/paste/delete/' + PasteUUID, {withCredentials: true})
