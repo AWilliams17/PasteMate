@@ -16,11 +16,13 @@
 
 ## Misc
 * [ ] Fully implement aria controls
-* [ ] Setup.py
+* [x] Setup.py
 * [ ] Unit Tests
 * [ ] Rate Limiter
 * [ ] Upgrade WebPack to v4
 * [ ] Better axios error handling
+* [ ] Logs
+* [ ] Configuration
 
 ## Security Checklist
 * [x] Password Hashing
