@@ -4,7 +4,7 @@
       <b-card header="Submit a Paste" class="mx-auto" style="max-width: 30rem;">
         <b-form @submit="onSubmit">
           <b-form-group id="titleFieldSet">
-            <b-form-input id="titleInput" v-model="form.title" required placeholder="Title..."></b-form-input>
+            <b-form-input id="titleInput" v-model="form.title" maxlength="24" required placeholder="Title..."></b-form-input>
           </b-form-group>
           <b-form-group id="contentFieldSet">
             <b-form-textarea id="contentInput"
@@ -14,6 +14,7 @@
                              required
                              placeholder="Paste Content..."
                              class="paste-box"
+                             maxlength="600000"
                              @keydown.native.tab="onTab">
             </b-form-textarea>
           </b-form-group>

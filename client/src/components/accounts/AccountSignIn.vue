@@ -8,14 +8,14 @@
                         :label-cols="4"
                         label="Username"
                         label-size="sm">
-            <b-form-input id="usernameInput" size="sm" v-model="form.username" required></b-form-input>
+            <b-form-input id="usernameInput" size="sm" v-model="form.username" maxlength="12" required></b-form-input>
           </b-form-group>
           <b-form-group id="passwordFieldSet"
                         horizontal
                         :label-cols="4"
                         label="Password"
                         label-size="sm">
-            <b-form-input id="passwordInput" type="password" size="sm" v-model="form.password" required></b-form-input>
+            <b-form-input id="passwordInput" type="password" size="sm" maxlength="128" v-model="form.password" required></b-form-input>
           </b-form-group>
           <b-button type="submit" variant="primary" size="sm" class="float-right">Sign in</b-button>
         </b-form>
@@ -51,6 +51,3 @@
     }
   };
 </script>
-
-<style scoped>
-</style>

@@ -5,7 +5,7 @@ from hljs_list import language_list
 
 
 class RegistrationForm(Form):
-    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=64)])
+    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=12)])
     email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
     password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=128)])
 
@@ -28,7 +28,7 @@ class RegistrationForm(Form):
 
 
 class LoginForm(Form):
-    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=64)])
+    username = StringField(validators=[validators.InputRequired("No username was given."), validators.Length(min=4, max=12)])
     password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=128)])
 
     def validate(self):
@@ -50,7 +50,7 @@ class LoginForm(Form):
 
 
 class SubmitPasteForm(Form):
-    title = StringField(validators=[validators.Length(min=1, max=64)])
+    title = StringField(validators=[validators.Length(min=1, max=24)])
     content = StringField(validators=[validators.InputRequired("Pastes cannot be empty."), validators.Length(min=1, max=600000)])
     language = StringField(validators=[validators.InputRequired("A language must be selected.")])
     expiration = IntegerField(validators=[validators.AnyOf([*range(0, 8)], "A valid expiration option must be selected.")])

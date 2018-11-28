@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy, BaseQuery
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from uuid import uuid4

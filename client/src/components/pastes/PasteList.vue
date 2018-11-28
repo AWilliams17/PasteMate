@@ -25,7 +25,7 @@
           </b-list-group>
         </template>
         <template v-else>
-          <h4 style="text-align: center">You have not submitted any pastes.</h4>
+          <h4 style="text-align: center">No pastes found.</h4>
         </template>
       </b-container>
     </div>
