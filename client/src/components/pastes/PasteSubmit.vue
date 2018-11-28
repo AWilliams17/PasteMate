@@ -26,7 +26,7 @@
                            style="background-color: #27293d;">
             </b-form-select>
           </b-form-group>
-          <template v-if="this.$store.getters['user/username'] === owner_name">
+          <template v-if="this.show_owner_only">
             <b-form-group id="expirationInputGroup">
               <b-form-select id="expirationInput"
                              :options="expiration"
@@ -68,7 +68,8 @@
     data() {
       return {
         editing_paste: false,
-        owner_name: this.$store.getters['user/username'],
+        show_owner_only: true,
+        owner_name: null,
         languages: [
           { 'text': 'None', value: 'Plaintext' },
           ...LanguageList.language_list
@@ -93,7 +94,7 @@
         }
       };
     },
-    created() {
+    mounted() {
       const PasteUUID = this.$route.params.slug;
       if (PasteUUID) {
         this.getPasteInformation(PasteUUID);
@@ -132,6 +133,7 @@
         evt.target.selectionStart = evt.target.selectionEnd = startValue + 4;
       },
       getPasteInformation(PasteUUID) {
+        const CurrentUser = this.$store.getters['user/username'];
         axios.get('/api/paste/edit/' + PasteUUID, {withCredentials: true})
           .then((response) => {
             this.editing_paste = true;
@@ -139,6 +141,9 @@
             this.form.title = response.data.paste.title;
             this.form.language = response.data.paste.language;
             this.form.content += response.data.paste.content;
+            if (CurrentUser !== this.owner_name) {
+              this.show_owner_only = false;
+            }
           })
           .catch((error) => {
             this.$store.dispatch('notification/addNotification', 'Error: ' + error);
@@ -154,6 +159,7 @@
     border: 1px solid #2b3553;
     border-radius: 0.4285rem;
     font-size: 0.75rem;
+    line-height: 16px;
   }
   .paste-box:focus {
     border: 1px solid #e14eca;

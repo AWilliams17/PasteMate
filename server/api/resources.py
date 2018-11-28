@@ -126,7 +126,7 @@ class EditPaste(Resource):
             data['open_edit'] = None
             data['expiration'] = None
         paste.update_paste(**data)
-        return {'paste_uuid': paste.paste_uuid}, 204
+        return {'paste_uuid': paste.paste_uuid}, 200
 
 
 class DeletePaste(Resource):
