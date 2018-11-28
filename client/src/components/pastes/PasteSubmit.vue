@@ -67,8 +67,9 @@
     name: 'paste-submit',
     data() {
       return {
+        current_user: this.$store.getters['user/username'],
         editing_paste: false,
-        show_owner_only: true,
+        show_owner_only: (this.current_user === this.owner_name),
         owner_name: null,
         languages: [
           { 'text': 'None', value: 'Plaintext' },
@@ -133,7 +134,8 @@
         evt.target.selectionStart = evt.target.selectionEnd = startValue + 4;
       },
       getPasteInformation(PasteUUID) {
-        const CurrentUser = this.$store.getters['user/username'];
+        console.log(this.$store);
+        console.log(this.$store.getters['user/username']);
         axios.get('/api/paste/edit/' + PasteUUID, {withCredentials: true})
           .then((response) => {
             this.editing_paste = true;
@@ -141,9 +143,6 @@
             this.form.title = response.data.paste.title;
             this.form.language = response.data.paste.language;
             this.form.content += response.data.paste.content;
-            if (CurrentUser !== this.owner_name) {
-              this.show_owner_only = false;
-            }
           })
           .catch((error) => {
             this.$store.dispatch('notification/addNotification', 'Error: ' + error);
