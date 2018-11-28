@@ -39,12 +39,14 @@
               <b-button v-if="this.$store.getters['user/username'] === paste.owner_name || paste.open_edit"
                         type="submit"
                         variant="warning"
-                        size="sm">Edit
+                        size="sm"
+                        v-bind:to="'/paste/edit/' + this.$route.params.slug">Edit
               </b-button>
               <b-button v-if="this.$store.getters['user/username'] === paste.owner_name"
                         type="submit"
                         variant="danger"
-                        size="sm">Delete
+                        size="sm"
+                        @click="deletePaste">Delete
               </b-button>
             </div>
           </div>
@@ -112,6 +114,17 @@
           .catch((error) => {
             this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
           })
+      },
+      deletePaste() {
+        const pasteUUID = this.$route.params.slug;
+        axios.get('/api/paste/delete/' + pasteUUID, {withCredentials: true})
+          .then(() => {
+            this.$store.dispatch('notification/addNotification', 'Paste was successfully deleted.');
+            this.$router.push('/')
+          })
+          .catch((error) => {
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+          });
       }
     },
     created() {

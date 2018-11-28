@@ -26,7 +26,7 @@
                            style="background-color: #27293d;">
             </b-form-select>
           </b-form-group>
-          <template v-if="this.$store.getters['user/username'] !== owner_name">
+          <template v-if="this.$store.getters['user/username'] === owner_name">
             <b-form-group id="expirationInputGroup">
               <b-form-select id="expirationInput"
                              :options="expiration"
@@ -135,6 +135,7 @@
         axios.get('/api/paste/edit/' + PasteUUID, {withCredentials: true})
           .then((response) => {
             this.editing_paste = true;
+            this.owner_name = response.data.paste.owner_name;
             this.form.title = response.data.paste.title;
             this.form.language = response.data.paste.language;
             this.form.content += response.data.paste.content;

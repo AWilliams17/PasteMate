@@ -19,7 +19,7 @@
               </div>
               <div class="float-right">
                 <b-button v-bind:to="'/paste/edit/' + paste.uuid" variant="warning" size="sm">Edit</b-button>
-                <b-button v-bind:to="'/paste/delete/' + paste.uuid" variant="danger" size="sm">Delete</b-button>
+                <b-button @click.stop.prevent="deletePaste(paste.uuid)" variant="danger" size="sm">Delete</b-button>
               </div>
             </b-list-group-item>
           </b-list-group>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import VuePaginator from 'vuejs-paginator';
 
   export default {
@@ -59,6 +60,16 @@
       updateResource(data) {
         this.pastes = data;
         console.log(this.pastes)
+      },
+      deletePaste(PasteUUID) {
+        axios.get('/api/paste/delete/' + PasteUUID, {withCredentials: true})
+          .then(() => {
+            this.$store.dispatch('notification/addNotification', 'Paste was successfully deleted.');
+            this.$router.go(0);
+          })
+          .catch((error) => {
+            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+          });
       }
     }
   };

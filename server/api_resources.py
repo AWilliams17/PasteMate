@@ -101,7 +101,7 @@ class EditPaste(Resource):
             return {'error': 'You are not the owner of this paste, and open edit is not enabled for it.'}, 401
         paste_information = paste.paste_dict()
         # Strip out unneeded information and set expiration to 0 for client
-        for key in ['owner_name', 'deletion_inbound', 'expiration_date']:
+        for key in ['deletion_inbound', 'expiration_date']:
             paste_information.pop(key)
         paste_information['expiration'] = 0
         return {'paste': paste_information}
@@ -126,10 +126,24 @@ class EditPaste(Resource):
             data['open_edit'] = None
             data['expiration'] = None
         paste.update_paste(**data)
-        return {'paste_uuid': paste.paste_uuid}
+        return {'paste_uuid': paste.paste_uuid}, 204
 
 
-class PasteList(Resource):
+class DeletePaste(Resource):
+    @jwt_required
+    def get(self, paste_uuid):
+        paste = Paste.find_by_uuid(paste_uuid)
+        identity = get_jwt_identity()
+        current_user_id = Account.find_by_username(identity).id
+        if paste is None:
+            return {'error': 'Paste not found'}, 404
+        if paste.owner_id != current_user_id:
+            return {'error': 'You can not delete pastes you do not own.'}, 401
+        paste.delete()
+        return {'result': 'Paste deleted.'}, 204
+
+
+class ListPastes(Resource):
     @jwt_required
     def get(self, page):
         def strf_date(date): return date.strftime("%Y-%m-%d %H:%M:%S") if date is not None else None

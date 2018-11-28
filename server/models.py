@@ -78,6 +78,7 @@ class Paste(db.Model):
             'expiration_date': strf_date(self.expiration_date),
             'open_edit': self.open_edit,
             'owner_name': Account.find_by_id(self.owner_id).username,
+            ''
             # If this paste has hit its expiration date, but the deletion job for it hasn't run yet, tell the client
             'deletion_inbound': datetime.utcnow() >= self.expiration_date if self.expiration_date is not None else False
         }
@@ -93,7 +94,7 @@ class Paste(db.Model):
         self.open_edit = open_edit if open_edit is not None else open_edit
         self.expiration_date = self.expiration_options.get(expiration) if expiration is not None else self.expiration_date
         db.session.commit()
-    
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -101,6 +102,10 @@ class Paste(db.Model):
     @classmethod
     def find_by_uuid(cls, paste_uuid):
         return cls.query.filter_by(paste_uuid=paste_uuid).first()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def password_correct(self, password):
         return check_password_hash(self.password, password)
