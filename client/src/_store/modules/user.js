@@ -56,7 +56,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get('/api/auth/refresh', {withCredentials: true})
           .then((response) => {
-            this.retrieveCurrentUser();
+            context.dispatch('retrieveCurrentUser');
             resolve(response);
           })
           .catch((error) => {
