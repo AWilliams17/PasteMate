@@ -19,11 +19,11 @@
     name: 'notification-container',
     computed: {
       notifications() {
-        return this.$store.getters['notification/notifications'];
+        return this.$store.getters['session/notifications'];
       },
 
       sign_out_notification() {
-        return this.$store.getters['notification/sign_out_notification'];
+        return this.$store.getters['session/signOutNotification'];
       }
     },
 
@@ -44,6 +44,3 @@
     }
   };
 </script>
-
-<style scoped>
-</style>
