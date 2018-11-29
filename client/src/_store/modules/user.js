@@ -51,11 +51,12 @@ export default {
       })
     },
 
-    // Get a new access token using their refresh token
+    // Get a new access token using their refresh token, and if it's valid, retrieve the current user with it.
     refreshUser(context) {
       return new Promise((resolve, reject) => {
         axios.get('/api/auth/refresh', {withCredentials: true})
           .then((response) => {
+            this.retrieveCurrentUser();
             resolve(response);
           })
           .catch((error) => {
