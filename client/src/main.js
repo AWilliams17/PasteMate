@@ -9,7 +9,7 @@ import VueCookies from 'vue-cookies';
 import VueResource from 'vue-resource';
 import App from './App';
 import router from './router';
-import store from './_store/store';
+import store from './store';
 
 Vue.use(BootstrapVue);
 Vue.use(VueHighlightJS);
@@ -22,14 +22,13 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
-  template: '<App/>'
+  render: h => h(App)
 });
 
 router.beforeEach((to, from, next) => {
   // Redirect user to sign in page if trying to access a protected route.
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const currentUser = store.getters['user/userID'];
+  const {requiresAuth} = to.meta;
+  const currentUser = store.getters['session/user'];
   if (requiresAuth && !currentUser) {
     next('/account/signin');
   } else {
