@@ -187,8 +187,8 @@ class RevokeAccess(Resource):
 class RefreshUser(Resource):
     @jwt_refresh_token_required
     def post(self):
-        current_user = get_jwt_identity()
-        access_token = create_access_token(identity=current_user)
+        current_username = get_jwt_identity()
+        access_token = create_access_token(identity=current_username)
         response = {'token_refreshed': True}
         set_access_cookies(response, access_token)
         return response, 200
@@ -197,7 +197,7 @@ class RefreshUser(Resource):
 class CurrentUser(Resource):
     @jwt_required
     def get(self):
-        identity = get_jwt_identity()
-        user = Account.find_by_username(identity)
-        return {'username': identity, 'userID': user.id, 'email': user.email}
+        current_username = get_jwt_identity()
+        user = Account.find_by_username(current_username)
+        return {'username': current_username, 'userID': user.id, 'email': user.email}
         # Nothing else needed since the loader should do the rest.
