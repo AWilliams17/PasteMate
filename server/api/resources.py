@@ -36,7 +36,7 @@ class RegisterUser(Resource):
             set_cookies(user_tokens, response)
             return response
 
-        return {'username': user.username, 'userID': user.id}, 201
+        return {'username': user.username, 'userID': user.id, 'email': user.email}, 201
 
 
 class LoginUser(Resource):
@@ -53,7 +53,7 @@ class LoginUser(Resource):
             set_cookies(user_tokens, response)
             return response
 
-        return {'username': user.username, 'userID': user.id}, 200
+        return {'username': user.username, 'userID': user.id, 'email': user.email}, 200
 
 
 class SubmitPaste(Resource):
@@ -198,6 +198,6 @@ class CurrentUser(Resource):
     @jwt_required
     def get(self):
         identity = get_jwt_identity()
-        user_id = Account.find_by_username(identity).id
-        return {'username': identity, 'userID': user_id}
+        user = Account.find_by_username(identity)
+        return {'username': identity, 'userID': user.id, 'email': user.email}
         # Nothing else needed since the loader should do the rest.

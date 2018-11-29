@@ -5,7 +5,8 @@ export default {
 
   state: {
     userID: null,
-    username: null
+    username: null,
+    email: null
   },
 
   actions: {
@@ -13,7 +14,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios.post('/api/user/register', payload, {withCredentials: true})
           .then((response) => {
-            context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
+            context.commit('UPDATE_USER', [response.data.username, response.data.userID, response.data.email]);
             resolve(response);
           })
           .catch((error) => {
@@ -27,7 +28,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios.post('/api/user/login', payload, {withCredentials: true})
           .then((response) => {
-            context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
+            context.commit('UPDATE_USER', [response.data.username, response.data.userID, response.data.email]);
             resolve(response);
           })
           .catch((error) => {
@@ -41,7 +42,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get('/api/auth/revoke', {withCredentials: true})
           .then((response) => {
-            context.commit('UPDATE_USER', [null, null]);
+            context.commit('UPDATE_USER', [null, null, null]);
             resolve(response);
           })
           .catch((error) => {
@@ -58,7 +59,7 @@ export default {
             resolve(response);
           })
           .catch((error) => {
-            context.commit('UPDATE_USER', [null, null]);
+            context.commit('UPDATE_USER', [null, null, null]);
             reject(error);
           });
       })
@@ -69,7 +70,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios.get('/api/auth/current_user', {withCredentials: true})
           .then((response) => {
-            context.commit('UPDATE_USER', [response.data.username, response.data.userID]);
+            context.commit('UPDATE_USER', [response.data.username, response.data.userID, response.data.email]);
             resolve(response);
           })
           .catch((error) => {
@@ -82,7 +83,7 @@ export default {
 
   mutations: {
     UPDATE_USER(state, payload) {
-      [state.username, state.userID] = [...payload];
+      [state.username, state.userID, state.email] = [...payload];
     }
   },
 
@@ -93,6 +94,10 @@ export default {
 
     userID: state => {
       return state.userID;
+    },
+
+    email: state => {
+      return state.email;
     }
   }
 }
