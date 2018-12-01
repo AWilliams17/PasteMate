@@ -4,9 +4,16 @@ Paste specific API Resources + some helper functions
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from PasteMate.api.forms import SubmitPasteForm
+from PasteMate.api.forms.paste import SubmitPasteForm
 from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
+
+
+def validate_password(func):
+    def wrapper(*args, **kwargs):
+        func(*args, **kwargs)
+        return func(*args, **kwargs)
+    return wrapper
 
 
 class SubmitPaste(Resource):
