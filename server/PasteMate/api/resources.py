@@ -201,3 +201,8 @@ class CurrentUser(Resource):
         user = Account.find_by_username(current_username)
         return {'username': current_username, 'userID': user.id, 'email': user.email}
         # Nothing else needed since the loader should do the rest.
+
+
+class Ping(Resource):  # For testing purposes
+    def get(self):
+        return {'ping': 'Pong!'}, 200

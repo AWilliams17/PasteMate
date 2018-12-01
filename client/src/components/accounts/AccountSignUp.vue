@@ -48,7 +48,7 @@
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
-        this.$store.dispatch('user/signUp', payload).then(() => {
+        this.$store.dispatch('session/signUp', payload).then(() => {
           this.$router.push('/');
         }).catch((error) => {
           const errorList = Object.values(error.response.data.errors);

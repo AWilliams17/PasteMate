@@ -1,9 +1,8 @@
-from PasteMate import flask_app
 from PasteMate.db.models import RevokedToken
 from flask import jsonify
 from flask_jwt_extended import JWTManager
 
-jwt_manager = JWTManager(flask_app)
+jwt_manager = JWTManager()
 
 
 @jwt_manager.token_in_blacklist_loader

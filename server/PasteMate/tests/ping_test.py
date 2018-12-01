@@ -1,2 +1,0 @@
-import PasteMate
-import unittest
