@@ -114,7 +114,7 @@
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
             .catch((error) => {
-              this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+              this.$store.dispatch('session/addNotification', 'Error: ' + error);
             });
         } else {
           axios.post('/api/paste/submit', payload, {withCredentials: true})
@@ -122,7 +122,7 @@
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
             .catch((error) => {
-              this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+              this.$store.dispatch('session/addNotification', 'Error: ' + error);
             });
         }
       },
@@ -145,7 +145,7 @@
             this.form.content += response.data.paste.content;
           })
           .catch((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            this.$store.dispatch('session/addNotification', 'Error: ' + error);
           });
       }
     }

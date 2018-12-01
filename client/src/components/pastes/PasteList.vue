@@ -63,11 +63,11 @@
       deletePaste(PasteUUID) {
         axios.get('/api/paste/delete/' + PasteUUID, {withCredentials: true})
           .then(() => {
-            this.$store.dispatch('notification/addNotification', 'Paste was successfully deleted.');
+            this.$store.dispatch('session/addNotification', 'Paste was successfully deleted.');
             this.$router.go(0);
           })
           .catch((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            this.$store.dispatch('session/addNotification', 'Error: ' + error);
           });
       }
     }

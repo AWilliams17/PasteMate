@@ -30,10 +30,10 @@
     created() {
       // Refresh user tokens if necessary on re-visit.
       if (this.$cookies.get('csrf_access_token')) {
-        this.$store.dispatch('user/retrieveCurrentUser').catch(() => {
-          this.$store.dispatch('user/refreshUser')
+        this.$store.dispatch('session/retrieveUser').catch(() => {
+          this.$store.dispatch('session/refreshUser')
             .catch(() => {
-              this.$store.dispatch('notification/setSignOutNotification', 'You have been signed out.')
+              this.$store.dispatch('session/setSignOutNotification', 'You have been signed out.')
             })
         })
       }

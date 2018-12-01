@@ -35,11 +35,11 @@
       },
 
       clearNotifications() {
-        this.$store.dispatch('notification/clearNotifications')
+        this.$store.dispatch('session/clearNotifications')
       },
 
       clearSignOutNotification() {
-        this.$store.dispatch('notification/clearSignOutNotification')
+        this.$store.dispatch('session/clearSignOutNotification')
       }
     }
   };

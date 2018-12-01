@@ -98,7 +98,7 @@
             } else if (error.response.status === 404) {
               this.$router.push('/404');
             } else {
-              this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
+              this.$store.dispatch('session/addNotification', 'Error: ' + error.response.data.error);
             }
           })
       },
@@ -111,18 +111,18 @@
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error.response.data.error);
+            this.$store.dispatch('session/addNotification', 'Error: ' + error.response.data.error);
           })
       },
       deletePaste() {
         const pasteUUID = this.$route.params.slug;
         axios.get('/api/paste/delete/' + pasteUUID, {withCredentials: true})
           .then(() => {
-            this.$store.dispatch('notification/addNotification', 'Paste was successfully deleted.');
+            this.$store.dispatch('session/addNotification', 'Paste was successfully deleted.');
             this.$router.push('/')
           })
           .catch((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            this.$store.dispatch('session/addNotification', 'Error: ' + error);
           });
       }
     },

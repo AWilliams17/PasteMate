@@ -53,7 +53,7 @@
         }).catch((error) => {
           const errorList = Object.values(error.response.data.errors);
           errorList.forEach((error) => {
-            this.$store.dispatch('notification/addNotification', 'Error: ' + error);
+            this.$store.dispatch('session/addNotification', 'Error: ' + error);
           });
         })
       }
