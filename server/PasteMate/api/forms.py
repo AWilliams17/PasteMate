@@ -1,6 +1,6 @@
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField
-from PasteMate.db.models import Account
+from PasteMate.models.account import Account
 from PasteMate.api.hljs_list import language_list
 
 

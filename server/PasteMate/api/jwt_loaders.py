@@ -1,4 +1,4 @@
-from PasteMate.db.models import RevokedToken
+from PasteMate.models.revoked_token import RevokedToken
 from flask import jsonify
 from flask_jwt_extended import JWTManager
 

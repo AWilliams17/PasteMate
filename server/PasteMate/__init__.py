@@ -1,6 +1,6 @@
 import wtforms_json
 from flask import Flask
-from PasteMate.db.models import db
+from PasteMate.models import db
 from PasteMate.api.routes import routes_bp, api
 from PasteMate.api.jwt_loaders import jwt_manager
 from os.path import exists

@@ -4,7 +4,9 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from PasteMate.api.forms import RegistrationForm, LoginForm, SubmitPasteForm
-from PasteMate.db.models import Account, Paste, RevokedToken
+from PasteMate.models.account import Account
+from PasteMate.models.paste import Paste
+from PasteMate.models.revoked_token import RevokedToken
 from datetime import timedelta
 
 
