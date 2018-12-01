@@ -1,7 +1,7 @@
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField
-from db.models import Account
-from api.hljs_list import language_list
+from PasteMate.db.models import Account
+from PasteMate.api.hljs_list import language_list
 
 
 class RegistrationForm(Form):
