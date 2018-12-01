@@ -23,4 +23,4 @@ api.add_resource(DeletePaste, '/api/paste/delete/<string:paste_uuid>')
 @routes_bp.route('/', defaults={'path': ''})
 @routes_bp.route('/<path:path>')
 def catch_all(path):
-    return app.send_static_file('index.html')
+    return routes_bp.send_static_file('index.html')
