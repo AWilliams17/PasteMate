@@ -1,12 +1,11 @@
 import wtforms_json
 from flask import Flask
 from PasteMate.models import db
-from PasteMate.api.routes import routes_bp, api
+from PasteMate.api.routes import api
 from PasteMate.api.jwt_loaders import jwt_manager
 from os.path import exists
 
 app = Flask(__name__, template_folder="../client/")
-app.register_blueprint(routes_bp)
 app.config.update(
     SQLALCHEMY_DATABASE_URI="sqlite:///PM.db",
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
