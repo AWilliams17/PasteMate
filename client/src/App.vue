@@ -13,10 +13,11 @@
 </template>
 
 <script>
-  import NavHeader from '@/components/navbar/Header'
-  import NavSide from '@/components/navbar/Side'
-  import SiteFooter from '@/components/Footer';
-  import NotificationContainer from '@/components/NotificationContainer';
+  import NavHeader from './components/navbar/Header'
+  import NavSide from './components/navbar/Side'
+  import SiteFooter from './components/Footer';
+  import NotificationContainer from './components/NotificationContainer';
+  import { RETRIEVE_USER, REFRESH_TOKEN, SET_SIGN_OUT_NOTIFICATION } from './store/action-types';
 
   export default {
     name: 'App',
@@ -30,10 +31,10 @@
     created() {
       // Refresh user tokens if necessary on re-visit.
       if (this.$cookies.get('csrf_access_token')) {
-        this.$store.dispatch('session/retrieveUser').catch(() => {
-          this.$store.dispatch('session/refreshUser')
+        this.$store.dispatch(RETRIEVE_USER).catch(() => {
+          this.$store.dispatch(REFRESH_TOKEN)
             .catch(() => {
-              this.$store.dispatch('session/setSignOutNotification', 'You have been signed out.')
+              this.$store.dispatch(SET_SIGN_OUT_NOTIFICATION, 'You have been signed out.');
             })
         })
       }

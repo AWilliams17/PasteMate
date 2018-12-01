@@ -61,6 +61,7 @@
 
 <script>
   import axios from 'axios';
+  import { ADD_NOTIFICATION } from '../../store/action-types';
   import LanguageList from '../../_misc/highlightjs_languages';
 
   export default {
@@ -114,7 +115,7 @@
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
             .catch((error) => {
-              this.$store.dispatch('session/addNotification', 'Error: ' + error);
+              this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
             });
         } else {
           axios.post('/api/paste/submit', payload, {withCredentials: true})
@@ -122,7 +123,7 @@
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
             .catch((error) => {
-              this.$store.dispatch('session/addNotification', 'Error: ' + error);
+              this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
             });
         }
       },
@@ -145,7 +146,7 @@
             this.form.content += response.data.paste.content;
           })
           .catch((error) => {
-            this.$store.dispatch('session/addNotification', 'Error: ' + error);
+            this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
           });
       }
     }

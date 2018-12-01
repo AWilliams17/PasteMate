@@ -63,6 +63,7 @@
 
 <script>
   import axios from 'axios';
+  import { ADD_NOTIFICATION } from '../../store/action-types';
   import 'highlight.js/styles/ocean.css';
 
   export default {
@@ -98,7 +99,7 @@
             } else if (error.response.status === 404) {
               this.$router.push('/404');
             } else {
-              this.$store.dispatch('session/addNotification', 'Error: ' + error.response.data.error);
+              this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error.response.data.error);
             }
           })
       },
@@ -111,18 +112,18 @@
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            this.$store.dispatch('session/addNotification', 'Error: ' + error.response.data.error);
+            this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error.response.data.error);
           })
       },
       deletePaste() {
         const pasteUUID = this.$route.params.slug;
         axios.get('/api/paste/delete/' + pasteUUID, {withCredentials: true})
           .then(() => {
-            this.$store.dispatch('session/addNotification', 'Paste was successfully deleted.');
-            this.$router.push('/')
+            this.$store.dispatch(ADD_NOTIFICATION, 'Paste was successfully deleted.');
+            this.$router.push('/');
           })
           .catch((error) => {
-            this.$store.dispatch('session/addNotification', 'Error: ' + error);
+            this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
           });
       }
     },

@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { SIGN_IN, ADD_NOTIFICATION } from '@/store/action-types'
+import { SIGN_IN, ADD_NOTIFICATION } from '../../store/action-types';
 
 export default {
   name: 'account-sign-in',
@@ -41,12 +41,12 @@ export default {
     async onSubmit() {
       try {
         const payload = this.form;
-        await this.$store.dispatch(SIGN_IN, payload)
+        await this.$store.dispatch(SIGN_IN, payload);
         this.$router.push('/');
       } catch (error) {
-        const errorList = Object.values(error.response.data.errors)
+        const errorList = Object.values(error.response.data.errors);
         errorList.forEach((error) => {
-          this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error)
+          this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
         })
       }
     }

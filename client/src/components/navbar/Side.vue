@@ -14,12 +14,6 @@
         <i class="nc-icon nc-notes"></i>
         <p>My Pastes</p>
       </b-link>
-      <!--
-      <b-link to="/account/manage" class="nav-link" router-link="li">
-        <i class="nc-icon nc-settings-gear-63"></i>
-        <p>Manage Account</p>
-      </b-link>
-      -->
     </b-nav>
   </div>
 </template>

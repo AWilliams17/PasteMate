@@ -44,7 +44,7 @@
     },
     computed: {
       user() {
-        return this.$store.getters['session/user']
+        return this.$store.getters['session/user'];
       }
     },
     methods: {
