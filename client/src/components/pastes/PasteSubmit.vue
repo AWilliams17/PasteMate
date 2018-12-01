@@ -4,6 +4,9 @@
       <b-card v-bind:header="paste_edit_info.editing_paste ? 'Edit Paste' : 'Submit Paste'" class="mx-auto" style="max-width: 30rem;">
         <template v-if="!paste_edit_info.show_password_form">
           <b-form @submit="onSubmit">
+            <label v-if="paste_edit_info.editing_paste">NOTE: Expiration, Password, and Open Edit have been cleared.
+            This change has not been submitted though, so reset them at your own volition. Only you are allowed
+            to change these.</label>
             <b-form-group id="titleFieldSet">
               <b-form-input id="titleInput" v-model="form.title" maxlength="24" required placeholder="Title..."></b-form-input>
             </b-form-group>

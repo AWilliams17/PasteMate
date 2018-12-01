@@ -54,8 +54,8 @@ class Paste(db.Model):
         # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
         # Otherwise, keep them all the same.
         self.password = password if password is not None else self.password
-        self.open_edit = open_edit if open_edit is not None else open_edit
-        self.expiration_date = self.expiration_options.get(expiration) if expiration is not None else self.expiration_date
+        self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
+        self.expiration_date = self.expiration_date if expiration is None else self.expiration_options.get(expiration)
         db.session.commit()
 
     def save_to_db(self):
@@ -73,15 +73,15 @@ class Paste(db.Model):
     def password_correct(self, password):
         return check_password_hash(self.password, password)
 
-    def __init__(self, owner_id, title, language, password, content, open_edit, expiration):
-        self.owner_id = owner_id
+    def __init__(self, owner_name, title, language, password, content, open_edit, expiration):
+        self.owner_id = Account.find_by_username(owner_name).id
         self.title = title
         self.language = language
         self.password = None
         if password is not None:
             self.password = generate_password_hash(password, method='sha256')
         self.content = content
-        self.open_edit = open_edit
+        self.open_edit = (open_edit == 'true')
         self.expiration_date = self.expiration_options.get(expiration)
         self.paste_uuid = str(uuid4())[:8]
 

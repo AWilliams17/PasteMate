@@ -50,10 +50,10 @@ class SubmitPaste(Resource):
         if not form.validate():
             return {'errors': form.errors}, 401
         identity = get_jwt_identity()
-        data['owner_id'] = Account.find_by_username(identity).id
-        this_paste = Paste(**data)
-        this_paste.save_to_db()
-        return {'paste_uuid': this_paste.paste_uuid}, 200
+        data['owner_name'] = identity
+        paste = Paste(**data)
+        paste.save_to_db()
+        return {'paste_uuid': paste.paste_uuid}, 200
 
 
 class ViewPaste(Resource):
