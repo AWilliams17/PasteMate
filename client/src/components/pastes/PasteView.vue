@@ -9,7 +9,7 @@
                           :label-cols="4"
                           label="Paste Password"
                           label-size="sm">
-              <b-form-input id="passwordInput" size="sm" v-model="password" required></b-form-input>
+              <b-form-input id="passwordInput" type="password" size="sm" v-model="password" required></b-form-input>
             </b-form-group>
             <b-button type="submit" variant="primary" size="sm" class="float-right">Submit</b-button>
           </b-form>
@@ -36,13 +36,13 @@
           </div>
           <div class="card-footer">
             <div class="float-right">
-              <b-button v-if="this.$store.getters['user/username'] === paste.owner_name || paste.open_edit"
+              <b-button v-if="current_user_owns_paste || paste.open_edit"
                         type="submit"
                         variant="warning"
                         size="sm"
                         v-bind:to="'/paste/edit/' + this.$route.params.slug">Edit
               </b-button>
-              <b-button v-if="this.$store.getters['user/username'] === paste.owner_name"
+              <b-button v-if="current_user_owns_paste"
                         type="submit"
                         variant="danger"
                         size="sm"
@@ -79,12 +79,27 @@
           submission_date: '',
           edit_date: '',
           expiration_date: '',
-          open_edit: '',
+          open_edit: false,
           owner_name: '',
           deletion_inbound: false
         },
         show_password_form: false,
         password: ''
+      }
+    },
+    computed: {
+      username() {
+        let user = this.$store.getters['session/user'];
+        if (user) {
+          return user.username;
+        }
+        return null;
+      },
+      current_user_owns_paste() {
+        if (this.username) {
+          return this.username === this.paste.owner_name;
+        }
+        return false;
       }
     },
     methods: {
