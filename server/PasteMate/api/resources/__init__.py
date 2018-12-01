@@ -1,0 +1,3 @@
+"""
+Contains api resources
+"""

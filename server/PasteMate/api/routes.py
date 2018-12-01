@@ -1,8 +1,10 @@
+"""
+Defines all API endpoints in the server.
+"""
 from PasteMate.api import api
-from PasteMate.api.resources import Ping, RegisterUser, LoginUser, RevokeAccess, RefreshUser, CurrentUser, \
-    SubmitPaste, ViewPaste, ListPastes, EditPaste, DeletePaste
+from PasteMate.api.resources.user import LoginUser, RegisterUser, CurrentUser, RefreshUser, RevokeAccess
+from PasteMate.api.resources.paste import SubmitPaste, EditPaste, ViewPaste, DeletePaste, ListPastes
 
-api.add_resource(Ping, '/api/test/ping')
 api.add_resource(RegisterUser, '/api/user/register')
 api.add_resource(LoginUser, '/api/user/login')
 api.add_resource(RefreshUser, '/api/auth/refresh')

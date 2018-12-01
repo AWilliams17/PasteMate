@@ -1,61 +1,12 @@
-from flask import after_this_request, request
+"""
+Paste specific API Resources + some helper functions
+"""
+from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
-                                jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
-                                set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from PasteMate.api.forms import RegistrationForm, LoginForm, SubmitPasteForm
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from PasteMate.api.forms import SubmitPasteForm
 from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
-from PasteMate.models.revoked_token import RevokedToken
-from datetime import timedelta
-
-
-def create_tokens(user):
-    access_expiration = timedelta(days=7)
-    refresh_expiration = timedelta(days=14)
-    access_token = create_access_token(identity=user.username, fresh=True, expires_delta=access_expiration)
-    refresh_token = create_refresh_token(identity=user.username, expires_delta=refresh_expiration)
-    return [access_token, refresh_token]
-
-
-def set_cookies(tokens, response):
-    set_access_cookies(response, tokens[0])
-    set_refresh_cookies(response, tokens[1])
-
-
-class RegisterUser(Resource):
-    def post(self):
-        data = request.get_json(force=True)
-        form = RegistrationForm.from_json(data)
-        if not form.validate():
-            return {'errors': form.errors}, 400
-        user = Account(**data)
-        user.save_to_db()
-
-        @after_this_request
-        def set_jwt_cookies(response):
-            user_tokens = create_tokens(user)
-            set_cookies(user_tokens, response)
-            return response
-
-        return {'username': user.username, 'userID': user.id, 'email': user.email}, 201
-
-
-class LoginUser(Resource):
-    def post(self):
-        data = request.get_json(force=True)
-        form = LoginForm.from_json(data)
-        if not form.validate():
-            return {'errors': form.errors}, 401
-        user = Account.find_by_username(data.get('username'))
-
-        @after_this_request
-        def set_jwt_cookies(response):
-            user_tokens = create_tokens(user)
-            set_cookies(user_tokens, response)
-            return response
-
-        return {'username': user.username, 'userID': user.id, 'email': user.email}, 200
 
 
 class SubmitPaste(Resource):
@@ -94,6 +45,13 @@ class ViewPaste(Resource):
 class EditPaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
+        """
+        Verify that the paste exists, the user has proper permission to edit the paste, and strip out owner-only
+        settings if the editor is not the owner of the paste.
+        :param paste_uuid: The UUID of the paste to be edited.
+        :return: Status code 404 if the paste was not found, 401 if permissions are not met, and 200 if successful,
+        along with appropriate JSON response messages for each of these codes.s
+        """
         paste = Paste.find_by_uuid(paste_uuid)
         if paste is None:
             return {'error': 'Paste not found'}, 404
@@ -110,6 +68,12 @@ class EditPaste(Resource):
 
     @jwt_required
     def post(self, paste_uuid):  # Just in case someone tries to get dirty with post requests, verify things here too.
+        """
+        Same validation regarding permissions is repeated here, with the addition of verifying the submitted
+        password
+        :param paste_uuid:
+        :return:
+        """
         paste = Paste.find_by_uuid(paste_uuid)
         if paste is None:
             return {'error': 'Paste not found'}, 404
@@ -171,40 +135,3 @@ class ListPastes(Resource):
             'prev_page_url': ('/api/paste/list/%i' % paste_pagination.prev_num) if paste_pagination.has_prev else None,
             'data': pastes
         }}
-
-
-class RevokeAccess(Resource):
-    @jwt_required
-    def get(self):
-        @after_this_request
-        def revoke_access(response):
-            jti = get_raw_jwt()
-            revoked_token = RevokedToken(jti=jti['jti'])
-            revoked_token.save_to_db()
-            unset_jwt_cookies(response)
-            return response
-        return {'token_revoked': True}, 200
-
-
-class RefreshUser(Resource):
-    @jwt_refresh_token_required
-    def post(self):
-        current_username = get_jwt_identity()
-        access_token = create_access_token(identity=current_username)
-        response = {'token_refreshed': True}
-        set_access_cookies(response, access_token)
-        return response, 200
-
-
-class CurrentUser(Resource):
-    @jwt_required
-    def get(self):
-        current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)
-        return {'username': current_username, 'userID': user.id, 'email': user.email}
-        # Nothing else needed since the loader should do the rest.
-
-
-class Ping(Resource):  # For testing purposes
-    def get(self):
-        return {'ping': 'Pong!'}, 200

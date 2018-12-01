@@ -1,3 +1,6 @@
+"""
+Contains form validation logic via wtforms.
+"""
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField
 from PasteMate.models.account import Account

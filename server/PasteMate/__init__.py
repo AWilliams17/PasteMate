@@ -1,3 +1,7 @@
+"""
+Contains initialization and instantiation of the flask app object,
+along with initialization of extensions.
+"""
 import wtforms_json
 from flask import Flask
 from PasteMate.models import db

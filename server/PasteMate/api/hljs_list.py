@@ -1,5 +1,6 @@
 """
-Yep.
+The list of languages supported by Highlight.JS
+I really dislike this, but it has to be done this way.
 """
 language_list = [
     'Plaintext',
