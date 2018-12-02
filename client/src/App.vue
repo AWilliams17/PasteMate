@@ -5,7 +5,7 @@
       <nav-header/>
       <div class="content">
         <notification-container/>
-        <router-view/>
+        <router-view :key="$route.fullPath"/>
       </div>
       <site-footer class="footer"/>
     </div>

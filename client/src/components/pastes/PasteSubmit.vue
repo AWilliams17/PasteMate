@@ -4,7 +4,7 @@
       <b-card v-bind:header="paste_edit_info.editing_paste ? 'Edit Paste' : 'Submit Paste'" class="mx-auto" style="max-width: 30rem;">
         <template v-if="!paste_edit_info.show_password_form">
           <b-form @submit="onSubmit">
-            <label v-if="paste_edit_info.editing_paste">NOTE: Expiration, Password, and Open Edit have been cleared.
+            <label v-if="paste_edit_info.editing_paste && show_owner_options">NOTE: Expiration, Password, and Open Edit have been cleared.
             This change has not been submitted though, so reset them at your own volition. Only you are allowed
             to change these.</label>
             <b-form-group id="titleFieldSet">
@@ -30,7 +30,7 @@
                              style="background-color: #27293d;">
               </b-form-select>
             </b-form-group>
-            <template v-if="paste_edit_info.show_owner_only">
+            <template v-if="show_owner_options">
               <b-form-group id="expirationInputGroup">
                 <b-form-select id="expirationInput"
                                :options="expiration"
@@ -117,7 +117,6 @@
           has_paste: false,
           requires_password: false,
           password: '',
-          show_owner_only: (this.current_user === this.owner_name),
           owner_name: null
         }
       };
@@ -127,6 +126,25 @@
       if (PasteUUID) {
         this.paste_edit_info.editing_paste = true;
         this.getPasteInformation(PasteUUID);
+      }
+    },
+    computed: {
+      username() {
+        let user = this.$store.getters['session/user'];
+        if (user) {
+          return user.username;
+        }
+        return null;
+      },
+      show_owner_options() {
+        if (!this.paste_edit_info.editing_paste) {
+          return true;
+        } else {
+          if (this.username && this.paste_edit_info.has_paste) {
+            return this.username === this.paste_edit_info.owner_name;
+          }
+          return false;
+        }
       }
     },
     methods: {
@@ -155,7 +173,7 @@
       getPasteInformation(PasteUUID) {
         axios.get('/api/paste/edit/get/' + PasteUUID, {withCredentials: true})
           .then((response) => {
-            this.has_paste = true;
+            this.paste_edit_info.has_paste = true;
             this.setPasteInformation(response);
           })
           .catch((error) => {
