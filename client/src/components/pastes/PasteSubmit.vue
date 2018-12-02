@@ -160,7 +160,7 @@
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
             .catch((error) => {
-              this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
+              this.$store.dispatch(ADD_NOTIFICATION, error);
             });
         } else {
           if (this.edit_info.requires_password) {
@@ -182,7 +182,7 @@
               this.edit_info.show_password_form = true;
               this.edit_info.requires_password = true;
             } else {
-              this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
+              this.$store.dispatch(ADD_NOTIFICATION, error);
             }
           });
       },

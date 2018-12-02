@@ -46,7 +46,7 @@ export default {
       } catch (error) {
         const errorList = Object.values(error.response.data.errors);
         errorList.forEach((error) => {
-          this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
+          this.$store.dispatch(ADD_NOTIFICATION, error);
         })
       }
     }
