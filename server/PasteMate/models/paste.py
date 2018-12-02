@@ -69,9 +69,7 @@ class Paste(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def password_correct(self, password, encrypt=False):
-        if not encrypt:
-            return check_password_hash(self.password, password)
+    def password_correct(self, password):
         return check_password_hash(self.password, password)
 
     def __init__(self, owner_name, title, language, password, content, open_edit, expiration):
