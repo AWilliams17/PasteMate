@@ -103,8 +103,17 @@
       }
     },
     methods: {
+      axios_config() {
+        return {
+          headers: {
+            xsrfHeaderName: 'X-CSRF-TOKEN',
+            xsrfCookieName: 'csrf_access_token'
+          },
+          withCredentials: true
+        };
+      },
       getPaste() {
-        axios.get(this.path)
+        axios.get(this.path, this.axios_config())
           .then((response) => {
             this.paste = response.data.paste;
           })
@@ -120,7 +129,7 @@
       },
       submitPassword(evt) {
         evt.preventDefault();
-        axios.post(this.path, {'password': this.password})
+        axios.post(this.path, {'password': this.password}, this.axios_config())
           .then((response) => {
             this.show_password_form = false;
             this.password = null;

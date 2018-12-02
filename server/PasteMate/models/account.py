@@ -1,4 +1,4 @@
-from PasteMate.models import db
+from PasteMate.models import db, password_encrypt
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -9,6 +9,7 @@ class Account(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref=db.backref('submitter', lazy='dynamic', uselist=True),
                              order_by='Paste.submission_date.desc()', lazy='dynamic')
+    last_used_paste_password = db.Column(db.String(256), unique=False, nullable=True)
 
     @classmethod
     def find_by_username(cls, username):
@@ -23,17 +24,21 @@ class Account(db.Model):
         return cls.query.filter_by(id=user_id).first()
 
     def password_correct(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password, password_encrypt(password))
 
     def save_to_db(self):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
             db.session.add(self)
             db.session.commit()
 
+    def set_last_used_paste_password(self, password):
+        self.last_used_paste_password = None if password is None else password_encrypt(password)
+        db.session.commit()
+
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = generate_password_hash(password, method='sha256')
+        self.password = generate_password_hash(password_encrypt(password), method='sha256')
 
     def __repr__(self):
         return '<Account %r>' % self.username

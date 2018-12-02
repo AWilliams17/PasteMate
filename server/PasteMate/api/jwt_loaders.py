@@ -17,25 +17,24 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @jwt_manager.expired_token_loader
 def expired_token_callback():
-    return jsonify({'error': 'token_expired'}), 401
+    return jsonify({'token_expired': 'This token has expired.'}), 401
 
 
 @jwt_manager.invalid_token_loader
 def invalid_token_callback(error):
-    return jsonify({'error': 'invalid_token'}), 401
+    return jsonify({'token_invalid': 'This token is invalid: %s' % error}), 401
 
 
 @jwt_manager.unauthorized_loader
-def missing_token_callback(error):
-    print(error)
-    return jsonify({'error': 'authorization_required'}), 401
+def unauthorized_token(error):
+    return jsonify({'token_unauthorized': 'Token is unauthorized: %s' % error}), 401
 
 
 @jwt_manager.needs_fresh_token_loader
 def token_not_fresh_callback():
-    return jsonify({'error': 'fresh_token_required'}), 401
+    return jsonify({'token_old': 'A fresh token is required.'}), 401
 
 
 @jwt_manager.revoked_token_loader
 def revoked_token_callback():
-    return jsonify({'error': 'token_revoked'}), 401
+    return jsonify({'token_revoked': 'This token has been revoked.'}), 401

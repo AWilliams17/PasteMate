@@ -9,21 +9,24 @@ from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
 
-def paste_request_validate(paste, request_data=None):
+def paste_request_validate(paste, user, request_data=None):
     """Check if the paste is found, and if the paste is password protected. If the paste is password protected,
     attempt to verify if the passed password is the correct one."""
     if paste is None:
         return {'error': 'Paste with requested UUID was not found.'}, 404
 
     if paste.password is not None:
-        if request_data is None or 'original_password' not in request_data and 'password' not in request_data:
+        last_password = user.last_used_paste_password
+        if last_password is not None:
+            if paste.password_correct(last_password):
+                return None
+            user.set_last_used_paste_password(None)
+
+        if request_data is None or 'password' not in request_data:
             return {'error': 'password is required.'}, 401
 
-        password = None
-        if 'password' in request_data:
-            password = request_data['password']
-        elif 'original_password' in request_data:
-            password = request_data['original_password']
+        password = request_data['password']
+        user.set_last_used_paste_password(password)
 
         if not paste.password_correct(password):
             return {'error': 'password is incorrect.'}, 401
@@ -31,11 +34,11 @@ def paste_request_validate(paste, request_data=None):
     return None
 
 
-def validate_paste_edit_permissions(paste, jwt_identity, request_data=None):
+def validate_paste_edit_permissions(paste, user, request_data=None):
     """Verify the user has permission to edit a paste."""
-    current_user_id = Account.find_by_username(jwt_identity).id
-    validation_errors = paste_request_validate(paste, request_data)
-    user_owns_paste = (current_user_id == paste.owner_id)
+    user_id = user.id
+    validation_errors = paste_request_validate(paste, user, request_data)
+    user_owns_paste = (user_id == paste.owner_id)
 
     if validation_errors is not None:
         return validation_errors
@@ -50,28 +53,39 @@ class SubmitPaste(Resource):
     @jwt_required
     def post(self):
         data = request.get_json(force=True)
+        identity = get_jwt_identity()
+        current_user = Account.find_by_username(identity)
         form = SubmitPasteForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 401
-        identity = get_jwt_identity()
-        data['owner_name'] = identity
+
+        data['owner_name'] = current_user.username
+        current_user.set_last_used_paste_password(data['password'])
+
         paste = Paste(**data)
         paste.save_to_db()
         return {'paste_uuid': paste.paste_uuid}, 200
 
 
 class ViewPaste(Resource):
+    @jwt_required
     def get(self, paste_uuid):
         paste = Paste.find_by_uuid(paste_uuid)
-        validation_errors = paste_request_validate(paste)
+        identity = get_jwt_identity()
+        current_user = Account.find_by_username(identity)
+        validation_errors = paste_request_validate(paste, current_user)
         if validation_errors is not None:
             return validation_errors
         return {'paste': paste.paste_dict()}, 200
 
+    @jwt_required
     def post(self, paste_uuid):
-        data = request.get_json(force=True)
         paste = Paste.find_by_uuid(paste_uuid)
-        validation_errors = paste_request_validate(paste, data)
+        identity = get_jwt_identity()
+        current_user = Account.find_by_username(identity)
+        data = request.get_json(force=True)
+        validation_errors = paste_request_validate(paste, current_user, data)
         if validation_errors is not None:
             return validation_errors
         return {'paste': paste.paste_dict()}, 200
@@ -123,7 +137,8 @@ class EditPasteGet(Resource):
     """For validating requests to get paste information for editing purposes."""
     @classmethod
     def paste_edit_get(cls, paste, jwt_identity, request_data=None):
-        validation_errors = validate_paste_edit_permissions(paste, jwt_identity, request_data)
+        current_user = Account.find_by_username(jwt_identity)
+        validation_errors = validate_paste_edit_permissions(paste, current_user, request_data)
         if validation_errors is not None:
             return validation_errors
 
@@ -163,14 +178,11 @@ class EditPastePost(Resource):
         validation_errors = validate_paste_edit_permissions(paste, identity, data)
         if validation_errors is not None:
             return validation_errors
-        data.pop('original_password')  # This is not needed anymore.
+        data.pop('password')  # Not needed anymore, and passwords for pastes are final anyway.
 
-        # TODO: I really don't like hitting the DB twice to get the user ID.
         current_user_id = Account.find_by_username(identity).id
         if paste.owner_id != current_user_id and paste.open_edit:
-            # Restrict changes to the password, expiration date, and open edit settings if they are not
-            # the paste owner.
-            data['password'] = None
+            # Restrict changes to the expiration date and open edit settings if they are not the paste owner.
             data['open_edit'] = None
             data['expiration'] = None
         

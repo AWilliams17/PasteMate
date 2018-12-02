@@ -6,8 +6,7 @@
             <b-form @submit="onSubmit">
               <label v-if="edit_info.editing_paste && show_owner_options">NOTE: Expiration, and Open Edit have been cleared.
               This change has not been submitted though, so reset them at your own volition. Only you are allowed
-              to change these. If changing the password of the paste, make sure you know the previous password, since
-              you will be asked for it before the submission goes through.</label>
+              to change these.</label>
               <b-form-group id="titleFieldSet">
                 <b-form-input id="titleInput" v-model="form.title" maxlength="24" required placeholder="Title..."></b-form-input>
               </b-form-group>
@@ -40,6 +39,7 @@
                                  style="background-color: #27293d;">
                   </b-form-select>
                 </b-form-group>
+                <template v-if="!edit_info.editing_paste">
                 <b-form-group id="passwordFieldSet"
                               :label-cols="4">
                   <b-form-input id="passwordInput"
@@ -48,6 +48,7 @@
                                 placeholder="Password">
                   </b-form-input>
                 </b-form-group>
+                </template>
                 <b-form-group>
                   <b-form-checkbox id="openEditCheckbox"
                                    v-model="form.open_edit"
@@ -70,7 +71,7 @@
                           label="Paste Password"
                           description="To continue, please enter this paste's password."
                           label-size="sm">
-              <b-form-input id="passwordInput" type="password" size="sm" v-model="edit_info.original_password" required></b-form-input>
+              <b-form-input id="passwordInput" type="password" size="sm" v-model="form.password" required></b-form-input>
             </b-form-group>
             <b-button type="submit" variant="primary" size="sm" class="float-right">Submit</b-button>
           </b-form>
@@ -117,8 +118,7 @@
           show_password_form: false,
           has_paste: false,
           requires_password: false,
-          owner_name: null,
-          original_password: ''
+          owner_name: null
         }
       };
     },
@@ -149,13 +149,20 @@
       }
     },
     methods: {
+      axios_config() {
+        return {
+            headers: {
+              xsrfHeaderName: 'X-CSRF-TOKEN',
+              xsrfCookieName: 'csrf_access_token'
+            },
+            withCredentials: true
+        };
+      },
       onSubmit(evt) {
         evt.preventDefault();
         const payload = this.form;
-        axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
-        axios.defaults.xsrfCookieName = 'csrf_access_token';
         if (!this.edit_info.editing_paste) {
-          axios.post('/api/paste/submit', payload, {withCredentials: true})
+          axios.post('/api/paste/submit', payload, this.axios_config())
             .then((response) => {
               this.$router.push('/paste/view/' + response.data.paste_uuid);
             })
@@ -163,16 +170,12 @@
               this.$store.dispatch(ADD_NOTIFICATION, error);
             });
         } else {
-          if (this.edit_info.requires_password) {
-            this.edit_info.show_password_form = true;
-          } else {
             const PasteUUID = this.$route.params.slug;
             this.updatePaste(PasteUUID);
           }
-        }
-      },
+        },
       getPasteInformation(PasteUUID) {
-        axios.get('/api/paste/edit/get/' + PasteUUID, {withCredentials: true})
+        axios.get('/api/paste/edit/get/' + PasteUUID, this.axios_config())
           .then((response) => {
             this.edit_info.has_paste = true;
             this.setPasteInformation(response);
@@ -180,21 +183,17 @@
           .catch((error) => {
             if (error.response.status === 401) {
               this.edit_info.show_password_form = true;
-              this.edit_info.requires_password = true;
             } else {
               this.$store.dispatch(ADD_NOTIFICATION, error);
             }
           });
       },
       getPasteInformationWithPassword(PasteUUID, Password) {
-        axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
-        axios.defaults.xsrfCookieName = 'csrf_access_token';
-        const payload = {'original_password': Password};
-        axios.post('/api/paste/edit/get/' + PasteUUID, payload, {withCredentials: true})
+        const payload = {'_password': Password};
+        axios.post('/api/paste/edit/get/' + PasteUUID, payload, this.axios_config())
           .then((response) => {
             this.edit_info.has_paste = true;
             this.edit_info.show_password_form = false;
-            response.data.paste['original_password'] = Password;
             this.setPasteInformation(response);
           })
           .catch((error) => {
@@ -203,20 +202,7 @@
       },
       updatePaste(PasteUUID) {
         const payload = this.form;
-        axios.post('/api/paste/edit/post/' + PasteUUID, payload, {withCredentials: true})
-          .then(() => {
-            this.$router.push('/paste/view/' + PasteUUID);
-          })
-          .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, 'Error: ' + error);
-          });
-      },
-      updatePasteWithPassword(PasteUUID, Password) {
-        axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
-        axios.defaults.xsrfCookieName = 'csrf_access_token';
-        let payload = this.form;
-        payload['original_password'] = Password;
-        axios.post('/api/paste/edit/post/' + PasteUUID, payload, {withCredentials: true})
+        axios.post('/api/paste/edit/post/' + PasteUUID, payload, this.axios_config())
           .then(() => {
             this.$router.push('/paste/view/' + PasteUUID);
           })
@@ -226,21 +212,20 @@
       },
       setPasteInformation(response) {
         this.edit_info.owner_name = response.data.paste.owner_name;
-        this.form.password = response.data.paste.original_password;
         this.form.title = response.data.paste.title;
         this.form.language = response.data.paste.language;
         this.form.content += response.data.paste.content;
+        this.form.password = '';
       },
       submitPassword(evt) {
         evt.preventDefault();
         const PasteUUID = this.$route.params.slug;
-        const Password = this.edit_info.original_password;
         if (!this.edit_info.has_paste) {
-          this.getPasteInformationWithPassword(PasteUUID, Password);
+          const password = this.form.password;
+          this.getPasteInformationWithPassword(PasteUUID, password);
         } else {
-          this.updatePasteWithPassword(PasteUUID, Password);
+          this.updatePaste(PasteUUID);
         }
-        this.edit_info.original_password = '';
       },
       onTab(evt) { // Four space tab indention
         evt.preventDefault();
@@ -250,7 +235,7 @@
         evt.target.selectionStart = evt.target.selectionEnd = startValue + 4;
       }
     }
-  };
+  }
 </script>
 <style scoped>
   .paste-box {
