@@ -1,4 +1,4 @@
-from PasteMate.models import db, password_encrypt
+from PasteMate.models import db
 from PasteMate.models.account import Account
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -52,7 +52,7 @@ class Paste(db.Model):
         self.edit_date = datetime.utcnow()
         # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
         # Otherwise, keep them all the same.
-        self.password = generate_password_hash(password_encrypt(password), method='sha256') if password is not None else self.password
+        self.password = generate_password_hash(password, method='sha256') if password is not None else self.password
         self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
         self.expiration_date = self.expiration_date if expiration is None else self.expiration_options.get(expiration)
         db.session.commit()
@@ -72,7 +72,7 @@ class Paste(db.Model):
     def password_correct(self, password, encrypt=False):
         if not encrypt:
             return check_password_hash(self.password, password)
-        return check_password_hash(self.password, password_encrypt(password))
+        return check_password_hash(self.password, password)
 
     def __init__(self, owner_name, title, language, password, content, open_edit, expiration):
         self.owner_id = Account.find_by_username(owner_name).id
@@ -80,7 +80,7 @@ class Paste(db.Model):
         self.language = language
         self.password = None
         if password is not None:
-            self.password = generate_password_hash(password_encrypt(password), method='sha256')
+            self.password = generate_password_hash(password, method='sha256')
         self.content = content
         self.open_edit = (open_edit == 'true')
         self.expiration_date = self.expiration_options.get(expiration)

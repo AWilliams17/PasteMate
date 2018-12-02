@@ -1,10 +1,17 @@
 import axios from 'axios';
-import { RETRIEVE_USER, REFRESH_TOKEN, SET_SIGN_OUT_NOTIFICATION } from '../store/action-types';
+// import { REFRESH_TOKEN, SET_SIGN_OUT_NOTIFICATION } from '../store/action-types';
 
-class AxiosJWT {
-  post(url, data) {
-    axios.post()
+const AxiosJWT = axios.create({
+  withCredentials: true,
+  headers: {
+    xsrfHeaderName: 'X-CSRF-TOKEN',
+    xsrfCookieName: 'csrf_access_token'
   }
-}
+});
 
-export default AxiosJWT;
+AxiosJWT.interceptors.response.use(null, error => {
+  console.log(error);
+  return Promise.reject(error);
+});
+
+export default AxiosJWT

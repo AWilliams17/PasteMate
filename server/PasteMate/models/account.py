@@ -1,4 +1,4 @@
-from PasteMate.models import db, password_encrypt
+from PasteMate.models import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -24,7 +24,7 @@ class Account(db.Model):
         return cls.query.filter_by(id=user_id).first()
 
     def password_correct(self, password):
-        return check_password_hash(self.password, password_encrypt(password))
+        return check_password_hash(self.password, password)
 
     def save_to_db(self):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
@@ -32,13 +32,13 @@ class Account(db.Model):
             db.session.commit()
 
     def set_last_used_paste_password(self, password):
-        self.last_used_paste_password = None if password is None else password_encrypt(password)
+        self.last_used_paste_password = None if password is None else password
         db.session.commit()
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = generate_password_hash(password_encrypt(password), method='sha256')
+        self.password = generate_password_hash(password, method='sha256')
 
     def __repr__(self):
         return '<Account %r>' % self.username
