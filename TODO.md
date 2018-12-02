@@ -23,6 +23,7 @@
 * [ ] Better axios error handling
 * [ ] Logs
 * [ ] Configuration
+* [ ] As it currently stands, password verification for pastes are way too overbearing. Editing a paste requires submitting it 3 times. Fix this.
 
 ## Security Checklist
 * [x] Password Hashing
