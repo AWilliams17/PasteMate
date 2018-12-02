@@ -16,10 +16,14 @@ def paste_request_validate(paste, request_data=None):
         return {'error': 'Paste with requested UUID was not found.'}, 404
 
     if paste.password is not None:
-        if request_data is None or 'password' not in request_data:
+        if request_data is None or 'original_password' not in request_data and 'password' not in request_data:
             return {'error': 'password is required.'}, 401
 
-        password = request_data['password']
+        password = None
+        if 'password' in request_data:
+            password = request_data['password']
+        elif 'original_password' in request_data:
+            password = request_data['original_password']
 
         if not paste.password_correct(password):
             return {'error': 'password is incorrect.'}, 401
@@ -65,7 +69,6 @@ class ViewPaste(Resource):
         return {'paste': paste.paste_dict()}, 200
 
     def post(self, paste_uuid):
-        print("Validation request post is coming")
         data = request.get_json(force=True)
         paste = Paste.find_by_uuid(paste_uuid)
         validation_errors = paste_request_validate(paste, data)
@@ -156,14 +159,11 @@ class EditPastePost(Resource):
         paste = Paste.find_by_uuid(paste_uuid)
         identity = get_jwt_identity()
         data = request.get_json(force=True)
-        form = SubmitPasteForm.from_json(data)
-
-        if not form.validate():
-            return {'errors': form.errors}, 401
 
         validation_errors = validate_paste_edit_permissions(paste, identity, data)
         if validation_errors is not None:
             return validation_errors
+        data.pop('original_password')  # This is not needed anymore.
 
         # TODO: I really don't like hitting the DB twice to get the user ID.
         current_user_id = Account.find_by_username(identity).id
@@ -173,6 +173,6 @@ class EditPastePost(Resource):
             data['password'] = None
             data['open_edit'] = None
             data['expiration'] = None
-
+        
         paste.update_paste(**data)
         return {'paste_uuid': paste.paste_uuid}, 200

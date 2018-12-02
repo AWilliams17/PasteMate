@@ -27,6 +27,7 @@ def invalid_token_callback(error):
 
 @jwt_manager.unauthorized_loader
 def missing_token_callback(error):
+    print(error)
     return jsonify({'error': 'authorization_required'}), 401
 
 

@@ -9,7 +9,7 @@
                         label="Your Username"
                         label-size="sm">
             <b-form-input id="usernameInput"
-                          :value="this.$store.getters['user/username']"
+                          :value="username"
                           size="sm"
                           :readonly="true"
                           maxlength="12">
@@ -23,7 +23,7 @@
             <b-form-input id="emailInput"
                           size="sm"
                           v-model="form.email"
-                          :placeholder="this.$store.getters['user/email']"
+                          :placeholder="email"
                           required>
             </b-form-input>
           </b-form-group>
@@ -51,6 +51,27 @@
           'email': null,
           'password': null
         }
+      }
+    },
+    computed: {
+      user() {
+        let user = this.$store.getters['session/user'];
+        if (user) {
+          return user;
+        }
+        return null;
+      },
+      username() {
+        if (this.user) {
+          return this.user.username;
+        }
+        return '';
+      },
+      email() {
+        if (this.user) {
+          return this.user.email;
+        }
+        return '';
       }
     },
     methods: {

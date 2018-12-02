@@ -52,7 +52,7 @@ class Paste(db.Model):
         self.edit_date = datetime.utcnow()
         # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
         # Otherwise, keep them all the same.
-        self.password = password if password is not None else self.password
+        self.password = generate_password_hash(password, method='sha256') if password is not None else self.password
         self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
         self.expiration_date = self.expiration_date if expiration is None else self.expiration_options.get(expiration)
         db.session.commit()
