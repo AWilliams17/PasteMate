@@ -3,7 +3,7 @@
     <b-col cols="12">
       <template v-if="show_password_form">
         <b-card header="Password Required" class="mb-3 mx-auto" style="max-width: 25rem;">
-          <b-form @submit="submitPassword">
+          <b-form v-on:submit.prevent="submitPassword">
             <b-form-group id="passwordFieldSet"
                           horizontal
                           :label-cols="4"
@@ -52,17 +52,12 @@
           </div>
         </div>
       </template>
-      <template v-if="paste.deletion_inbound">
-        <b-alert variant="warning" show>
-          This paste has reached its expiration date and will be deleted shortly.
-        </b-alert>
-      </template>
     </b-col>
   </b-row>
 </template>
 
 <script>
-  import axios from 'axios';
+  import axiosJWT from '../../_misc/axios_jwt';
   import { ADD_NOTIFICATION } from '../../store/action-types';
   import 'highlight.js/styles/ocean.css';
 
@@ -70,7 +65,7 @@
     name: 'paste-view',
     data() {
       return {
-        path: '/api/paste/view/' + this.$route.params.slug,
+        path: '/api/paste/get/' + this.$route.params.slug,
         paste: {
           has_paste: false,
           title: '',
@@ -84,7 +79,7 @@
           deletion_inbound: false
         },
         show_password_form: false,
-        password: ''
+        password: null
       }
     },
     computed: {
@@ -103,17 +98,8 @@
       }
     },
     methods: {
-      axios_config() {
-        return {
-          headers: {
-            xsrfHeaderName: 'X-CSRF-TOKEN',
-            xsrfCookieName: 'csrf_access_token'
-          },
-          withCredentials: true
-        };
-      },
       getPaste() {
-        axios.get(this.path, this.axios_config())
+        axiosJWT.get(this.path)
           .then((response) => {
             this.paste = response.data.paste;
           })
@@ -129,19 +115,19 @@
       },
       submitPassword(evt) {
         evt.preventDefault();
-        axios.post(this.path, {'password': this.password}, this.axios_config())
+        axiosJWT.post(this.path, {'password': this.password})
           .then((response) => {
             this.show_password_form = false;
             this.password = null;
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.password_error);
           })
       },
       deletePaste() {
         const pasteUUID = this.$route.params.slug;
-        axios.get('/api/paste/delete/' + pasteUUID, {withCredentials: true})
+        axiosJWT.get('/api/paste/delete/' + pasteUUID, {withCredentials: true})
           .then(() => {
             this.$store.dispatch(ADD_NOTIFICATION, 'Paste was successfully deleted.');
             this.$router.push('/');

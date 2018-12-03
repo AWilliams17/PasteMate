@@ -1,21 +1,21 @@
-import axios from 'axios'
+import axiosJWT from '../_misc/axios_jwt';
 
 export const login = (data) => {
-  return axios.post('/api/user/login', data, {withCredentials: true})
-}
+  return axiosJWT.post('/api/user/login', data)
+};
 
 export const signUp = (data) => {
-  return axios.post('/api/user/register', data)
-}
+  return axiosJWT.post('/api/user/register', data)
+};
 
 export const signOut = (data) => {
-  return axios.get('/api/auth/revoke', {withCredentials: true})
-}
+  return axiosJWT.get('/api/auth/revoke')
+};
 
 export const refresh = () => {
-  return axios.get('/api/auth/refresh', {withCredentials: true})
-}
+  return axiosJWT.get('/api/auth/refresh')
+};
 
 export const getUser = () => {
-  return axios.get('/api/auth/current_user', {withCredentials: true})
-}
+  return axiosJWT.get('/api/auth/current_user')
+};

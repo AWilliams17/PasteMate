@@ -1,4 +1,4 @@
-app_config = {
+app_config = {  # The security settings are all terrible. But this is never going up anywhere.
     'SQLALCHEMY_DATABASE_URI': "sqlite:///PM.db",
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SECURITY_PASSWORD_SALT': "12345",

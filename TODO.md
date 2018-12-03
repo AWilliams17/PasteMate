@@ -17,13 +17,16 @@
 ## Misc
 * [ ] Fully implement aria controls
 * [x] Setup.py
+* [ ] Pastes could probably have a store
 * [ ] Unit Tests
 * [ ] Rate Limiter
 * [ ] Upgrade WebPack to v4
 * [ ] Better axios error handling
 * [ ] Logs
 * [ ] Configuration
-* [ ] As it currently stands, password verification for pastes are way too overbearing. Editing a paste requires submitting it 3 times. Fix this.
+* [ ] axios_jwt.js
+* [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing it.
+* [x] As it currently stands, password verification for pastes are way too overbearing. Fix this.
 
 ## Security Checklist
 * [x] Password Hashing

@@ -10,6 +10,7 @@ from PasteMate.api.routes import api
 from PasteMate.api.jwt_loaders import jwt_manager
 from os.path import exists
 
+
 app = Flask(__name__, template_folder="../client/")
 app.config.update(app_config)
 
@@ -21,7 +22,6 @@ with app.app_context():
 
 jwt_manager.init_app(app)
 api.init_app(app)
-
 
 if __name__ == '__main__':
     app.run(host='localhost')

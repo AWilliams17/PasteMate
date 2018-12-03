@@ -9,7 +9,6 @@ class Account(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     pastes = db.relationship('Paste', backref=db.backref('submitter', lazy='dynamic', uselist=True),
                              order_by='Paste.submission_date.desc()', lazy='dynamic')
-    last_used_paste_password = db.Column(db.String(256), unique=False, nullable=True)
 
     @classmethod
     def find_by_username(cls, username):
@@ -30,10 +29,6 @@ class Account(db.Model):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
             db.session.add(self)
             db.session.commit()
-
-    def set_last_used_paste_password(self, password):
-        self.last_used_paste_password = None if password is None else password
-        db.session.commit()
 
     def __init__(self, username, email, password):
         self.username = username
