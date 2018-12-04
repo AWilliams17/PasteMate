@@ -26,14 +26,14 @@ class PasteValidators:  # Still way better than what I had down earlier.
     def validate_password(self):
         if self.paste_requires_password and not self.user_owns_paste:
             if self.request_password is None:
-                return {'password_error': 'Password is required.'}, 401
+                return {'errors': 'Password is required.'}, 401
             if not self.paste.password_correct(self.request_password):
-                return {'password_error': 'Password is incorrect.'}, 401
+                return {'errors': 'Password is incorrect.'}, 401
         return None
 
     def validate_edit_permissions(self):
         if not self.user_owns_paste and not self.paste.open_edit:
-            return {'edit_error': 'You do not own that paste and open edit is not enabled for it.'}, 401
+            return {'errors': 'You do not own that paste and open edit is not enabled for it.'}, 401
         return None
 
 
@@ -93,13 +93,15 @@ class UpdatePaste(Resource):
         exists_error = validators.validate_exists()
         password_errors = validators.validate_password()
         edit_perm_errors = validators.validate_edit_permissions()
+        # ToDo: This needs to be condensed somehow.
         if exists_error is not None:
             return exists_error
         elif password_errors is not None:
             return password_errors
         elif edit_perm_errors is not None:
-            return {'paste': validators.paste.paste_dict()}, 200
-        data['password'] = None
+            return edit_perm_errors
+
+        data['password'] = None  # Don't update paste passwords.
 
         if not validators.user_owns_paste:
             data['open_edit'] = None

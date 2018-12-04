@@ -25,7 +25,7 @@
 * [ ] Logs
 * [ ] Configuration
 * [ ] axios_jwt.js
-* [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing it.
+* [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing/deleting it.
 * [x] As it currently stands, password verification for pastes are way too overbearing. Fix this.
 
 ## Security Checklist

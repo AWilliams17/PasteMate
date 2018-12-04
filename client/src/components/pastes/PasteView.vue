@@ -3,7 +3,7 @@
     <b-col cols="12">
       <template v-if="show_password_form">
         <b-card header="Password Required" class="mb-3 mx-auto" style="max-width: 25rem;">
-          <b-form v-on:submit.prevent="submitPassword">
+          <b-form @submit.prevent="onSubmitPassword">
             <b-form-group id="passwordFieldSet"
                           horizontal
                           :label-cols="4"
@@ -113,8 +113,7 @@
             }
           })
       },
-      submitPassword(evt) {
-        evt.preventDefault();
+      onSubmitPassword() {
         axiosJWT.post(this.path, {'password': this.password})
           .then((response) => {
             this.show_password_form = false;
@@ -133,7 +132,7 @@
             this.$router.push('/');
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error);
+            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
           });
       }
     },

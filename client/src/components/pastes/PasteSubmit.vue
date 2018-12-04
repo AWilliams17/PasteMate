@@ -158,7 +158,10 @@
             this.$router.push('/paste/view/' + response.data.paste_uuid);
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.message);
+            const errorList = Object.values(error.response.data.errors);
+            errorList.forEach((error) => {
+              this.$store.dispatch(ADD_NOTIFICATION, error);
+            })
           })
       },
       onSubmitPassword() {
@@ -170,7 +173,7 @@
             this.setPasteInformation(response);
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error);
+            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
           });
       },
       getPasteInformation() {
@@ -183,7 +186,7 @@
             if (error.response.status === 401) {
               this.show_password_form = true;
             } else {
-              this.$store.dispatch(ADD_NOTIFICATION, error);
+              this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
             }
           });
       },
@@ -196,7 +199,6 @@
         this.allow_edit = (this.owner_name === this.username || this.form.open_edit)
       },
       onTab(evt) { // Four space tab indention
-        // evt.preventDefault();
         let startValue = evt.target.selectionStart;
         let currentValue = evt.target.value;
         evt.target.value = currentValue.substr(0, startValue) + '    ' + currentValue.substr(evt.target.selectionEnd);
