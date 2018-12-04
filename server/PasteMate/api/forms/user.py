@@ -17,12 +17,12 @@ class RegistrationForm(Form):
             return False
 
         email_in_use = Account.find_by_email(self.email.data) is not None
-        username_in_use = Account.find_by_email(self.username.data) is not None
+        username_in_use = Account.find_by_username(self.username.data) is not None
 
         if email_in_use:
             self.email.errors.append("Email is already in use.")
             return False
-        elif username_in_use:
+        if username_in_use:
             self.username.errors.append("Username is already in use.")
             return False
 

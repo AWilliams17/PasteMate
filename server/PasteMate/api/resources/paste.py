@@ -14,6 +14,7 @@ class PasteValidators:  # Still way better than what I had down earlier.
         self.paste = Paste.find_by_uuid(paste_uuid)
         self.user = Account.find_by_username(username)
         self.data = data
+        self.errors = {}
         self.user_owns_paste = (self.user.id == self.paste.owner_id)
         self.paste_requires_password = self.paste.password is not None
         self.request_password = None if self.data is None or 'password' not in self.data else self.data['password']
@@ -93,12 +94,11 @@ class UpdatePaste(Resource):
         exists_error = validators.validate_exists()
         password_errors = validators.validate_password()
         edit_perm_errors = validators.validate_edit_permissions()
-        # ToDo: This needs to be condensed somehow.
         if exists_error is not None:
             return exists_error
-        elif password_errors is not None:
+        if password_errors is not None:
             return password_errors
-        elif edit_perm_errors is not None:
+        if edit_perm_errors is not None:
             return edit_perm_errors
 
         data['password'] = None  # Don't update paste passwords.
