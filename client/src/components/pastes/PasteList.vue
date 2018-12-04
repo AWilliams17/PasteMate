@@ -8,7 +8,7 @@
       <b-container>
         <template v-if="pastes.length > 0">
           <b-list-group v-for="paste in pastes" :key="paste.id">
-            <b-list-group-item v-bind:to="'/paste/get/' + paste.uuid" class="paste-details-container">
+            <b-list-group-item v-bind:to="'/paste/view/' + paste.uuid" class="paste-details-container">
               <div class="float-left" style="margin-top: 6px">
                 <b-badge variant="primary">Title: {{paste.title}}</b-badge>
                 <b-badge variant="dark">Language: {{paste.language}}</b-badge>

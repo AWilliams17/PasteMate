@@ -9,32 +9,34 @@ from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
 
-class PasteValidators:  # Still way better than what I had down earlier.
+class PastePermissionValidator:  # TODO: Couldn't this be a WTForm validator?
     def __init__(self, paste_uuid, username, data=None):
         self.paste = Paste.find_by_uuid(paste_uuid)
         self.user = Account.find_by_username(username)
         self.data = data
-        self.errors = {}
-        self.user_owns_paste = (self.user.id == self.paste.owner_id)
-        self.paste_requires_password = self.paste.password is not None
-        self.request_password = None if self.data is None or 'password' not in self.data else self.data['password']
+        self.errors = []
 
-    def validate_exists(self):
-        if self.paste is None:
-            return {'error': 'Paste with requested UUID was not found.'}, 404
-        return None
+    def paste_exists(self):
+        return self.paste is not None
 
-    def validate_password(self):
-        if self.paste_requires_password and not self.user_owns_paste:
-            if self.request_password is None:
+    def validate(self, include_edit_perms=False):
+        if not self.paste_exists():
+            return {'errors': 'Paste with specified UUID not found.'}, 404
+
+        user_owns_paste = (self.user.id == self.paste.owner_id)
+        paste_requires_password = self.paste.password is not None
+        request_password = None if self.data is None or 'password' not in self.data else self.data['password']
+
+        if include_edit_perms and not user_owns_paste and not self.paste.open_edit:
+            return {'errors': 'You do not own this paste and open edit is not enabled for it.'}, 401
+
+        if paste_requires_password and not user_owns_paste:
+            if request_password is None:
                 return {'errors': 'Password is required.'}, 401
-            if not self.paste.password_correct(self.request_password):
-                return {'errors': 'Password is incorrect.'}, 401
-        return None
 
-    def validate_edit_permissions(self):
-        if not self.user_owns_paste and not self.paste.open_edit:
-            return {'errors': 'You do not own that paste and open edit is not enabled for it.'}, 401
+            elif not self.paste.password_correct(request_password):
+                return {'errors': 'Password is incorrect.'}, 401
+
         return None
 
 
@@ -60,29 +62,23 @@ class GetPaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
         identity = get_jwt_identity()
-        validators = PasteValidators(paste_uuid, identity)
-        exists_error = validators.validate_exists()
-        password_errors = validators.validate_password()
-        if exists_error is not None:
-            return exists_error
-        elif password_errors is not None:
-            return password_errors
-        else:
-            return {'paste': validators.paste.paste_dict()}, 200
+        validators = PastePermissionValidator(paste_uuid, identity)
+        error = validators.validate()
+        if error is not None:
+            return error
+
+        return {'paste': validators.paste.paste_dict()}, 200
 
     @jwt_required
     def post(self, paste_uuid):
         identity = get_jwt_identity()
         data = request.get_json(force=True)
-        validators = PasteValidators(paste_uuid, identity, data)
-        exists_error = validators.validate_exists()
-        password_errors = validators.validate_password()
-        if exists_error is not None:
-            return exists_error
-        elif password_errors is not None:
-            return password_errors
-        else:
-            return {'paste': validators.paste.paste_dict()}, 200
+        validators = PastePermissionValidator(paste_uuid, identity, data)
+        error = validators.validate()
+        if error is not None:
+            return error
+
+        return {'paste': validators.paste.paste_dict()}, 200
 
 
 class UpdatePaste(Resource):
@@ -90,20 +86,15 @@ class UpdatePaste(Resource):
     def post(self, paste_uuid):
         identity = get_jwt_identity()
         data = request.get_json(force=True)
-        validators = PasteValidators(paste_uuid, identity, data)
-        exists_error = validators.validate_exists()
-        password_errors = validators.validate_password()
-        edit_perm_errors = validators.validate_edit_permissions()
-        if exists_error is not None:
-            return exists_error
-        if password_errors is not None:
-            return password_errors
-        if edit_perm_errors is not None:
-            return edit_perm_errors
+        validators = PastePermissionValidator(paste_uuid, identity, data)
+
+        error = validators.validate(include_edit_perms=True)
+        if error is not None:
+            return error
 
         data['password'] = None  # Don't update paste passwords.
 
-        if not validators.user_owns_paste:
+        if not validators.paste.owner_id == validators.user.id:
             data['open_edit'] = None
             data['expiration'] = None
 
@@ -117,6 +108,7 @@ class DeletePaste(Resource):
         paste = Paste.find_by_uuid(paste_uuid)
         identity = get_jwt_identity()
         current_user_id = Account.find_by_username(identity).id
+        # TODO: Merge this in with the paste validators class?
         if paste is None:
             return {'error': 'Paste not found'}, 404
         if paste.owner_id != current_user_id:

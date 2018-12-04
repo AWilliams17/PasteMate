@@ -160,7 +160,7 @@
           .catch((error) => {
             const errorList = Object.values(error.response.data.errors);
             errorList.forEach((error) => {
-              this.$store.dispatch(ADD_NOTIFICATION, error);
+              this.$store.dispatch(ADD_NOTIFICATION, ...error);
             })
           })
       },
@@ -173,7 +173,10 @@
             this.setPasteInformation(response);
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+            const errorList = Object.values(error.response.data.errors);
+            errorList.forEach((error) => {
+              this.$store.dispatch(ADD_NOTIFICATION, ...error);
+            })
           });
       },
       getPasteInformation() {
@@ -186,7 +189,10 @@
             if (error.response.status === 401) {
               this.show_password_form = true;
             } else {
-              this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+              const errorList = Object.values(error.response.data.errors);
+              errorList.forEach((error) => {
+                this.$store.dispatch(ADD_NOTIFICATION, ...error);
+              })
             }
           });
       },

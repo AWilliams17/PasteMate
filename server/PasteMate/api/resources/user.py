@@ -41,11 +41,7 @@ class RegisterUser(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = RegistrationForm.from_json(data)
-        print(form.errors)
-        print(type(form.errors))
         if not form.validate():
-            print(form.errors)
-            print(type(form.errors))
             return {'errors': form.errors}, 400
         user = Account(**data)
         user.save_to_db()

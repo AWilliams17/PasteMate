@@ -109,7 +109,7 @@
             } else if (error.response.status === 404) {
               this.$router.push('/404');
             } else {
-              this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+              this.$store.dispatch(ADD_NOTIFICATION, error.response.data);
             }
           })
       },
@@ -121,7 +121,7 @@
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.password_error);
+            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
           })
       },
       deletePaste() {
