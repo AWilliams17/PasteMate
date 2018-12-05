@@ -10,7 +10,7 @@ from PasteMate.models.paste import Paste
 
 
 class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculous, so this will do.
-    def __init__(self, paste_uuid, username, data=None):
+    def __init__(self, paste_uuid, username, data=None):  # I still don't like this.
         self.paste = Paste.find_by_uuid(paste_uuid)
         self.user = Account.find_by_username(username)
         self.data = data
@@ -18,7 +18,7 @@ class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculou
     def paste_exists(self):
         return self.paste is not None
 
-    def validate(self, include_edit_perms=False):
+    def validate(self, include_edit_perms=False, include_delete_perms=False):
         if not self.paste_exists():
             return {'errors': 'Paste with specified UUID not found.'}, 404
 
@@ -28,6 +28,9 @@ class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculou
 
         if include_edit_perms and not user_owns_paste and not self.paste.open_edit:
             return {'errors': 'You do not own this paste and open edit is not enabled for it.'}, 401
+
+        if include_delete_perms and not user_owns_paste:
+            return {'errors': 'You can not delete pastes you do not own.'}, 401
 
         if paste_requires_password and not user_owns_paste:
             if request_password is None:
@@ -109,15 +112,12 @@ class UpdatePaste(Resource):
 class DeletePaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
-        paste = Paste.find_by_uuid(paste_uuid)
         identity = get_jwt_identity()
-        current_user_id = Account.find_by_username(identity).id
-        # TODO: Merge this in with the paste validators class?
-        if paste is None:
-            return {'error': 'Paste not found'}, 404
-        if paste.owner_id != current_user_id:
-            return {'error': 'You can not delete pastes you do not own.'}, 401
-        paste.delete()
+        validators = PastePermissionValidator(paste_uuid, identity)
+        error = validators.validate(include_delete_perms=True)
+        if error is not None:
+            return error
+        validators.paste.delete()
         return {'result': 'Paste deleted.'}, 204
 
 
