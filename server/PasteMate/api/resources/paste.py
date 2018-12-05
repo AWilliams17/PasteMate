@@ -9,12 +9,11 @@ from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
 
-class PastePermissionValidator:  # TODO: Couldn't this be a WTForm validator?
+class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculous, so this will do.
     def __init__(self, paste_uuid, username, data=None):
         self.paste = Paste.find_by_uuid(paste_uuid)
         self.user = Account.find_by_username(username)
         self.data = data
-        self.errors = []
 
     def paste_exists(self):
         return self.paste is not None
@@ -49,7 +48,7 @@ class SubmitPaste(Resource):
         form = SubmitPasteForm.from_json(data)
 
         if not form.validate():
-            return {'errors': form.errors}, 401
+            return {'errors': form.errors}, 400
 
         data['owner_name'] = current_user.username
 
@@ -89,8 +88,13 @@ class UpdatePaste(Resource):
         validators = PastePermissionValidator(paste_uuid, identity, data)
 
         error = validators.validate(include_edit_perms=True)
+        form = SubmitPasteForm.from_json(data)
+
         if error is not None:
             return error
+
+        if not form.validate():
+            return {'errors': form.errors}, 400
 
         data['password'] = None  # Don't update paste passwords.
 
