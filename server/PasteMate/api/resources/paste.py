@@ -10,8 +10,8 @@ from PasteMate.models.paste import Paste
 
 
 class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculous, so this will do.
-    def __init__(self, paste_uuid, username, data=None):  # I still don't like this.
-        self.paste = Paste.find_by_uuid(paste_uuid)
+    def __init__(self, paste, username, data=None):  # I still don't like this.
+        self.paste = paste
         self.user = Account.find_by_username(username)
         self.data = data
 
@@ -64,31 +64,34 @@ class GetPaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
         identity = get_jwt_identity()
-        validators = PastePermissionValidator(paste_uuid, identity)
+        paste = Paste.find_by_uuid(paste_uuid)
+        validators = PastePermissionValidator(paste, identity)
         error = validators.validate()
         if error is not None:
             return error
 
-        return {'paste': validators.paste.paste_dict()}, 200
+        return {'paste': paste.paste_dict()}, 200
 
     @jwt_required
     def post(self, paste_uuid):
         identity = get_jwt_identity()
+        paste = Paste.find_by_uuid(paste_uuid)
         data = request.get_json(force=True)
-        validators = PastePermissionValidator(paste_uuid, identity, data)
+        validators = PastePermissionValidator(paste, identity, data)
         error = validators.validate()
         if error is not None:
             return error
 
-        return {'paste': validators.paste.paste_dict()}, 200
+        return {'paste': paste.paste_dict()}, 200
 
 
 class UpdatePaste(Resource):
     @jwt_required
     def post(self, paste_uuid):
         identity = get_jwt_identity()
+        paste = Paste.find_by_uuid(paste_uuid)
         data = request.get_json(force=True)
-        validators = PastePermissionValidator(paste_uuid, identity, data)
+        validators = PastePermissionValidator(paste, identity, data)
 
         error = validators.validate(include_edit_perms=True)
         form = SubmitPasteForm.from_json(data)
@@ -106,18 +109,19 @@ class UpdatePaste(Resource):
             data['expiration'] = None
 
         validators.paste.update_paste(**data)
-        return {'paste_uuid': validators.paste.paste_uuid}, 200
+        return {'paste_uuid': paste_uuid}, 200
 
 
 class DeletePaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
         identity = get_jwt_identity()
-        validators = PastePermissionValidator(paste_uuid, identity)
+        paste = Paste.find_by_uuid(paste_uuid)
+        validators = PastePermissionValidator(paste, identity)
         error = validators.validate(include_delete_perms=True)
         if error is not None:
             return error
-        validators.paste.delete()
+        paste.delete()
         return {'result': 'Paste deleted.'}, 204
 
 
