@@ -2,9 +2,10 @@
 Contains initialization and instantiation of the flask app object,
 along with initialization of extensions.
 """
+
 import wtforms_json
 from flask import Flask
-from PasteMate.config import app_config
+from PasteMate.config import PasteMateConfig
 from PasteMate.models import db
 from PasteMate.api.routes import api
 from PasteMate.api.jwt_loaders import jwt_manager
@@ -12,7 +13,8 @@ from os.path import exists
 
 
 app = Flask(__name__, template_folder="../client/")
-app.config.update(app_config)
+config = PasteMateConfig()
+config.set_app_config(app)
 
 with app.app_context():
     db.init_app(app)
