@@ -5,7 +5,7 @@
 ## Accounts
 * [x] Sign up component
 * [x] Sign in component
-* [ ] Manage component
+* [x] Manage component
 * [ ] Reset password component
 
 ## Pastes

@@ -15,16 +15,13 @@ class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculou
         self.user = Account.find_by_username(username)
         self.data = data
 
-    def paste_exists(self):
-        return self.paste is not None
-
     def validate(self, include_edit_perms=False, include_delete_perms=False):
-        if not self.paste_exists():
+        if not self.paste:
             return {'errors': 'Paste with specified UUID not found.'}, 404
 
         user_owns_paste = (self.user.id == self.paste.owner_id)
         paste_requires_password = self.paste.password is not None
-        request_password = None if self.data is None or 'password' not in self.data else self.data['password']
+        request_password = None if not self.data or 'password' not in self.data else self.data['password']
 
         if include_edit_perms and not user_owns_paste and not self.paste.open_edit:
             return {'errors': 'You do not own this paste and open edit is not enabled for it.'}, 401
@@ -54,7 +51,6 @@ class SubmitPaste(Resource):
             return {'errors': form.errors}, 400
 
         data['owner_name'] = current_user.username
-        print(data)
 
         paste = Paste(**data)
         paste.save_to_db()
@@ -106,7 +102,7 @@ class UpdatePaste(Resource):
         data.pop('password')  # Don't update paste passwords.
         data['change_owner_fields'] = False if not validators.paste.owner_id == validators.user.id else True
 
-        validators.paste.update_paste(**data)
+        paste.update_paste(**data)
         return {'paste_uuid': paste_uuid}, 200
 
 

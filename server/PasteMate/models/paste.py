@@ -50,7 +50,7 @@ class Paste(db.Model):
         self.language = language
         self.content = content
         self.edit_date = datetime.utcnow()
-        # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
+        # Check if the open edit, and expiration dates are going to be updated and do so if they are.
         # Otherwise, keep them all the same.
         if change_owner_fields:
             self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
@@ -81,8 +81,6 @@ class Paste(db.Model):
         self.open_edit = (open_edit == 'true')
         self.expiration_date = self.expiration_options.get(expiration)
         self.paste_uuid = str(uuid4())[:8]
-        print(self.password)
-        print(type(self.password))
 
     def __repr__(self):
         return '<Paste %r>' % self.title
