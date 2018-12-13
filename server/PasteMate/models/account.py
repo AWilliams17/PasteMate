@@ -25,10 +25,19 @@ class Account(db.Model):
     def password_correct(self, password):
         return check_password_hash(self.password, password)
 
-    def save_to_db(self):
-        if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
-            db.session.add(self)
+    def update_password(self, password):
+        self.password = generate_password_hash(password, method='sha256')
         db.session.commit()
+
+    def update_email(self, email):
+        if not self.find_by_email(self.email):
+            self.email = email
+            db.session.commit()
+
+    def save_to_db(self):
+        if not self.find_by_email(self.email) and not self.find_by_username(self.username):
+            db.session.add(self)
+            db.session.commit()
 
     def __init__(self, username, email, password):
         self.username = username

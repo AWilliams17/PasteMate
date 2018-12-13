@@ -16,13 +16,11 @@ class RegistrationForm(Form):
         if not rv:
             return False
 
-        email_in_use = Account.find_by_email(self.email.data) is not None
-        username_in_use = Account.find_by_username(self.username.data) is not None
-
-        if email_in_use:
+        if Account.find_by_email(self.email.data):
             self.email.errors.append("Email is already in use.")
             return False
-        if username_in_use:
+
+        if Account.find_by_username(self.username.data):
             self.username.errors.append("Username is already in use.")
             return False
 
@@ -46,6 +44,51 @@ class LoginForm(Form):
 
         if not user.password_correct(self.password.data):
             self.password.errors.append("Password is incorrect.")
+            return False
+
+        return True
+
+
+class ChangeEmailForm(Form):
+    username = StringField()
+    newEmail = StringField(validators=[validators.InputRequired("No new email was given."), validators.Email()])
+    currentPassword = StringField(validators=[validators.InputRequired("Current password is required."),
+                                              validators.Length(min=4, max=128)])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = Account.find_by_username(self.username.data)
+
+        if not user.password_correct(self.currentPassword.data):
+            self.currentPassword.errors.append("Password is incorrect.")
+            return False
+
+        if Account.find_by_email(self.newEmail.data):
+            self.newEmail.errors.append("Email is already in use.")
+            return False
+
+        return True
+
+
+class ChangePasswordForm(Form):
+    username = StringField()
+    newPassword = StringField(validators=[validators.InputRequired("Current password required."),
+                                          validators.Length(min=4, max=128)])
+    currentPassword = StringField(validators=[validators.InputRequired("Current password required."),
+                                              validators.Length(min=4, max=128)])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = Account.find_by_username(self.username.data)
+
+        if not user.password_correct(self.currentPassword.data):
+            self.currentPassword.errors.append("Password is incorrect.")
             return False
 
         return True

@@ -7,7 +7,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from PasteMate.api.jwt_loaders import jwt_manager
-from PasteMate.api.forms.user import RegistrationForm, LoginForm
+from PasteMate.api.forms.user import RegistrationForm, LoginForm, ChangeEmailForm, ChangePasswordForm
 from PasteMate.models.account import Account
 from PasteMate.models.revoked_token import RevokedToken
 from datetime import timedelta
@@ -72,6 +72,36 @@ class LoginUser(Resource):
         return {'username': user.username, 'userID': user.id, 'email': user.email}, 200
 
 
+class UpdateEmail(Resource):
+    @jwt_required
+    def post(self):
+        current_username = get_jwt_identity()
+        user = Account.find_by_username(current_username)
+        data = request.get_json(force=True)
+        data['username'] = current_username
+        form = ChangeEmailForm.from_json(data)
+        if not form.validate():
+            return {'errors': form.errors}, 401
+        user.update_email(data['newEmail'])
+
+        return {'success': 'Successfully changed account email address to %s' % data['newEmail']}, 201
+
+
+class UpdatePassword(Resource):
+    @jwt_required
+    def post(self):
+        current_username = get_jwt_identity()
+        user = Account.find_by_username(current_username)
+        data = request.get_json(force=True)
+        data['username'] = current_username
+        form = ChangePasswordForm.from_json(data)
+        if not form.validate():
+            return {'errors': form.errors}, 401
+        user.update_password(data['newPassword'])
+
+        return {'success': 'Successfully changed account password.'}, 201
+
+
 class RevokeAccess(Resource):
     @jwt_required
     def get(self):
@@ -103,6 +133,7 @@ class RefreshUser(Resource):
 class CurrentUser(Resource):
     @jwt_required
     def get(self):
+        # NOTE: This is going to need to be changed when account deletion is in place.
         current_username = get_jwt_identity()
         user = Account.find_by_username(current_username)
         return {'username': current_username, 'userID': user.id, 'email': user.email}

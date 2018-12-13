@@ -31,11 +31,19 @@ export const refreshToken = ({dispatch}) => {
     })
 };
 
-export const retrieveUser = ({ commit }) => {
+export const retrieveUser = ({commit}) => {
   return auth.getUser().then(response => {
     commit('SET_AUTH', response.data);
     return response;
   })
+};
+
+export const updateEmail = ({ commit }, data) => {
+  return auth.updateEmail(data)
+    .then(response => {
+      commit('UPDATE_EMAIL', data.newEmail);
+      return response;
+    })
 };
 
 export const addNotification = ({ commit }, message) => {

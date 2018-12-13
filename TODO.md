@@ -20,9 +20,11 @@
 * [ ] Pastes could probably have a store
 * [ ] Unit Tests
 * [ ] Rate Limiter
+* [ ] Make the email change require an email verification
 * [ ] Upgrade WebPack to v4
 * [ ] Better axios error handling
 * [ ] Logs
+* [ ] Refactor the api resources to be less bloated.
 * [ ] Configuration
 * [ ] axios_jwt.js
 * [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing/deleting it.

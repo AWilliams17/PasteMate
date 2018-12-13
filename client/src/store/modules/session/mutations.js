@@ -1,5 +1,9 @@
 export const SET_AUTH = (state, user) => {
-  state.user = user
+  state.user = user;
+};
+
+export const UPDATE_EMAIL = (state, email) => {
+  state.user.email = email;
 };
 
 export const ADD_NOTIFICATION = (state, message) => {
