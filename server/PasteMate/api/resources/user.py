@@ -87,11 +87,16 @@ class RevokeAccess(Resource):
 
 class RefreshUser(Resource):
     @jwt_refresh_token_required
-    def post(self):
+    def get(self):
         current_username = get_jwt_identity()
         access_token = create_access_token(identity=current_username)
         response = {'token_refreshed': True}
-        set_access_cookies(response, access_token)
+
+        @after_this_request
+        def set_new_cookies():
+            set_access_cookies(response, access_token)
+            return response
+
         return response, 200
 
 

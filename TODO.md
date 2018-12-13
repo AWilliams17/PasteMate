@@ -37,5 +37,3 @@
 * [ ] HSTS
 * [x] X-XSS-Protection
 * [x] Set-Cookie options
-SQLAlchemy should protect against SQLI for the most part, unless I try
-to actively ruin it (which I won't ^.^)

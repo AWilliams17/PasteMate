@@ -12,8 +12,8 @@ axios.defaults.withCredentials = true;
 axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
 axios.defaults.xsrfCookieName = 'csrf_access_token';
 
-axios.interceptors.response.use(null, error => {
-  return Promise.reject(error);
-});
+// axios.interceptors.response.use(null, error => {
+//   return Promise.reject(error);
+// });
 
 export default axios

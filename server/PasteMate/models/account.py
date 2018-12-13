@@ -28,7 +28,7 @@ class Account(db.Model):
     def save_to_db(self):
         if self.find_by_email(self.email) is None and self.find_by_username(self.username) is None:
             db.session.add(self)
-            db.session.commit()
+        db.session.commit()
 
     def __init__(self, username, email, password):
         self.username = username
