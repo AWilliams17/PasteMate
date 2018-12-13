@@ -2,6 +2,7 @@ export const SIGN_IN = 'session/signIn';
 export const SIGN_UP = 'session/signUp';
 export const SIGN_OUT = 'session/signOut';
 export const UPDATE_EMAIL = 'session/updateEmail';
+export const DELETE_USER = 'session/deleteUser';
 export const REFRESH_TOKEN = 'session/refreshToken';
 export const RETRIEVE_USER = 'session/retrieveUser';
 export const ADD_NOTIFICATION = 'session/addNotification';

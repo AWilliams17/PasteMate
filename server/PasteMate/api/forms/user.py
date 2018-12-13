@@ -75,9 +75,28 @@ class ChangeEmailForm(Form):
 
 class ChangePasswordForm(Form):
     username = StringField()
-    newPassword = StringField(validators=[validators.InputRequired("Current password required."),
+    newPassword = StringField(validators=[validators.InputRequired("New password is required."),
                                           validators.Length(min=4, max=128)])
-    currentPassword = StringField(validators=[validators.InputRequired("Current password required."),
+    currentPassword = StringField(validators=[validators.InputRequired("Current password is required."),
+                                              validators.Length(min=4, max=128)])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = Account.find_by_username(self.username.data)
+
+        if not user.password_correct(self.currentPassword.data):
+            self.currentPassword.errors.append("Password is incorrect.")
+            return False
+
+        return True
+
+
+class DeleteUserForm(Form):
+    username = StringField()
+    currentPassword = StringField(validators=[validators.InputRequired("Current password is required."),
                                               validators.Length(min=4, max=128)])
 
     def validate(self):

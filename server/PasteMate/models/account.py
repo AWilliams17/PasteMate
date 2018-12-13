@@ -22,6 +22,12 @@ class Account(db.Model):
     def find_by_id(cls, user_id):
         return cls.query.filter_by(id=user_id).first()
 
+    @classmethod
+    def delete(cls, user_id):
+        if Account.find_by_id(user_id):
+            Account.query.filter_by(id=user_id).delete()
+            db.session.commit()
+
     def password_correct(self, password):
         return check_password_hash(self.password, password)
 

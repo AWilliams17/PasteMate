@@ -63,7 +63,7 @@
                 <b-form-input id="passwordInput" v-model="newDetails.email" type="email" size="sm" required></b-form-input>
               </b-form-group>
             </template>
-            <b-button @click="showPasswordForm = showEmailForm = false"
+            <b-button @click="resetForms"
                       variant="primary" size="sm" class="float-left">Cancel
             </b-button>
             <b-button type="submit" variant="primary" size="sm" class="float-right">Submit</b-button>
@@ -78,7 +78,7 @@
               <b-form-input id="passwordInput" v-model="password" type="password" size="sm" required></b-form-input>
             </b-form-group>
             <p>Are you sure you want to delete your account? All your pastes will be lost.</p>
-            <b-button @click="showDeletionForm = false" variant="primary" size="sm" class="float-left">Cancel</b-button>
+            <b-button @click="resetForms = false" variant="primary" size="sm" class="float-left">Cancel</b-button>
             <b-button type="submit" variant="primary" size="sm" class="float-right">Yes, delete my account.
             </b-button>
           </b-form>
@@ -90,7 +90,7 @@
 
 <script>
   import axiosJWT from '../../_misc/axios_jwt';
-  import { ADD_NOTIFICATION, UPDATE_EMAIL } from '../../store/action-types';
+  import { ADD_NOTIFICATION, UPDATE_EMAIL, DELETE_USER } from '../../store/action-types';
 
   export default {
     name: 'account-manage',
@@ -159,7 +159,15 @@
         }
       },
 
-      onDeletionConfirmation() {
+      async onDeletionConfirmation() {
+        try {
+          const payload = {'currentPassword': this.password};
+          await this.$store.dispatch(DELETE_USER, payload);
+          this.$store.dispatch(ADD_NOTIFICATION, 'Operation successful.');
+          this.$router.push('/');
+        } catch (error) {
+          this.dispatchErrors(error);
+        }
       },
 
       dispatchErrors(error) {

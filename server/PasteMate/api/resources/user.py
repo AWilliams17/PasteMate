@@ -7,10 +7,18 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from PasteMate.api.jwt_loaders import jwt_manager
-from PasteMate.api.forms.user import RegistrationForm, LoginForm, ChangeEmailForm, ChangePasswordForm
+from PasteMate.api.forms.user import RegistrationForm, LoginForm, ChangeEmailForm, ChangePasswordForm, DeleteUserForm
 from PasteMate.models.account import Account
 from PasteMate.models.revoked_token import RevokedToken
 from datetime import timedelta
+
+
+def revoke_access(response):
+    jti = get_raw_jwt()
+    revoked_token = RevokedToken(jti=jti['jti'])
+    revoked_token.save_to_db()
+    unset_jwt_cookies(response)
+    return response
 
 
 def create_tokens(user):
@@ -102,16 +110,32 @@ class UpdatePassword(Resource):
         return {'success': 'Successfully changed account password.'}, 201
 
 
+class DeleteUser(Resource):
+    @jwt_required
+    def post(self):
+        current_username = get_jwt_identity()
+        user = Account.find_by_username(current_username)
+        data = request.get_json(force=True)
+        data['username'] = current_username
+        form = DeleteUserForm.from_json(data)
+        if not form.validate():
+            return {'errors': form.errors}, 401
+
+        @after_this_request
+        def deauthenticate(response):
+            return revoke_access(response)
+
+        Account.delete(user.id)
+
+        return {'success': 'Account has been deleted.'}, 201
+
+
 class RevokeAccess(Resource):
     @jwt_required
     def get(self):
         @after_this_request
-        def revoke_access(response):
-            jti = get_raw_jwt()
-            revoked_token = RevokedToken(jti=jti['jti'])
-            revoked_token.save_to_db()
-            unset_jwt_cookies(response)
-            return response
+        def deauthenticate(response):
+            return revoke_access(response)
         return {'token_revoked': True}, 200
 
 
@@ -133,8 +157,9 @@ class RefreshUser(Resource):
 class CurrentUser(Resource):
     @jwt_required
     def get(self):
-        # NOTE: This is going to need to be changed when account deletion is in place.
         current_username = get_jwt_identity()
         user = Account.find_by_username(current_username)
-        return {'username': current_username, 'userID': user.id, 'email': user.email}
+        if user:
+            return {'username': current_username, 'userID': user.id, 'email': user.email}
+        return {'errors': 'Account not found.'}, 400
         # Nothing else needed since the loader should do the rest.

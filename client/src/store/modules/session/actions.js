@@ -46,6 +46,14 @@ export const updateEmail = ({ commit }, data) => {
     })
 };
 
+export const deleteUser = ({ commit }, data) => {
+  return auth.deleteUser(data)
+    .then(response => {
+      commit('SET_AUTH', null);
+      return response;
+    })
+};
+
 export const addNotification = ({ commit }, message) => {
   commit('ADD_NOTIFICATION', message);
 };

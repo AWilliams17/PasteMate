@@ -20,8 +20,8 @@ export const getUser = () => {
   return axiosJWT.get('/api/auth/current_user')
 };
 
-export const updatePassword = (data) => {
-  return axiosJWT.post('/api/user/update_password', data)
+export const deleteUser = (data) => {
+  return axiosJWT.post('/api/user/delete', data)
 };
 
 export const updateEmail = (data) => {
