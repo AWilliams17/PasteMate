@@ -6,19 +6,10 @@ from flask_restful import Resource
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from PasteMate.api.jwt_loaders import jwt_manager
 from PasteMate.api.forms.user import RegistrationForm, LoginForm, ChangeEmailForm, ChangePasswordForm, DeleteUserForm
 from PasteMate.models.account import Account
 from PasteMate.models.revoked_token import RevokedToken
 from datetime import timedelta
-
-
-def revoke_access(response):
-    jti = get_raw_jwt()
-    revoked_token = RevokedToken(jti=jti['jti'])
-    revoked_token.save_to_db()
-    unset_jwt_cookies(response)
-    return response
 
 
 def create_tokens(user):
@@ -43,6 +34,19 @@ def set_cookies(tokens, response):
     """
     set_access_cookies(response, tokens[0])
     set_refresh_cookies(response, tokens[1])
+
+
+def revoke_access(response):
+    """
+    Unsets the JWT related cookies in the response, then returns the modified response.
+    :param response: The flask response object to set the headers in.
+    :return: The modified response.
+    """
+    jti = get_raw_jwt()
+    revoked_token = RevokedToken(jti=jti['jti'])
+    revoked_token.save_to_db()
+    unset_jwt_cookies(response)
+    return response
 
 
 class RegisterUser(Resource):

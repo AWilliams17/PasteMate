@@ -54,6 +54,7 @@ class SubmitPaste(Resource):
             return {'errors': form.errors}, 400
 
         data['owner_name'] = current_user.username
+        print(data)
 
         paste = Paste(**data)
         paste.save_to_db()
@@ -102,11 +103,8 @@ class UpdatePaste(Resource):
         if not form.validate():
             return {'errors': form.errors}, 400
 
-        data['password'] = None  # Don't update paste passwords.
-
-        if not validators.paste.owner_id == validators.user.id:
-            data['open_edit'] = None
-            data['expiration'] = None
+        data.pop('password')  # Don't update paste passwords.
+        data['change_owner_fields'] = False if not validators.paste.owner_id == validators.user.id else True
 
         validators.paste.update_paste(**data)
         return {'paste_uuid': paste_uuid}, 200

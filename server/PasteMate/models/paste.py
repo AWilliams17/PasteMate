@@ -45,16 +45,16 @@ class Paste(db.Model):
             'deletion_inbound': datetime.utcnow() >= self.expiration_date if self.expiration_date is not None else False
         }
 
-    def update_paste(self, title, language, content, password=None, open_edit=None, expiration=None):
+    def update_paste(self, title, language, content, open_edit, expiration, change_owner_fields=False):
         self.title = title
         self.language = language
         self.content = content
         self.edit_date = datetime.utcnow()
         # Check if the password, open edit, and expiration dates are going to be updated and do so if they are.
         # Otherwise, keep them all the same.
-        self.password = generate_password_hash(password, method='sha256') if password is not None else self.password
-        self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
-        self.expiration_date = self.expiration_date if expiration is None else self.expiration_options.get(expiration)
+        if change_owner_fields:
+            self.open_edit = self.open_edit if open_edit is None else (open_edit == 'true')
+            self.expiration_date = self.expiration_date if not expiration else self.expiration_options.get(expiration)
         db.session.commit()
 
     def save_to_db(self):
@@ -76,13 +76,13 @@ class Paste(db.Model):
         self.owner_id = Account.find_by_username(owner_name).id
         self.title = title
         self.language = language
-        self.password = None
-        if password is not None:
-            self.password = generate_password_hash(password, method='sha256')
+        self.password = None if password == '' else generate_password_hash(password, method='sha256')
         self.content = content
         self.open_edit = (open_edit == 'true')
         self.expiration_date = self.expiration_options.get(expiration)
         self.paste_uuid = str(uuid4())[:8]
+        print(self.password)
+        print(type(self.password))
 
     def __repr__(self):
         return '<Paste %r>' % self.title
