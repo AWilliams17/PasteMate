@@ -6,7 +6,9 @@ from flask_restful import Resource
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
-from PasteMate.api.forms.user import RegistrationForm, LoginForm, ChangeEmailForm, ChangePasswordForm, DeleteUserForm
+from PasteMate.api.forms.user import (RegistrationForm, LoginForm, ChangeEmailForm,
+                                      ChangePasswordForm, DeleteUserForm, ResetPasswordForm)
+from PasteMate.api.mail import send_reset_token
 from PasteMate.models.account import Account
 from PasteMate.models.revoked_token import RevokedToken
 from datetime import timedelta
@@ -132,6 +134,21 @@ class DeleteUser(Resource):
         Account.delete(user.id)
 
         return {'success': 'Account has been deleted.'}, 201
+
+
+class ResetPassword(Resource):
+    def post(self):
+        data = request.get_json(force=True)
+        form = ResetPasswordForm.from_json(data)
+
+        if not form.validate():
+            return {'errors': form.errors}, 401
+
+        user = Account.find_by_email(data['email'])
+        token = user.generate_password_reset_token()
+        send_reset_token(token, user.email)
+
+        return {'success': 'Password reset request received. Please wait a while and check your inbox/spam.'}, 200
 
 
 class RevokeAccess(Resource):

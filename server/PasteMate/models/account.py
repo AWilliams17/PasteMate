@@ -1,5 +1,8 @@
 from PasteMate.models import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 
 
 class Account(db.Model):
@@ -39,6 +42,10 @@ class Account(db.Model):
         if not self.find_by_email(self.email):
             self.email = email
             db.session.commit()
+
+    def generate_password_reset_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'reset': self.id})
 
     def save_to_db(self):
         if not self.find_by_email(self.email) and not self.find_by_username(self.username):

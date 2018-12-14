@@ -44,12 +44,9 @@ export default new Router({
       }
     },
     {
-      path: '/account/passwordreset',
+      path: '/account/password-reset',
       name: 'Reset Password',
-      component: AccountPasswordReset,
-      meta: {
-        requiresAuth: true
-      }
+      component: AccountPasswordReset
     },
     {
       path: '/paste/submit',

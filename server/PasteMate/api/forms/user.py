@@ -111,3 +111,20 @@ class DeleteUserForm(Form):
             return False
 
         return True
+
+
+class ResetPasswordForm(Form):
+    email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = Account.find_by_email(self.email.data)
+
+        if not user:
+            self.email.errors.append("User with specified email was not found.")
+            return False
+
+        return True

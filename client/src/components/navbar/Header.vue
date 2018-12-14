@@ -26,7 +26,7 @@
             </template>
             <b-link to="/account/signin" class="dropdown-item">Sign In</b-link>
             <b-link to="/account/signup" class="dropdown-item">Sign Up</b-link>
-            <b-link to="/account/passwordreset" class="dropdown-item">Forgot Password</b-link>
+            <b-link to="/account/password-reset" class="dropdown-item">Forgot Password</b-link>
           </template>
         </b-nav-item-dropdown>
       </b-navbar-nav>

@@ -2,8 +2,8 @@
 Defines all API endpoints in the server.
 """
 from PasteMate.api import api
-from PasteMate.api.resources.user import LoginUser, RegisterUser, CurrentUser, RefreshUser, RevokeAccess, \
-    UpdateEmail, UpdatePassword, DeleteUser
+from PasteMate.api.resources.user import (LoginUser, RegisterUser, CurrentUser, RefreshUser,
+                                          RevokeAccess, UpdateEmail, UpdatePassword, DeleteUser, ResetPassword)
 from PasteMate.api.resources.paste import SubmitPaste, GetPaste, UpdatePaste, DeletePaste, ListPastes
 
 api.add_resource(RegisterUser, '/api/user/register')
@@ -13,6 +13,7 @@ api.add_resource(CurrentUser, '/api/auth/current_user')
 api.add_resource(RevokeAccess, '/api/auth/revoke')
 api.add_resource(UpdateEmail, '/api/user/update_email')
 api.add_resource(UpdatePassword, '/api/user/update_password')
+api.add_resource(ResetPassword, '/api/user/reset_password')
 api.add_resource(DeleteUser, '/api/user/delete')
 api.add_resource(SubmitPaste, '/api/paste/submit')
 api.add_resource(GetPaste, '/api/paste/get/<string:paste_uuid>')
