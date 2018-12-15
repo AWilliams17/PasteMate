@@ -45,7 +45,7 @@ class Account(db.Model):
 
     def generate_password_reset_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'reset': self.id})
+        return s.dumps({'user_id': self.id})
 
     def save_to_db(self):
         if not self.find_by_email(self.email) and not self.find_by_username(self.username):

@@ -49,6 +49,11 @@ export default new Router({
       component: AccountPasswordReset
     },
     {
+      path: '/account/password-reset/:slug',
+      name: 'Finalize Reset',
+      component: AccountPasswordReset
+    },
+    {
       path: '/paste/submit',
       name: 'Submit Paste',
       component: PasteSubmit,

@@ -1,6 +1,9 @@
 """
 wtforms validation logic for user related forms.
 """
+from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature, SignatureExpired
 from wtforms import Form, validators
 from wtforms.fields import StringField
 from PasteMate.models.account import Account
@@ -113,7 +116,7 @@ class DeleteUserForm(Form):
         return True
 
 
-class ResetPasswordForm(Form):
+class ResetPasswordFormSend(Form):
     email = StringField(validators=[validators.InputRequired("No email was given."), validators.Email()])
 
     def validate(self):
@@ -128,3 +131,27 @@ class ResetPasswordForm(Form):
             return False
 
         return True
+
+
+class ResetPasswordFormReceive(Form):
+    token = StringField()
+    password = StringField(validators=[validators.InputRequired("No password was given."), validators.Length(min=4, max=128)])
+
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(self.token)
+            if not Account.find_by_id(data.get('reset_id')):
+                self.token.errors.append("The account this token is for was not found.")
+                return False
+        except (BadSignature, SignatureExpired):
+            self.token.errors.append("This token is invalid or has expired.")
+            return False
+
+        return data
+
+

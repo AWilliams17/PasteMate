@@ -7,7 +7,8 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
                                 jwt_refresh_token_required, get_jwt_identity, get_raw_jwt,
                                 set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 from PasteMate.api.forms.user import (RegistrationForm, LoginForm, ChangeEmailForm,
-                                      ChangePasswordForm, DeleteUserForm, ResetPasswordForm)
+                                      ChangePasswordForm, DeleteUserForm,
+                                      ResetPasswordFormSend, ResetPasswordFormReceive)
 from PasteMate.api.mail import send_reset_token
 from PasteMate.models.account import Account
 from PasteMate.models.revoked_token import RevokedToken
@@ -136,10 +137,11 @@ class DeleteUser(Resource):
         return {'success': 'Account has been deleted.'}, 201
 
 
-class ResetPassword(Resource):
+class ResetPasswordSend(Resource):
+    """ For sending reset password tokens via email """
     def post(self):
         data = request.get_json(force=True)
-        form = ResetPasswordForm.from_json(data)
+        form = ResetPasswordFormSend.from_json(data)
 
         if not form.validate():
             return {'errors': form.errors}, 401
@@ -149,6 +151,22 @@ class ResetPassword(Resource):
         send_reset_token(token, user.email)
 
         return {'success': 'Password reset request received. Please wait a while and check your inbox/spam.'}, 200
+
+
+class ResetPasswordReceive(Resource):
+    """ For receiving the reset password tokens, and then using the passed password to reset the account password. """
+    def post(self):
+        data = request.get_json(force=True)
+        form = ResetPasswordFormReceive.from_json(data)
+        token_data = form.validate()
+
+        if not token_data:
+            return {'errors': form.errors}, 401
+
+        user = Account.find_by_id(token_data.get('reset_id'))
+        user.update_password(data['password'])
+
+        return {'success': 'Account with email %s has been successfully updated.' % user.email}, 200
 
 
 class RevokeAccess(Resource):

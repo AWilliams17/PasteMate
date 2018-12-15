@@ -2,7 +2,7 @@
   <b-row>
     <b-col cols="12">
       <b-card header="Sign in to PasteMate" class="mb-3 mx-auto" style="max-width: 25rem;">
-        <b-form @submit.prevent="onSubmit">
+        <b-form @submit.prevent="onSubmitEmail">
           <b-form-group id="emailFieldSet"
                         horizontal
                         :label-cols="4"
@@ -29,7 +29,7 @@
       }
     },
     methods: {
-      onSubmit() {
+      onSubmitEmail() {
         const payload = {'email': this.email};
         axiosJWT.post('/api/user/reset_password', payload)
           .then((response) => {
@@ -42,6 +42,8 @@
               this.$store.dispatch(ADD_NOTIFICATION, ...error);
             });
           })
+      },
+      onSubmitToken() {
       }
     }
   };
