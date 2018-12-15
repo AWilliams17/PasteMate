@@ -33,7 +33,8 @@
 </template>
 
 <script>
-  import {SIGN_UP, ADD_NOTIFICATION} from '../../store/action-types';
+  import { SIGN_UP } from '../../store/action-types';
+  import { dispatchErrors } from '../../_misc/utils';
 
   export default {
     name: 'account-sign-up',
@@ -53,10 +54,7 @@
         this.$store.dispatch(SIGN_UP, payload).then(() => {
           this.$router.push('/');
         }).catch((error) => {
-          const errorList = Object.values(error.response.data.errors);
-          errorList.forEach((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, ...error);
-          });
+          dispatchErrors(error);
         })
       }
     }

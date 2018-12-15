@@ -91,6 +91,7 @@
 <script>
   import axiosJWT from '../../_misc/axios_jwt';
   import { ADD_NOTIFICATION, UPDATE_EMAIL, DELETE_USER } from '../../store/action-types';
+  import { dispatchErrors } from '../../_misc/utils';
 
   export default {
     name: 'account-manage',
@@ -145,7 +146,7 @@
             this.$store.dispatch(ADD_NOTIFICATION, 'Operation successful.');
             this.resetForms()
           } catch (error) {
-            this.dispatchErrors(error);
+            dispatchErrors(error);
           }
         } else {
           axiosJWT.post('/api/user/update_password', payload)
@@ -154,7 +155,7 @@
               this.resetForms()
             })
             .catch((error) => {
-              this.dispatchErrors(error);
+              dispatchErrors(error);
             })
         }
       },
@@ -166,15 +167,8 @@
           this.$store.dispatch(ADD_NOTIFICATION, 'Operation successful.');
           this.$router.push('/');
         } catch (error) {
-          this.dispatchErrors(error);
+          dispatchErrors(error);
         }
-      },
-
-      dispatchErrors(error) {
-        const errorList = Object.values(error.response.data.errors);
-        errorList.forEach((error) => {
-          this.$store.dispatch(ADD_NOTIFICATION, ...error);
-        })
       },
 
       resetForms() {

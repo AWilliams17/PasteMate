@@ -110,7 +110,7 @@
             } else if (error.response.status === 404) {
               this.$router.push('/404');
             } else {
-              this.$store.dispatch(ADD_NOTIFICATION, error.response.data);
+              dispatchErrors(error, this.$store);
             }
           })
       },
@@ -122,7 +122,7 @@
             this.paste = response.data.paste;
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+            dispatchErrors(error, this.$store);
           })
       },
       deletePaste() {

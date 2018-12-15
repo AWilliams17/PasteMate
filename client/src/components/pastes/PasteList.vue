@@ -35,6 +35,7 @@
 <script>
   import axiosJWT from '../../_misc/axios_jwt';
   import VuePaginator from 'vuejs-paginator';
+  import { dispatchErrors } from '../../_misc/utils';
 
   export default {
     name: 'paste-list',
@@ -67,7 +68,7 @@
             this.$router.go(0);
           })
           .catch((error) => {
-            this.$store.dispatch('session/addNotification', error.response.data.errors);
+            dispatchErrors(error, this.$store);
           });
       }
     }

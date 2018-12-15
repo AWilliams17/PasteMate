@@ -20,6 +20,7 @@
 <script>
   import { ADD_NOTIFICATION } from '../../store/action-types';
   import axiosJWT from '../../_misc/axios_jwt';
+  import { dispatchErrors } from '../../_misc/utils';
 
   export default {
     name: 'account-password-reset',
@@ -37,10 +38,7 @@
             this.$router.push('/');
           })
           .catch((error) => {
-            const errorList = Object.values(error.response.data.errors);
-            errorList.forEach((error) => {
-              this.$store.dispatch(ADD_NOTIFICATION, ...error);
-            });
+            dispatchErrors(error, this.$store);
           })
       },
       onSubmitToken() {

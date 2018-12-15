@@ -86,8 +86,8 @@
 
 <script>
   import axiosJWT from '../../_misc/axios_jwt';
-  import { ADD_NOTIFICATION } from '../../store/action-types';
   import LanguageList from '../../_misc/highlightjs_languages';
+  import { dispatchErrors } from '../../_misc/utils';
 
   export default {
     name: 'paste-submit',
@@ -158,10 +158,7 @@
             this.$router.push('/paste/view/' + response.data.paste_uuid);
           })
           .catch((error) => {
-            const errorList = Object.values(error.response.data.errors);
-            errorList.forEach((error) => {
-              this.$store.dispatch(ADD_NOTIFICATION, ...error);
-            })
+            dispatchErrors(error);
           })
       },
       onSubmitPassword() {
@@ -173,10 +170,7 @@
             this.setPasteInformation(response);
           })
           .catch((error) => {
-            const errorList = Object.values(error.response.data.errors);
-            errorList.forEach((error) => {
-              this.$store.dispatch(ADD_NOTIFICATION, ...error);
-            })
+            dispatchErrors(error);
           });
       },
       getPasteInformation() {
@@ -189,10 +183,7 @@
             if (error.response.status === 401) {
               this.show_password_form = true;
             } else {
-              const errorList = Object.values(error.response.data.errors);
-              errorList.forEach((error) => {
-                this.$store.dispatch(ADD_NOTIFICATION, ...error);
-              })
+              dispatchErrors(error);
             }
           });
       },
