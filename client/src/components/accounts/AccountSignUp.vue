@@ -2,7 +2,7 @@
   <b-row>
     <b-col cols="12">
       <b-card header="Sign up to PasteMate" class="mb-3 mx-auto" style="max-width: 25rem;">
-        <b-form @submit="onSubmit">
+        <b-form @submit.prevent="onSubmit">
           <b-form-group id="usernameFieldSet"
                         horizontal
                         :label-cols="4"
@@ -49,7 +49,6 @@
     },
     methods: {
       onSubmit(evt) {
-        evt.preventDefault();
         const payload = this.form;
         this.$store.dispatch(SIGN_UP, payload).then(() => {
           this.$router.push('/');

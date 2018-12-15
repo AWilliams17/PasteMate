@@ -9,10 +9,3 @@ const store = new Vuex.Store({
 });
 
 export default store;
-
-if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept(['./modules/session'], () => {
-    const session = require('./modules/session').default;
-    store.hotUpdate({modules: {session}});
-  })
-}

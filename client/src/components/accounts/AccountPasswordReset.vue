@@ -32,6 +32,7 @@
     methods: {
       onSubmitEmail() {
         const payload = {'email': this.email};
+
         axiosJWT.post('/api/user/reset_password', payload)
           .then((response) => {
             this.$store.dispatch(ADD_NOTIFICATION, response.data.success);
@@ -41,6 +42,7 @@
             dispatchErrors(error, this.$store);
           })
       },
+
       onSubmitToken() {
       }
     }

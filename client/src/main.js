@@ -29,6 +29,7 @@ router.beforeEach((to, from, next) => {
   // Redirect user to sign in page if trying to access a protected route.
   const {requiresAuth} = to.meta;
   const currentUser = store.getters['session/user'];
+
   if (requiresAuth && !currentUser) {
     next('/account/signin');
   } else {
