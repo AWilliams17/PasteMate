@@ -49,7 +49,7 @@ class LoginForm(Form):
             self.password.errors.append("Password is incorrect.")
             return False
 
-        return True
+        return user
 
 
 class ChangeEmailForm(Form):
@@ -73,7 +73,7 @@ class ChangeEmailForm(Form):
             self.newEmail.errors.append("Email is already in use.")
             return False
 
-        return True
+        return user
 
 
 class ChangePasswordForm(Form):
@@ -94,13 +94,12 @@ class ChangePasswordForm(Form):
             self.currentPassword.errors.append("Password is incorrect.")
             return False
 
-        return True
+        return user
 
 
 class DeleteUserForm(Form):
-    username = StringField()  # TODO: Why is this called currentPassword? Why not just password?
-    currentPassword = StringField(validators=[validators.InputRequired("Current password is required."),
-                                              validators.Length(min=4, max=128)])
+    username = StringField()
+    password = StringField(validators=[validators.InputRequired("Your password is required."), validators.Length(min=4, max=128)])
 
     def validate(self):
         rv = Form.validate(self)
@@ -109,8 +108,8 @@ class DeleteUserForm(Form):
 
         user = Account.find_by_username(self.username.data)
 
-        if not user.password_correct(self.currentPassword.data):
-            self.currentPassword.errors.append("Password is incorrect.")
+        if not user.password_correct(self.password.data):
+            self.password.errors.append("Password is incorrect.")
             return False
 
         return True
@@ -130,7 +129,7 @@ class ResetPasswordFormSend(Form):
             self.email.errors.append("User with specified email was not found.")
             return False
 
-        return True
+        return user
 
 
 class ResetPasswordFormReceive(Form):
@@ -143,6 +142,7 @@ class ResetPasswordFormReceive(Form):
             return False
 
         s = Serializer(current_app.config['SECRET_KEY'])
+
         try:
             data = s.loads(self.token)
             if not Account.find_by_id(data.get('reset_id')):

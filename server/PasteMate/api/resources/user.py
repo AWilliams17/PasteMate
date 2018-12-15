@@ -76,11 +76,10 @@ class LoginUser(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = LoginForm.from_json(data)
+        user = form.validate()
 
-        if not form.validate():
+        if not user:
             return {'errors': form.errors}, 401
-
-        user = Account.find_by_username(data.get('username'))  # TODO: Polling the database twice.
 
         @after_this_request
         def set_jwt_cookies(response):
@@ -95,12 +94,12 @@ class UpdateEmail(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangeEmailForm.from_json(data)
+        user = form.validate()
 
-        if not form.validate():
+        if not user:
             return {'errors': form.errors}, 401
 
         user.update_email(data['newEmail'])
@@ -112,12 +111,12 @@ class UpdatePassword(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangePasswordForm.from_json(data)
+        user = form.validate()
 
-        if not form.validate():
+        if not user:
             return {'errors': form.errors}, 401
 
         user.update_password(data['newPassword'])
@@ -129,12 +128,12 @@ class DeleteUser(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = DeleteUserForm.from_json(data)
+        user = form.validate()
 
-        if not form.validate():
+        if not user:
             return {'errors': form.errors}, 401
 
         @after_this_request
@@ -151,11 +150,11 @@ class ResetPasswordSend(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = ResetPasswordFormSend.from_json(data)
+        user = form.validate()
 
-        if not form.validate():
+        if not user:
             return {'errors': form.errors}, 401
 
-        user = Account.find_by_email(data['email'])  # TODO: Polling the database twice for LITERALLY the same thing.
         token = user.generate_password_reset_token()
         send_reset_token(token, user.email)
 
@@ -192,8 +191,7 @@ class RevokeAccess(Resource):
 class RefreshUser(Resource):
     @jwt_refresh_token_required
     def get(self):
-        current_username = get_jwt_identity()
-        access_token = create_access_token(identity=current_username)
+        access_token = create_access_token(identity=get_jwt_identity())
         response = {'token_refreshed': True}
 
         @after_this_request
@@ -207,11 +205,10 @@ class RefreshUser(Resource):
 class CurrentUser(Resource):
     @jwt_required
     def get(self):
-        current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)
+        user = Account.find_by_username(get_jwt_identity())
 
         if user:
-            return {'username': current_username, 'userID': user.id, 'email': user.email}
+            return {'username': get_jwt_identity(), 'userID': user.id, 'email': user.email}
 
         return {'errors': 'Account not found.'}, 400
         # Nothing else needed since the loader should do the rest.

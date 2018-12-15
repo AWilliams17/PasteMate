@@ -23,6 +23,7 @@ def validate_permissions(user, paste, data=None, validate_delete_perms=False, va
     if not v.validate():
         if "NotFound" in v.errors:
             return {"errors": "Paste with specified UUID was not found."}, 404
+
         return {"errors": v.errors}, 401
 
     return None
@@ -32,8 +33,7 @@ class SubmitPaste(Resource):
     @jwt_required
     def post(self):
         data = request.get_json(force=True)
-        identity = get_jwt_identity()
-        current_user = Account.find_by_username(identity)
+        current_user = Account.find_by_username(get_jwt_identity())
         form = SubmitPasteForm.from_json(data)
 
         if not form.validate():
@@ -49,8 +49,7 @@ class SubmitPaste(Resource):
 class GetPaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
-        identity = get_jwt_identity()
-        user = Account.find_by_username(identity)
+        user = Account.find_by_username(get_jwt_identity())
         paste = Paste.find_by_uuid(paste_uuid)
 
         permissions_errors = validate_permissions(user, paste)
@@ -61,8 +60,7 @@ class GetPaste(Resource):
 
     @jwt_required
     def post(self, paste_uuid):
-        identity = get_jwt_identity()
-        user = Account.find_by_username(identity)
+        user = Account.find_by_username(get_jwt_identity())
         paste = Paste.find_by_uuid(paste_uuid)
         data = request.get_json(force=True)
 
@@ -76,9 +74,8 @@ class GetPaste(Resource):
 class UpdatePaste(Resource):
     @jwt_required
     def post(self, paste_uuid):
-        identity = get_jwt_identity()
         data = request.get_json(force=True)
-        user = Account.find_by_username(identity)
+        user = Account.find_by_username(get_jwt_identity())
         paste = Paste.find_by_uuid(paste_uuid)
 
         permissions_errors = validate_permissions(user, paste, data, validate_edit_perms=True)
@@ -100,9 +97,7 @@ class UpdatePaste(Resource):
 class DeletePaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
-        identity = get_jwt_identity()
-
-        user = Account.find_by_username(identity)
+        user = Account.find_by_username(get_jwt_identity())
         paste = Paste.find_by_uuid(paste_uuid)
 
         permissions_errors = validate_permissions(user, paste, validate_delete_perms=True)
@@ -117,10 +112,10 @@ class ListPastes(Resource):
     @jwt_required
     def get(self, page):
         def strf_date(date): return date.strftime("%Y-%m-%d %H:%M:%S") if date is not None else None
-        identity = get_jwt_identity()
-        current_user = Account.find_by_username(identity)
+        current_user = Account.find_by_username(get_jwt_identity())
         paste_pagination = current_user.pastes.paginate(int(page), 10, False)
         pastes = []
+
         for paste in paste_pagination.items:
             pastes.append({
                 'uuid': paste.paste_uuid,
@@ -132,6 +127,7 @@ class ListPastes(Resource):
                 'open_edit': paste.open_edit,
                 'password_protected': paste.password is not None
             })
+
         return {'pastes': {
             'current_page': paste_pagination.page,
             'last_page': paste_pagination.pages,
