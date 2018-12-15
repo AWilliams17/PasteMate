@@ -166,12 +166,11 @@ class ResetPasswordReceive(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = ResetPasswordFormReceive.from_json(data)
-        token_data = form.validate()
+        user = form.validate()
 
-        if not token_data:
+        if not user:
             return {'errors': form.errors}, 401
 
-        user = Account.find_by_id(token_data.get('reset_id'))  # TODO: Polling the database twice for LITERALLY the same thing, again.
         user.update_password(data['password'])
 
         return {'success': 'Account with email %s has been successfully updated.' % user.email}, 200

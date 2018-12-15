@@ -145,13 +145,14 @@ class ResetPasswordFormReceive(Form):
 
         try:
             data = s.loads(self.token)
-            if not Account.find_by_id(data.get('reset_id')):
+            user = Account.find_by_id(data.get('reset_id'))
+            if not user:
                 self.token.errors.append("The account this token is for was not found.")
                 return False
         except (BadSignature, SignatureExpired):
             self.token.errors.append("This token is invalid or has expired.")
             return False
 
-        return data
+        return user
 
 
