@@ -76,7 +76,7 @@ class LoginUser(Resource):
         form = LoginForm.from_json(data)
         if not form.validate():
             return {'errors': form.errors}, 401
-        user = Account.find_by_username(data.get('username'))
+        user = Account.find_by_username(data.get('username'))  # TODO: Polling the database twice.
 
         @after_this_request
         def set_jwt_cookies(response):
@@ -91,7 +91,7 @@ class UpdateEmail(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)
+        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangeEmailForm.from_json(data)
@@ -106,7 +106,7 @@ class UpdatePassword(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)
+        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangePasswordForm.from_json(data)
@@ -121,7 +121,7 @@ class DeleteUser(Resource):
     @jwt_required
     def post(self):
         current_username = get_jwt_identity()
-        user = Account.find_by_username(current_username)
+        user = Account.find_by_username(current_username)  # TODO: Polling the database twice.
         data = request.get_json(force=True)
         data['username'] = current_username
         form = DeleteUserForm.from_json(data)
@@ -146,7 +146,7 @@ class ResetPasswordSend(Resource):
         if not form.validate():
             return {'errors': form.errors}, 401
 
-        user = Account.find_by_email(data['email'])
+        user = Account.find_by_email(data['email'])  # TODO: Polling the database twice for LITERALLY the same thing.
         token = user.generate_password_reset_token()
         send_reset_token(token, user.email)
 
@@ -163,7 +163,7 @@ class ResetPasswordReceive(Resource):
         if not token_data:
             return {'errors': form.errors}, 401
 
-        user = Account.find_by_id(token_data.get('reset_id'))
+        user = Account.find_by_id(token_data.get('reset_id'))  # TODO: Polling the database twice for LITERALLY the same thing, again.
         user.update_password(data['password'])
 
         return {'success': 'Account with email %s has been successfully updated.' % user.email}, 200

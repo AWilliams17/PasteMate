@@ -98,7 +98,7 @@ class ChangePasswordForm(Form):
 
 
 class DeleteUserForm(Form):
-    username = StringField()
+    username = StringField()  # TODO: Why is this called currentPassword? Why not just password?
     currentPassword = StringField(validators=[validators.InputRequired("Current password is required."),
                                               validators.Length(min=4, max=128)])
 

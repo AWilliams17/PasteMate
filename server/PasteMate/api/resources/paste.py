@@ -9,8 +9,8 @@ from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
 
-class PastePermissionValidator:  # Doing this with WTForms seems to be ridiculous, so this will do.
-    def __init__(self, paste, username, data=None):  # I still don't like this.
+class PastePermissionValidator:  # TODO: Yeah, do this with WTForms.
+    def __init__(self, paste, username, data=None):
         self.paste = paste
         self.user = Account.find_by_username(username)
         self.data = data
