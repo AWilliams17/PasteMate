@@ -6,15 +6,17 @@
 * [x] Sign up component
 * [x] Sign in component
 * [x] Manage component
-* [ ] Reset password component
+* [x] Reset password component
 
 ## Pastes
 * [x] Paste submission component
 * [x] Paste edit component
 * [x] Paste view component
 * [x] Paste list component
+* [ ] Paste expiration
 
 ## Misc
+* [ ] Use Redis for password reset tokens
 * [ ] Fully implement aria controls
 * [x] Setup.py
 * [ ] Pastes could probably have a store
@@ -24,7 +26,7 @@
 * [ ] Upgrade WebPack to v4
 * [ ] Better axios error handling
 * [ ] Logs
-* [ ] Refactor the api resources to be less bloated.
+* [x] Refactor the api resources to be less bloated.
 * [ ] Configuration
 * [ ] axios_jwt.js
 * [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing/deleting it.
