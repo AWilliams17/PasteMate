@@ -29,6 +29,8 @@ class SubmitPasteForm(Form):
 class ValidatePastePermissions(Form):
     paste = Field()
     user = Field()
+    validate_edit = BooleanField()
+    validate_delete = BooleanField()
     password = StringField(validators=[validators.Length(max=128)])
 
     def validate(self):
@@ -39,18 +41,26 @@ class ValidatePastePermissions(Form):
 
         target_paste = self.paste.data
         editor = self.user.data
+        validate_edit = self.validate_edit.data
+        validate_delete = self.validate_delete.data
 
         paste_is_open_edit = target_paste.open_edit
         editor_owns_paste = (target_paste.owner_id == editor.id)
         paste_requires_password = target_paste.password is not None
 
-        if not editor_owns_paste and not paste_is_open_edit:
-            self.paste.errors.append("You are not authorized for this action.")
+        if validate_edit and not editor_owns_paste and not paste_is_open_edit:
+            self.paste.errors.append("You do not own this paste and open edit is not enabled for it.")
             return False
+
+        if validate_delete and not editor_owns_paste:
+            self.paste.errors.append("You can not delete pastes you do not own.")
+            return False
+
         if paste_requires_password and not editor_owns_paste:
             if self.password.data is None:
-                self.password.errors.append("A password is required to edit this paste.")
+                self.password.errors.append("A password is required to complete this action.")
                 return False
+
             if not target_paste.password_correct(self.password.data):
                 self.password.errors.append("Password is incorrect.")
                 return False

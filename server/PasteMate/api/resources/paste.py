@@ -9,34 +9,23 @@ from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
 
-class PastePermissionValidator:  # TODO: Yeah, do this with WTForms.
-    def __init__(self, paste, username, data=None):
-        self.paste = paste
-        self.user = Account.find_by_username(username)
-        self.data = data
+def validate_permissions(user, paste, data=None, validate_delete_perms=False, validate_edit_perms=False):
+    permission_data = {
+        "user": user,
+        "paste": paste,
+        "validate_delete": validate_delete_perms,
+        "validate_edit": validate_edit_perms,
+        "password": None if not data or (len(data) == 0 or 'password' not in data) else data.get('password')
+    }
 
-    def validate(self, include_edit_perms=False, include_delete_perms=False):
-        if not self.paste:
-            return {'errors': 'Paste with specified UUID not found.'}, 404
+    v = ValidatePastePermissions.from_json(permission_data)
 
-        user_owns_paste = (self.user.id == self.paste.owner_id)
-        paste_requires_password = self.paste.password is not None
-        request_password = None if not self.data or 'password' not in self.data else self.data['password']
+    if not v.validate():
+        if "NotFound" in v.errors:
+            return {"errors": "Paste with specified UUID was not found."}, 404
+        return {"errors": v.errors}, 401
 
-        if include_edit_perms and not user_owns_paste and not self.paste.open_edit:
-            return {'errors': 'You do not own this paste and open edit is not enabled for it.'}, 401
-
-        if include_delete_perms and not user_owns_paste:
-            return {'errors': 'You can not delete pastes you do not own.'}, 401
-
-        if paste_requires_password and not user_owns_paste:
-            if request_password is None:
-                return {'errors': 'Password is required.'}, 401
-
-            elif not self.paste.password_correct(request_password):
-                return {'errors': 'Password is incorrect.'}, 401
-
-        return None
+    return None
 
 
 class SubmitPaste(Resource):
@@ -61,23 +50,25 @@ class GetPaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
         identity = get_jwt_identity()
+        user = Account.find_by_username(identity)
         paste = Paste.find_by_uuid(paste_uuid)
-        validators = PastePermissionValidator(paste, identity)
-        error = validators.validate()
-        if error is not None:
-            return error
+
+        permissions_errors = validate_permissions(user, paste)
+        if permissions_errors:
+            return permissions_errors
 
         return {'paste': paste.paste_dict()}, 200
 
     @jwt_required
     def post(self, paste_uuid):
         identity = get_jwt_identity()
+        user = Account.find_by_username(identity)
         paste = Paste.find_by_uuid(paste_uuid)
         data = request.get_json(force=True)
-        validators = PastePermissionValidator(paste, identity, data)
-        error = validators.validate()
-        if error is not None:
-            return error
+
+        permissions_errors = validate_permissions(user, paste, data)
+        if permissions_errors:
+            return permissions_errors
 
         return {'paste': paste.paste_dict()}, 200
 
@@ -86,23 +77,23 @@ class UpdatePaste(Resource):
     @jwt_required
     def post(self, paste_uuid):
         identity = get_jwt_identity()
-        paste = Paste.find_by_uuid(paste_uuid)
         data = request.get_json(force=True)
-        validators = PastePermissionValidator(paste, identity, data)
+        user = Account.find_by_username(identity)
+        paste = Paste.find_by_uuid(paste_uuid)
 
-        error = validators.validate(include_edit_perms=True)
-        form = SubmitPasteForm.from_json(data)
+        permissions_errors = validate_permissions(user, paste, data, validate_edit_perms=True)
+        if permissions_errors:
+            return permissions_errors
 
-        if error is not None:
-            return error
+        submission_validator = SubmitPasteForm.from_json(data)
 
-        if not form.validate():
-            return {'errors': form.errors}, 400
+        if not submission_validator.validate():
+            return {'errors': submission_validator.errors}, 400
 
         data.pop('password')  # Don't update paste passwords.
-        data['change_owner_fields'] = False if not validators.paste.owner_id == validators.user.id else True
-
+        data['change_owner_fields'] = False if not (paste.owner_id == user.id) else True
         paste.update_paste(**data)
+
         return {'paste_uuid': paste_uuid}, 200
 
 
@@ -113,25 +104,10 @@ class DeletePaste(Resource):
 
         user = Account.find_by_username(identity)
         paste = Paste.find_by_uuid(paste_uuid)
-        password = None
-        validator_data = {
-            "user": user,
-            "paste": paste,
-            "password": password
-        }
 
-        validators = ValidatePastePermissions.from_json(validator_data)
-        if not validators.validate():
-            if "NotFound" in validators.errors:
-                return {"errors": "Paste with specified UUID was not found."}, 404
-            return {"errors": validators.errors}, 401
-
-
-        # validators = PastePermissionValidator(paste, identity)
-        # error = validators.validate(include_delete_perms=True)
-        # if error is not None:
-        #     return error
-
+        permissions_errors = validate_permissions(user, paste, validate_delete_perms=True)
+        if permissions_errors:
+            return permissions_errors
 
         paste.delete()
         return {'result': 'Paste deleted.'}, 204
