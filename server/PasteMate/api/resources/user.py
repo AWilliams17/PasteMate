@@ -56,8 +56,10 @@ class RegisterUser(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = RegistrationForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 400
+
         user = Account(**data)
         user.save_to_db()
 
@@ -74,8 +76,10 @@ class LoginUser(Resource):
     def post(self):
         data = request.get_json(force=True)
         form = LoginForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 401
+
         user = Account.find_by_username(data.get('username'))  # TODO: Polling the database twice.
 
         @after_this_request
@@ -95,8 +99,10 @@ class UpdateEmail(Resource):
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangeEmailForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 401
+
         user.update_email(data['newEmail'])
 
         return {'success': 'Successfully changed account email address to %s' % data['newEmail']}, 201
@@ -110,8 +116,10 @@ class UpdatePassword(Resource):
         data = request.get_json(force=True)
         data['username'] = current_username
         form = ChangePasswordForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 401
+
         user.update_password(data['newPassword'])
 
         return {'success': 'Successfully changed account password.'}, 201
@@ -125,6 +133,7 @@ class DeleteUser(Resource):
         data = request.get_json(force=True)
         data['username'] = current_username
         form = DeleteUserForm.from_json(data)
+
         if not form.validate():
             return {'errors': form.errors}, 401
 
@@ -172,9 +181,11 @@ class ResetPasswordReceive(Resource):
 class RevokeAccess(Resource):
     @jwt_required
     def get(self):
+
         @after_this_request
         def deauthenticate(response):
             return revoke_access(response)
+
         return {'token_revoked': True}, 200
 
 
@@ -198,7 +209,9 @@ class CurrentUser(Resource):
     def get(self):
         current_username = get_jwt_identity()
         user = Account.find_by_username(current_username)
+
         if user:
             return {'username': current_username, 'userID': user.id, 'email': user.email}
+
         return {'errors': 'Account not found.'}, 400
         # Nothing else needed since the loader should do the rest.

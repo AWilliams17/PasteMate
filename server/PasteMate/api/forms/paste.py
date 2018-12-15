@@ -1,5 +1,5 @@
 """
-wtforms validation logic for paste related forms.
+WTForms validation logic for paste related forms.
 """
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField, Field

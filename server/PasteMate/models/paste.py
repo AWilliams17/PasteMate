@@ -41,8 +41,6 @@ class Paste(db.Model):
             'expiration_date': strf_date(self.expiration_date),
             'open_edit': self.open_edit,
             'owner_name': Account.find_by_id(self.owner_id).username,
-            # If this paste has hit its expiration date, but the deletion job for it hasn't run yet, tell the client
-            'deletion_inbound': datetime.utcnow() >= self.expiration_date if self.expiration_date is not None else False
         }
 
     def update_paste(self, title, language, content, open_edit, expiration, change_owner_fields=False):

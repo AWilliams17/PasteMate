@@ -1,5 +1,5 @@
 """
-wtforms validation logic for user related forms.
+WTForms validation logic for user related forms.
 """
 from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer

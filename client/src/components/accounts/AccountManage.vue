@@ -162,7 +162,7 @@
 
       async onDeletionConfirmation() {
         try {
-          const payload = {'currentPassword': this.password};
+          const payload = {'password': this.password};
           await this.$store.dispatch(DELETE_USER, payload);
           this.$store.dispatch(ADD_NOTIFICATION, 'Operation successful.');
           this.$router.push('/');

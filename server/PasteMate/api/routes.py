@@ -1,12 +1,15 @@
 """
 Defines all API endpoints in the server.
+TODO: Could I separate user and paste routes into their own modulees?
 """
 from PasteMate.api import api
-from PasteMate.api.resources.user import (LoginUser, RegisterUser, CurrentUser, RefreshUser,
-                                          RevokeAccess, UpdateEmail, UpdatePassword, DeleteUser,
-                                          ResetPasswordSend, ResetPasswordReceive)
 from PasteMate.api.resources.paste import SubmitPaste, GetPaste, UpdatePaste, DeletePaste, ListPastes
+from PasteMate.api.resources.user import (
+    LoginUser, RegisterUser, CurrentUser, RefreshUser, RevokeAccess, UpdateEmail, UpdatePassword, DeleteUser,
+    ResetPasswordSend, ResetPasswordReceive
+)
 
+# User-Specific Routes
 api.add_resource(RegisterUser, '/api/user/register')
 api.add_resource(LoginUser, '/api/user/login')
 api.add_resource(RefreshUser, '/api/auth/refresh')
@@ -17,6 +20,8 @@ api.add_resource(UpdatePassword, '/api/user/update_password')
 api.add_resource(ResetPasswordSend, '/api/user/reset_password')
 api.add_resource(ResetPasswordReceive, '/api/user/reset_password_finalize')
 api.add_resource(DeleteUser, '/api/user/delete')
+
+# Paste-Specific routes
 api.add_resource(SubmitPaste, '/api/paste/submit')
 api.add_resource(GetPaste, '/api/paste/get/<string:paste_uuid>')
 api.add_resource(UpdatePaste, '/api/paste/update/<string:paste_uuid>')

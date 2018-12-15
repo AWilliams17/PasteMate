@@ -2,9 +2,10 @@
 JWTManager loader definitions, along with the JWTManager instance
 to be initialized with the flask app object.
 """
-from PasteMate.models.revoked_token import RevokedToken
 from flask import jsonify
 from flask_jwt_extended import JWTManager
+from PasteMate.models.revoked_token import RevokedToken
+
 
 jwt_manager = JWTManager()
 
