@@ -4,7 +4,7 @@ Paste specific API Resources + some helper functions
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from PasteMate.api.forms.paste import SubmitPasteForm
+from PasteMate.api.forms.paste import SubmitPasteForm, ValidatePastePermissions
 from PasteMate.models.account import Account
 from PasteMate.models.paste import Paste
 
@@ -110,11 +110,29 @@ class DeletePaste(Resource):
     @jwt_required
     def get(self, paste_uuid):
         identity = get_jwt_identity()
+
+        user = Account.find_by_username(identity)
         paste = Paste.find_by_uuid(paste_uuid)
-        validators = PastePermissionValidator(paste, identity)
-        error = validators.validate(include_delete_perms=True)
-        if error is not None:
-            return error
+        password = None
+        validator_data = {
+            "user": user,
+            "paste": paste,
+            "password": password
+        }
+
+        validators = ValidatePastePermissions.from_json(validator_data)
+        if not validators.validate():
+            if "NotFound" in validators.errors:
+                return {"errors": "Paste with specified UUID was not found."}, 404
+            return {"errors": validators.errors}, 401
+
+
+        # validators = PastePermissionValidator(paste, identity)
+        # error = validators.validate(include_delete_perms=True)
+        # if error is not None:
+        #     return error
+
+
         paste.delete()
         return {'result': 'Paste deleted.'}, 204
 

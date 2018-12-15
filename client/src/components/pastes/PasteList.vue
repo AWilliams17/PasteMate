@@ -67,7 +67,7 @@
             this.$router.go(0);
           })
           .catch((error) => {
-            this.$store.dispatch('session/addNotification', error);
+            this.$store.dispatch('session/addNotification', error.response.data.errors);
           });
       }
     }

@@ -58,6 +58,7 @@
 
 <script>
   import axiosJWT from '../../_misc/axios_jwt';
+  import { dispatchErrors } from '../../_misc/utils';
   import { ADD_NOTIFICATION } from '../../store/action-types';
   import 'highlight.js/styles/ocean.css';
 
@@ -91,8 +92,8 @@
         return null;
       },
       current_user_owns_paste() {
-        if (this.username) {
-          return this.username === this.paste.owner_name;
+         if (this.username) {
+           return this.username === this.paste.owner_name;
         }
         return false;
       }
@@ -132,7 +133,7 @@
             this.$router.push('/');
           })
           .catch((error) => {
-            this.$store.dispatch(ADD_NOTIFICATION, error.response.data.error);
+            dispatchErrors(error, this.$store);
           });
       }
     },

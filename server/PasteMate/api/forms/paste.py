@@ -2,7 +2,7 @@
 wtforms validation logic for paste related forms.
 """
 from wtforms import Form, validators
-from wtforms.fields import StringField, BooleanField, IntegerField
+from wtforms.fields import StringField, BooleanField, IntegerField, Field
 from PasteMate.api.hljs_list import language_list
 
 
@@ -22,5 +22,37 @@ class SubmitPasteForm(Form):
         if self.language.data not in language_list:
             self.language.errors.append("Please specify a valid language for the paste.")
             return False
+
+        return True
+
+
+class ValidatePastePermissions(Form):
+    paste = Field()
+    user = Field()
+    password = StringField(validators=[validators.Length(max=128)])
+
+    def validate(self):
+        Form.validate(self)
+        if not self.paste:
+            self.paste.errors.append("NotFound")
+            return False
+
+        target_paste = self.paste.data
+        editor = self.user.data
+
+        paste_is_open_edit = target_paste.open_edit
+        editor_owns_paste = (target_paste.owner_id == editor.id)
+        paste_requires_password = target_paste.password is not None
+
+        if not editor_owns_paste and not paste_is_open_edit:
+            self.paste.errors.append("You are not authorized for this action.")
+            return False
+        if paste_requires_password and not editor_owns_paste:
+            if self.password.data is None:
+                self.password.errors.append("A password is required to edit this paste.")
+                return False
+            if not target_paste.password_correct(self.password.data):
+                self.password.errors.append("Password is incorrect.")
+                return False
 
         return True
