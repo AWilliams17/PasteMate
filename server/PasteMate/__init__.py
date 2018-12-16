@@ -2,16 +2,17 @@
 Contains initialization and instantiation of the flask app object,
 along with initialization of extensions.
 """
-
+import crython
 import wtforms_json
 from flask import Flask
 from PasteMate.models import db
+from PasteMate.models.paste import Paste
 from PasteMate.api.routes import api
 from PasteMate.api.mail import async_mail
 from PasteMate.api.jwt_loaders import jwt_manager
 from os.path import exists
 
-app = Flask(__name__, template_folder="../client/")
+app = Flask('PasteMateApp', template_folder="../client/")
 app.config.update(
     API_URL="http://localhost:5000/",
     SQLALCHEMY_DATABASE_URI="sqlite:///PM.db",
@@ -44,5 +45,13 @@ jwt_manager.init_app(app)
 api.init_app(app)
 async_mail.init_app(app)
 
+
+@crython.job(hour='*/1')
+def expire_pastes():
+    with app.app_context():
+        Paste.delete_expired_pastes()
+
+
 if __name__ == '__main__':
-    app.run(host='localhost')
+    crython.start()
+    app.run(host='localhost', use_reloader=False)

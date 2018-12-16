@@ -6,14 +6,37 @@
   So all of that needs to be done.
  */
 import axios from 'axios';
-// import { REFRESH_TOKEN, SET_SIGN_OUT_NOTIFICATION } from '../store/action-types';
+import router from '../router'
+import store from '../store';
+import { dictContainsAnyOf } from './utils';
+import { REFRESH_TOKEN, ADD_NOTIFICATION, RETRIEVE_USER } from '../store/action-types';
 
 axios.defaults.withCredentials = true;
 axios.defaults.xsrfHeaderName = 'X-CSRF-TOKEN';
 axios.defaults.xsrfCookieName = 'csrf_access_token';
 
-// axios.interceptors.response.use(null, error => {
-//   return Promise.reject(error);
-// });
+axios.interceptors.response.use(null, error => {
+  const ErrorDict = error.response.data;
+  const ErrorCode = error.response.status;
+
+  if (ErrorCode === 404) {
+    router.replace('/404');
+  } else if (ErrorCode === 401) {
+    if (dictContainsAnyOf(['token_unauthorized', 'token_revoked', 'token_invalid'], ErrorDict)) {
+      router.replace('/account/signin');
+    } else if (dictContainsAnyOf(['token_old', 'token_expired'], ErrorDict)) {
+      store.dispatch(RETRIEVE_USER).catch(() => {
+        store.dispatch(REFRESH_TOKEN)
+          .catch(() => {
+            store.dispatch(ADD_NOTIFICATION, 'Your session has expired. Please sign back in.');
+            router.replace('/account/signin');
+          })
+      })
+    } else {
+      // TODO: Finish this up.
+      return Promise.reject(error);
+    }
+  }
+});
 
 export default axios

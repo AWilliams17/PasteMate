@@ -63,9 +63,20 @@ class Paste(db.Model):
     def find_by_uuid(cls, paste_uuid):
         return cls.query.filter_by(paste_uuid=paste_uuid).first()
 
+    @classmethod
+    def delete_expired_pastes(cls):
+        current_time = datetime.utcnow()
+        expired_pastes = cls.query.filter(current_time >= cls.expiration_date)
+        if expired_pastes is not None:
+            expired_pastes.delete()
+            db.session.commit()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def deletion_inbound(self):
+        return datetime.utcnow() >= self.expiration_date
 
     def password_correct(self, password):
         return check_password_hash(self.password, password)

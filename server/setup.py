@@ -27,7 +27,7 @@ setup(
     packages=find_packages(exclude=['tests']),
 
     install_requires=['flask', 'flask-jwt_loaders-extended', 'flask-cors', 'flask-sqlalchemy', 'flask-restful', 'wtforms_json',
-                      'wtforms', 'werkzeug', 'requests', 'itsdangerous'],
+                      'wtforms', 'werkzeug', 'requests', 'itsdangerous', 'celery'],
 
     entry_points={
         'console_scripts': [

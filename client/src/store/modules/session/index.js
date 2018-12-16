@@ -4,8 +4,7 @@ import * as mutations from './mutations';
 
 const state = {
   user: null,
-  notifications: [],
-  signOutNotification: null
+  notifications: []
 };
 
 export default {

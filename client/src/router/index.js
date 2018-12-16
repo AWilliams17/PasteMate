@@ -72,7 +72,10 @@ export default new Router({
     {
       path: '/paste/view/:slug',
       name: 'View Paste',
-      component: PasteView
+      component: PasteView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/paste/list/:slug',

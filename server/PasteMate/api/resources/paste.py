@@ -10,6 +10,9 @@ from PasteMate.models.paste import Paste
 
 
 def validate_permissions(user, paste, data=None, validate_delete_perms=False, validate_edit_perms=False):
+    if not paste or paste.deletion_inbound():  # The reason for checking if a deletion is inbound is if the deletion
+        return {"errors": "Paste with specified UUID was not found."}, 404  # job for that paste hasn't run yet.
+
     permission_data = {
         "user": user,
         "paste": paste,
@@ -21,9 +24,6 @@ def validate_permissions(user, paste, data=None, validate_delete_perms=False, va
     v = ValidatePastePermissions.from_json(permission_data)
 
     if not v.validate():
-        if "NotFound" in v.errors:
-            return {"errors": "Paste with specified UUID was not found."}, 404
-
         return {"errors": v.errors}, 401
 
     return None

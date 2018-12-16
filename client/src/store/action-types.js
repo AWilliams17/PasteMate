@@ -6,6 +6,4 @@ export const DELETE_USER = 'session/deleteUser';
 export const REFRESH_TOKEN = 'session/refreshToken';
 export const RETRIEVE_USER = 'session/retrieveUser';
 export const ADD_NOTIFICATION = 'session/addNotification';
-export const SET_SIGN_OUT_NOTIFICATION = 'session/setSignOutNotification';
 export const CLEAR_NOTIFICATIONS = 'session/clearNotifications';
-export const CLEAR_SIGN_OUT_NOTIFICATION = 'session/clearSignOutNotification';

@@ -35,9 +35,6 @@ class ValidatePastePermissions(Form):
 
     def validate(self):
         Form.validate(self)
-        if not self.paste:
-            self.paste.errors.append("NotFound")
-            return False
 
         target_paste = self.paste.data
         editor = self.user.data

@@ -74,10 +74,9 @@
           content: '',
           submission_date: '',
           edit_date: '',
-          expiration_date: '',
+          expiration_date: null,
           open_edit: false,
-          owner_name: '',
-          deletion_inbound: false
+          owner_name: ''
         },
         show_password_form: false,
         password: null
@@ -103,6 +102,10 @@
         axiosJWT.get(this.path)
           .then((response) => {
             this.paste = response.data.paste;
+            this.paste.submission_date = this.dateToLocalTime(this.paste.submission_date);
+            if (this.paste.expiration_date) {
+              this.paste.expiration_date = this.dateToLocalTime(this.paste.expiration_date);
+            }
           })
           .catch((error) => {
             if (error.response.status === 401) {
@@ -135,6 +138,11 @@
           .catch((error) => {
             dispatchErrors(error, this.$store);
           });
+      },
+      dateToLocalTime(dateStr) {
+        let date = new Date(dateStr);
+        date.setMinutes(date.getMinutes() - new Date().getTimezoneOffset());
+        return date.toLocaleString();
       }
     },
     created() {

@@ -13,10 +13,11 @@
 * [x] Paste edit component
 * [x] Paste view component
 * [x] Paste list component
-* [ ] Paste expiration
+* [x] Paste expiration
 
 ## Misc
 * [ ] Use Redis for password reset tokens
+* [ ] Use Redis for paste expiration (?)
 * [ ] Fully implement aria controls
 * [x] Setup.py
 * [ ] Pastes could probably have a store
@@ -24,7 +25,7 @@
 * [ ] Rate Limiter
 * [ ] Make the email change require an email verification
 * [ ] Upgrade WebPack to v4
-* [ ] Better axios error handling
+* [x] Better axios error handling
 * [ ] Logs
 * [x] Refactor the api resources to be less bloated.
 * [ ] Configuration

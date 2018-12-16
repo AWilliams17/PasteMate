@@ -58,14 +58,6 @@ export const addNotification = ({ commit }, message) => {
   commit('ADD_NOTIFICATION', message);
 };
 
-export const setSignOutNotification = ({ commit }, message) => {
-  commit('SET_SIGN_OUT_NOTIFICATION', message);
-};
-
 export const clearNotifications = ({ commit }) => {
   commit('CLEAR_NOTIFICATIONS');
-};
-
-export const clearSignOutNotification = ({ commit }) => {
-  commit('CLEAR_SIGN_OUT_NOTIFICATION');
 };
