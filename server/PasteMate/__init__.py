@@ -7,7 +7,7 @@ import wtforms_json
 from flask import Flask
 from PasteMate.models import db
 from PasteMate.models.paste import Paste
-from PasteMate.api.routes import api
+from PasteMate.api import api
 from PasteMate.api.mail import async_mail
 from PasteMate.api.jwt_loaders import jwt_manager
 from os.path import exists

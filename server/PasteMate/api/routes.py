@@ -1,6 +1,6 @@
 """
 Defines all API endpoints in the server.
-TODO: Could I separate user and paste routes into their own modulees?
+TODO: Could I separate user and paste routes into their own modules?
 """
 from PasteMate.api import api
 from PasteMate.api.resources.paste import SubmitPaste, GetPaste, UpdatePaste, DeletePaste, ListPastes
