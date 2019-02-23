@@ -4,9 +4,6 @@ from threading import Thread
 
 
 class AsyncMailSender:
-    app = None
-    mail = None
-
     def init_app(self, app):
         self.app = app
         self.mail = Mail(app)
