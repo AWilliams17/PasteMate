@@ -16,6 +16,7 @@
 * [x] Paste expiration
 
 ## Misc
+* [ ] Migrate off of JWTs and just use regular cookies.
 * [ ] Use Redis for password reset tokens
 * [ ] Use Redis for paste expiration (?)
 * [ ] Fully implement aria controls
@@ -29,7 +30,6 @@
 * [ ] Logs
 * [x] Refactor the api resources to be less bloated.
 * [ ] Configuration
-* [ ] axios_jwt.js
 * [ ] Handle cases for when the paste someone is editing expires/is deleted as they are editing/deleting it.
 * [x] As it currently stands, password verification for pastes are way too overbearing. Fix this.
 

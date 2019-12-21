@@ -26,7 +26,7 @@ setup(
     keywords='flask pastebin flask-vue flask-pastebin',
     packages=find_packages(exclude=['tests']),
 
-    install_requires=['flask', 'flask-jwt_loaders-extended', 'flask-cors', 'flask-sqlalchemy', 'flask-restful', 'wtforms_json',
+    install_requires=['flask', 'flask-jwt-extended', 'flask-cors', 'flask-sqlalchemy', 'flask-restful', 'wtforms_json',
                       'wtforms', 'werkzeug', 'requests', 'itsdangerous', 'celery', 'crython'],
 
     entry_points={
