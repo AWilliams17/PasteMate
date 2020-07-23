@@ -3,7 +3,7 @@ WTForms validation logic for paste related forms.
 """
 from wtforms import Form, validators
 from wtforms.fields import StringField, BooleanField, IntegerField, Field
-from PasteMate.api.hljs_list import language_list
+from api.hljs_list import language_list
 
 
 class SubmitPasteForm(Form):

@@ -1,5 +1,5 @@
-from PasteMate.models import db
-from PasteMate.models.account import Account
+from models import db
+from models.account import Account
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 from uuid import uuid4

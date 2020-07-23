@@ -1,4 +1,4 @@
-from PasteMate.models import db
+from models import db
 
 
 class RevokedToken(db.Model):

@@ -6,7 +6,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import BadSignature, SignatureExpired
 from wtforms import Form, validators
 from wtforms.fields import StringField
-from PasteMate.models.account import Account
+from models.account import Account
 
 
 class RegistrationForm(Form):

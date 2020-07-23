@@ -4,9 +4,9 @@ Paste specific API Resources + some helper functions
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from PasteMate.api.forms.paste import SubmitPasteForm, ValidatePastePermissions
-from PasteMate.models.account import Account
-from PasteMate.models.paste import Paste
+from api.forms.paste import SubmitPasteForm, ValidatePastePermissions
+from models.account import Account
+from models.paste import Paste
 
 
 def validate_permissions(user, paste, data=None, validate_delete_perms=False, validate_edit_perms=False):

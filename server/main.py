@@ -5,11 +5,11 @@ along with initialization of extensions.
 import crython
 import wtforms_json
 from flask import Flask
-from PasteMate.models import db
-from PasteMate.models.paste import Paste
-from PasteMate.api import api
-from PasteMate.api.mail import async_mail
-from PasteMate.api.jwt_loaders import jwt_manager
+from models import db
+from models.paste import Paste
+from api import api
+from api.mail import async_mail
+from api.jwt_loaders import jwt_manager
 from os.path import exists
 
 app = Flask('PasteMateApp', template_folder="../client/")

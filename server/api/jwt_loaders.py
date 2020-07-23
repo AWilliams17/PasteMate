@@ -4,7 +4,7 @@ to be initialized with the flask app object.
 """
 from flask import jsonify
 from flask_jwt_extended import JWTManager
-from PasteMate.models.revoked_token import RevokedToken
+from models.revoked_token import RevokedToken
 
 
 jwt_manager = JWTManager()
